@@ -9,21 +9,29 @@
                         All Views
 ==============================================================*/
 
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                  FIRST THING THAT SHOWS ONCES AN EMPLOYEE LOGS IN
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
 window.onload = function()
 {
     this.done_tasks();
     this.home();
 }
 
-
-
+$('.pause-task').hide();
 $(()=>
 {
+    var modal_id = "";
+
     $('#all_views').on('click', function(e)
     {
         e.preventDefault(); 
         e.stopPropagation();
     });
+
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                        DISPLAYS TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
 
     $('#all_views').on('click', '.client-view', function(e)
     {
@@ -34,28 +42,112 @@ $(()=>
     
         
     });
-
-    $('#all_views').on('click', '.task-view', function(e)
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                      SHOW A MODAL TO START A TASK
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+    $('#all_views').on('click','.card-body', '.task-view', function(e)
     {
         e.preventDefault();
         e.stopPropagation();
-        let id = $(this).attr('id');
-        console.log(id);
+        let id = $('.task-view').attr('id');
+        $('.show_start_task').attr('id', 'exampleModal'+id);
+        $('#exampleModal'+id).modal("show");
+        modal_id = id;
     
         
     });
-    
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                        DISPLAYS HOME PAGE TO THE EMPLOYEE
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
     $('#all_views').on('click', '#to_home', function(e)
     {
         e.preventDefault();
         e.stopPropagation();
         home();
     });
+
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                        START A TASK
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+    $('.start-task').on('click', function(e)
+    {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        $('.close').hide(); 
+        startTime();
+        $('.start-task').hide();
+        $('.pause-task').show();
+        $('.toast').toast('show');
+        
+
+    });
+
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                       PAUSE A TASK
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+
+    $('.pause-task').on('click', function(e)
+    {
+        e.preventDefault();
+        e.stopPropagation();
+
+        $('.close').show(); 
+        stopTime();
+        $('.pause-task').hide();
+        $('.start-task').show();
+        
+
+    });
+
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                        VERIFY A TASK COMMENT
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+
+    $('.task-comment textarea').on('keyup change focusout', function()
+    {
+        var comment = $('.task-comment textarea').val();
+        if(comment.length < 10)
+        {
+            $('.task-status').empty();
+            $('.task-status').append("<div class='text-tomato'>Your comment should be at least 10 letters</div>");
+        }else
+        {
+            $('.task-status').empty();
+        }
+    });
+
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                  DONE WITH A TASK
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+    $('.modal-footer #done-task').on('click', function(e)
+    {
+        e.preventDefault();
+        var comment = $('.task-comment textarea').val();
+        alert('comment');
+        if(comment.length < 10)
+        {
+            $('.task-status').empty();
+            $('.task-status').append("<div class='text-tomato'>Your comment should be at least 10 letters</div>");
+        }else
+        {
+            stopTime();
+            $('.task-status').empty();
+            $('.task-status').text(comment+"  =>"+checkTime(hour)+":"+checkTime(minute)+":"+checkTime(second));
+        }
+
+        
+    });
+
+    
     
 });
 
 
 
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                   LOADS ALL THE CLIENTS ALLOCATED TO THE EMPLOYEE
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
 
 function home()
 {
@@ -66,30 +158,36 @@ function home()
                       <li class="list-group-item d-flex justify-content-between client-view" id="2">Sma Verns<span>5</span></li>
                       <li class="list-group-item d-flex justify-content-between client-view" id="3">Zikile Surname<span>1</span></li>
                     </ul>
-                </div>`;
+                </div>
+                `;
 
     $('#all_views').empty();
     $('#all_views').append(html);
 
 }
+
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                     VIEW ALL TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
 
 function view_tasks(id)
 {
-    var html = `<div id="to_home" class="m-3">back<div>
+    var html = `<a id="to_home" class="m-3">back</a>
                 <div class="font-weight-bold">client with id ${id}</div>
-                <div class="card mt-4 ml-4" style="width: 40rem;">
-                    <ul class="list-group list-group-flush">
-                        <li class="list-group-item d-flex justify-content-between task-view" id="1">Task 1</li>
-                        <li class="list-group-item d-flex justify-content-between task-view" id="2">Task 2</li>
-                        <li class="list-group-item d-flex justify-content-between task-view" id="3">Task 3</li>
-                    </ul>
-                </div>`;
+                <div class="card mt-4 ml-4 bg-chocolate" style="width: 40rem;">
+                    <div class="card-body">
+                        <a class="task-view" id="1" data-toggle="modal" data-target="#exampleModal"> This is some text within a card body. </a>
+                    </div>
+                </div>
+                `;
     $('#all_views').empty();
     $('#all_views').append(html);
 
 }
 
-
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                      SHOW ALL DONE TASKS DONE BY EMPLOYEE IN A DAY
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
 function done_tasks()
 {
     var html = `<div class="text-center font-weight-bold mb-4">DONE TASKS</div>
@@ -152,7 +250,9 @@ function done_tasks()
 /*============================================================
                         Other functions
 ==============================================================*/
-//generate password
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                                  generate password
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
 function generate() 
 {
     var lowercase = "abcdefghijklmnopqrstuvwxyz",
@@ -172,6 +272,69 @@ function generate()
         );
     }
     return userPassword;
+}
+
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                                  TIME FUNCTIONS AND METHODS
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+var second = 0; 
+var minute = 0;
+var hour = 0;
+var t;
+function startTime() 
+{
+    $('.time-show').empty();
+    $('.time-show').text(this.checkTime(this.get_hr(minute))+":"+this.checkTime(this.get_mins(second))+":"+this.checkTime(this.get_secs(second)));
+    t = setTimeout(startTime, 1000);
+}
+
+function stopTime()
+{
+    $('.time-show').empty();
+    $('.time-show').text(this.checkTime(this.get_hr(minute))+":"+this.checkTime(this.get_mins(second))+":"+this.checkTime(this.get_secs(second)));
+    clearTimeout(t);
+}
+
+ function checkTime(i) 
+ {
+    if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
+    return i;
+ }
+
+function get_secs(s)
+{
+    if(s == 60)
+    {
+        second = 0;
+        return second++;
+    }else
+    {
+        return second++;
+    }
+}
+
+function get_mins(s)
+{
+     if(s == 60)
+     {
+        second = 0;
+        return minute++;
+     }else
+     {
+         return minute;
+     }
+}
+
+function get_hr(m)
+{
+     if(m == 60)
+     {
+        minute = 0;
+        return hour++;
+     }else
+     {
+         return hour;
+     }
 }
 
 

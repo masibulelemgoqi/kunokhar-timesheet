@@ -107,4 +107,56 @@
   background-color: tomato;
 }
 
+.bg-chocolate
+{
+  background-color: whitesmoke;
+}
+
+
+/*testing*/
+.modal-header, .modal-footer
+{
+  border: none;
+}
+
+.modal-body .row .time-show
+{
+  margin-left: 47.8%;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.modal-body .row .start-task
+{
+  margin-left: 50%;
+}
+
+.modal-body .row .pause-task
+{
+  margin-left: 50%;
+}
+
+
+.modal-body .row .task-comment textarea
+{
+  margin-left: 1em;
+  margin-top: 1.5em;
+  width: 29em;
+  height: 10em;
+  resize: none;
+  border: tomato solid 1px;
+
+}
+
+.toast
+{
+  z-index: 99;
+}
+.modal-body .row .task-comment textarea::placeholder
+{
+  color: tomato;
+}
+
+
+
+
 
