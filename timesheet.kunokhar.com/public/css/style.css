@@ -147,9 +147,54 @@
 
 }
 
-.toast
+.btn-float
 {
-  z-index: 99;
+  position: fixed;
+  right: 2%;
+  bottom: 5%;
+  border-radius: 50px;
+  background-color: tomato;
+}
+
+#employees_view
+{
+  margin-top: 7%;
+  margin-left: 4%;
+}
+#employees_view .card{
+  width: 24%;
+  height: 370px;
+  margin: 30px ;
+  
+}
+.scrollable{
+  overflow-y: auto;
+  max-height: 300px;
+}
+
+/* width */
+.scrollable::-webkit-scrollbar {
+  width: 10px;
+
+ 
+}
+
+/* Track */
+.scrollable::-webkit-scrollbar-track {
+  box-shadow: solid 0 0 5px grey; 
+  margin-left: 5%;
+
+}
+ 
+/* Handle */
+.scrollable::-webkit-scrollbar-thumb {
+  background: tomato; 
+  height: 5px;
+}
+
+/* Handle on hover */
+.scrollable::-webkit-scrollbar-thumb:hover {
+  background: green; 
 }
 .modal-body .row .task-comment textarea::placeholder
 {

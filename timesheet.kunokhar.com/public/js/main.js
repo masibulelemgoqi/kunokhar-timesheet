@@ -1,4 +1,15 @@
 
+$("#btnLogin").click(function(event) 
+{ //Fetch form to apply custom Bootstrap validation\r\n   
+     var form = $("#formLogin");    
+     if (form[0].checkValidity() === false) 
+     {
+        event.preventDefault(); 
+        event.stopPropagation();
+    }  
+     form.addClass('was-validated');
+});
+
 /*===========================================================
                         All insertions
 =============================================================*/
@@ -14,8 +25,27 @@
 //+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
 window.onload = function()
 {
-    this.done_tasks();
-    this.home();
+    var url = window.location.href.split("/");
+    page = url[url.length - 1].trim();
+
+    switch(page)
+    {
+        case "home.html":
+            this.done_tasks();
+            this.home();
+        break;
+
+        case "tasks.html":
+            this.done_tasks();
+            this.view_tasks();
+        break;
+
+        case "admin.html":
+            this.load_employees_with_their_client();
+        break;
+        
+    }
+
 }
 
 $('.pause-task').hide();
@@ -38,9 +68,8 @@ $(()=>
         e.preventDefault();
         e.stopPropagation();
         let id = $(this).attr('id');
-        view_tasks(id);
-    
-        
+        sessionStorage.setItem('task_id', id);
+        window.location.href = "tasks.html";
     });
 //+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
 //                      SHOW A MODAL TO START A TASK
@@ -49,10 +78,9 @@ $(()=>
     {
         e.preventDefault();
         e.stopPropagation();
-        let id = $('.task-view').attr('id');
-        $('.show_start_task').attr('id', 'exampleModal'+id);
-        $('#exampleModal'+id).modal("show");
-        modal_id = id;
+        $('.show_start_task').attr('id', 'exampleModal'+sessionStorage.getItem('task_id'));
+        $('#exampleModal'+sessionStorage.getItem('task_id')).modal("show");
+        modal_id = sessionStorage.getItem('task_id');
     
         
     });
@@ -120,11 +148,11 @@ $(()=>
 //+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
 //                  DONE WITH A TASK
 //+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-    $('.modal-footer #done-task').on('click', function(e)
+    $('#done_task').on('click', function(e)
     {
         e.preventDefault();
         var comment = $('.task-comment textarea').val();
-        alert('comment');
+
         if(comment.length < 10)
         {
             $('.task-status').empty();
@@ -134,6 +162,7 @@ $(()=>
             stopTime();
             $('.task-status').empty();
             $('.task-status').text(comment+"  =>"+checkTime(hour)+":"+checkTime(minute)+":"+checkTime(second));
+            $('.close').show(); 
         }
 
         
@@ -170,10 +199,10 @@ function home()
 //                     VIEW ALL TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE
 //+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
 
-function view_tasks(id)
+function view_tasks()
 {
-    var html = `<a id="to_home" class="m-3">back</a>
-                <div class="font-weight-bold">client with id ${id}</div>
+    var html = `<a id="to_home" class="m-3 ml-4" onclick="history.back(-1)"><i class="fa fa-angle-left"></i></a>
+                <div class="font-weight-bold ml-4">client with id ${sessionStorage.getItem('task_id')}</div>
                 <div class="card mt-4 ml-4 bg-chocolate" style="width: 40rem;">
                     <div class="card-body">
                         <a class="task-view" id="1" data-toggle="modal" data-target="#exampleModal"> This is some text within a card body. </a>
@@ -230,6 +259,14 @@ function done_tasks()
         $('#done_tasks_only').append(html);
 }
 
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//                      SHOW ALL EMPLOYEES WITH CLIENTS LIST
+//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+
+function load_employees_with_their_client()
+{
+
+}
 
 
 /*============================================================
