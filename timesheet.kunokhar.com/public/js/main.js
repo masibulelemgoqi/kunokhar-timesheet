@@ -1,4 +1,7 @@
 
+var error = null;
+var employee_role = null;
+
 $("#btnLogin").click(function(event) 
 { //Fetch form to apply custom Bootstrap validation\r\n   
      var form = $("#formLogin");    
@@ -10,9 +13,135 @@ $("#btnLogin").click(function(event)
      form.addClass('was-validated');
 });
 
+$(function() {
+    App.init();
+});
+var App = {
+    init: function() {
+                this.side.nav(), this.search.bar(), this.navigation(), this.hyperlinks()
+    },
+
+    title: function(e) {
+                return $(".header>.title").text(e)
+    },
+    side: {
+                nav: function() {
+                            this.toggle(), this.navigation()
+                },
+                toggle: function() {
+                            $(".ion-ios-navicon").on("touchstart click", function(e) {
+                                        e.preventDefault(), $(".sidebar").toggleClass("active"), $(".nav").removeClass("active"), $(".sidebar .sidebar-overlay").removeClass("fadeOut animated").addClass("fadeIn animated")
+                            }), $(".sidebar .sidebar-overlay").on("touchstart click", function(e) {
+                                        e.preventDefault(), $(".ion-ios-navicon").click(), $(this).removeClass("fadeIn").addClass("fadeOut")
+                            })
+                },
+                navigation: function() {
+                            $(".nav-left a").on("touchstart click", function(e) {
+                                        e.preventDefault();
+                                        var t = $(this).attr("href").replace("#", "");
+                                        $(".sidebar").toggleClass("active"), $(".html").removeClass("visible"), "home" == t || "" == t || null == t ? $(".html.welcome").addClass("visible") : $(".html." + t).addClass("visible"), App.title($(this).text())
+                            })
+                }
+    },
+    search: {
+                bar: function() {
+                            $(".header .ion-ios-search").on("touchstart click", function() {
+                                        var e = ($(".header .search input").hasClass("search-visible"), $(".header .search input").val());
+                                        return "" != e && null != e ? (App.search.html($(".header .search input").val()), !1) : ($(".nav").removeClass("active"), $(".header .search input").focus(), void $(".header .search input").toggleClass("search-visible"))
+                            }), $(".search form").on("submit", function(e) {
+                                        e.preventDefault(), App.search.html($(".header .search input").val())
+                            })
+                },
+                html: function(e) {
+                            $(".search input").removeClass("search-visible"), $(".html").removeClass("visible"), $(".html.search").addClass("visible"), App.title("Result"), $(".html.search").html($(".html.search").html()), $(".html.search .key").html(e), $(".header .search input").val("")
+                }
+    },
+    navigation: function() {
+                $(".button-pull .mask").on("touchstart click", function(e) {
+                            e.preventDefault(), $(this).parent().toggleClass("active")
+                })
+    },
+    hyperlinks: function() {
+                $(".button-pull .nav-item").on("click", function(e) {
+                            e.preventDefault();
+                            var t = $(this).attr("href").replace("#", "");
+                            $(".html").removeClass("visible"), $(".html." + t).addClass("visible"), $(".nav").toggleClass("active"), App.title($(this).text())
+                })
+    }
+};
+
 /*===========================================================
                         All insertions
 =============================================================*/
+
+$("#save_user").on('click', function(e)
+{
+    e.preventDefault();
+    var email = $('#employee_email').val();
+    var fname = $('#employee_fname').val();
+    var lname = $('#employee_lname').val();
+
+    if(validate_email(email) && fname.length >= 3 && lname.length >= 3)
+    {
+        $('.client_status').empty();
+        if(employee_role == null)
+        {
+            $('.client_status').append('<div class="text-danger">Employee role is important</div>');
+        }else
+        {
+            $('.client_status').empty();
+            var password = generate_password();
+            console.log(password);
+            
+            $.ajax(
+            {
+                url:'../controller/controller.php',
+                method: 'POST',
+                data: {fname: fname, lname: lname, email: email, employee_role: employee_role, password: password, action: 'add_employee'},
+                success: function(data)
+                {
+                    console.log(data);
+                },
+
+                error: function(data)
+                {
+                    console.log(data);
+                    
+                }
+            });
+        }
+
+    }else
+    {
+        $('.client_status').append('<div class="text-danger">All the fields are required</div>');
+    }
+    
+});
+
+$('#save_client').on('click', function(e)
+{
+    e.preventDefault();
+    var fname = $('#client_fname').val();
+    var lname = $('#client_lname').val();
+    if(fname.length >= 3 && lname.length >= 3)
+    {
+        $.ajax(
+        {
+            url: '../controller/controller.php',
+            method: 'POST',
+            data: {fname: fname, lname: lname, action: "add_client"},
+            success: function(data)
+            {
+                console.log(data);
+                
+            }
+        });
+    }else
+    {
+        console.log("error");
+        
+    }
+});
 
 
 
@@ -30,17 +159,17 @@ window.onload = function()
 
     switch(page)
     {
-        case "home.html":
+        case "home.php":
             this.done_tasks();
             this.home();
         break;
 
-        case "tasks.html":
+        case "tasks.php":
             this.done_tasks();
             this.view_tasks();
         break;
 
-        case "admin.html":
+        case "admin.php":
             this.load_employees_with_their_client();
         break;
         
@@ -283,6 +412,79 @@ function load_employees_with_their_client()
                         All validations
 ==============================================================*/
 
+//events
+
+$('#employee_role').on('change', function(e)
+{
+    employee_role = $('#employee_role').val();
+});
+
+$('#employee_email').on('keyup', function(e)
+{
+    e.preventDefault();
+    $('.client_status').empty();
+    if(!validate_email($('#employee_email').val()))
+    {
+        $('.client_status').append('<div class="text-danger">A valid email address is like example@kunokhar.com</div>');
+    }else
+    {
+        $('.client_status').empty();
+    }
+});
+
+$('#employee_fname').on('keyup focusout', function(e)
+{
+    e.preventDefault();
+    $('.client_status').empty();
+    if($('#employee_fname').val().length < 3)
+    {
+        $('.client_status').append('<div class="text-danger">Name should be at least 3 letters long</div>');
+    }else
+    {
+        $('.client_status').empty();
+    }
+});
+
+$('#employee_lname').on('keyup focusout', function(e)
+{
+    e.preventDefault();
+    $('.client_status').empty();
+    if($('#employee_lname').val().length < 3)
+    {
+        $('.client_status').append('<div class="text-danger">Name should be at least 3 letters long</div>');
+    }else
+    {
+        $('.client_status').empty();
+    }
+});
+
+//functions
+function validate_email(email)
+{
+  var mail = email.trim();
+
+  if(mail.length >= 5)
+  {
+    var email_test = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if(email_test.test(String(mail).toLowerCase()))
+    {
+      error = "";
+      return true;
+    }else
+    {
+      error = "<div class='text-danger'>email address is like: example@organisation.com</div>";
+      return false;
+    }
+
+  }else
+  {
+      error = "<div class='text-danger'>Email address should be at least 5 digits long</div>";
+      return false;
+
+  }
+}
+
+
 
 /*============================================================
                         Other functions
@@ -290,7 +492,7 @@ function load_employees_with_their_client()
 //+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
 //                                  generate password
 //+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-function generate() 
+function generate_password() 
 {
     var lowercase = "abcdefghijklmnopqrstuvwxyz",
         uppercase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ",

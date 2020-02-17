@@ -201,6 +201,281 @@
   color: tomato;
 }
 
+body {
+  font: 300 18px/18px Roboto
+}
+
+*,
+:after,
+:before {
+  box-sizing: border-box
+}
+
+.clearfix:after,
+.clearfix:before {
+  content: '';
+  display: table
+}
+
+.clearfix:after {
+  clear: both;
+  display: block
+}
+
+
+.button-pull {
+  right: 15px;
+  z-index: 20;
+  width: 45px;
+  bottom: 15px;
+  height: 45px;
+  display: block;
+  position: fixed;
+  line-height: 45px;
+  border-radius: 50%;
+  box-shadow: 0 0 5px 0 rgba(0, 0, 0, .75)
+}
+
+#add_user
+{
+  z-index: 9999;
+}
+
+.mask {
+  z-index: 21;
+  color: #fff;
+  width: inherit;
+  height: inherit;
+  cursor: pointer;
+  font-size: 28px;
+  text-align: center;
+  border-radius: 50%;
+  position: absolute;
+  background: tomato;
+  transition: all .1s ease-in-out 0s
+}
+
+.button-pull.active .mask {
+  background: tomato;
+  transform: rotate(-135deg)
+}
+
+.button-pull:after {
+  top: 0;
+  left: 0;
+  content: '';
+  width: inherit;
+  height: inherit;
+  border-radius: 50%;
+  position: absolute;
+  background: tomato;
+  transition: all .1s ease-in-out 0s
+}
+
+.button-pull.active:after {
+  top: -125px;
+  left: -125px;
+  width: 350px;
+  height: 350px
+}
+
+.pull-item {
+  top: 0;
+  left: 0;
+  z-index: 19;
+  width: 45px;
+  height: 45px;
+  color: #fff;
+  font-size: 24px;
+  transform: none;
+  line-height: 45px;
+  border-radius: 50%;
+  position: absolute;
+  text-align: center;
+  transition: all .3s cubic-bezier(.68, 1.55, .265, 1)
+}
+
+.button-pull.active .nav-count-1 {
+  transform: translate(10px, -100px)
+}
+
+.button-pull.active .nav-count-2 {
+  transform: translate(-35px, -80px)
+}
+
+.button-pull.active .nav-count-3 {
+  transform: translate(-80px, -45px)
+}
+
+.button-pull.active .nav-count-4 {
+  transform: translate(-100px, 0)
+}
+
+.pull-left {
+  float: left
+}
+
+.pull-right {
+  float: right
+}
+
+.html,
+.invisible {
+  display: none
+}
+
+.html.visible,
+.visible {
+  display: block
+}
+
+/* user modal */
+.user-section form {
+	background: #ededed;
+	height: 330px;
+   margin-top: 20px;
+}
+
+.user-section form p {
+	padding: 7px 0;
+	text-align: left;
+	font-style: italic;
+}
+
+.user-section form .col-sm-offset-1 {
+	height: 200px;
+	margin-top: 10px;
+}
+
+.user-section form .col-sm-offset-1 .input-group span {
+	margin-right: 10px;
+}
+
+.user-section form .col-sm-offset-1 .input-group input::placeholder {
+  font-style: italic;
+  
+}
+
+
+.user-section form button:hover i{
+	position: relative;
+	right: -3px;
+}
+
+.user-section form a {
+	color: white;
+}
+
+/* .user-section .container form
+{
+  padd
+} */
+
+
+.p {
+  text-align: center;
+  margin-top: 120px;
+}
+
+
+/* client modal */
+.client-section form {
+	background: #ededed;
+	height: 300px;
+   margin-top: 20px;
+}
+
+.client-section form p {
+	padding: 7px 0;
+	text-align: left;
+	font-style: italic;
+}
+
+.client-section form .col-sm-offset-1 {
+	height: 200px;
+	margin-top: 10px;
+}
+
+.client-section form .col-sm-offset-1 .input-group span {
+	margin-right: 10px;
+}
+
+.client-section form .col-sm-offset-1 .input-group input::placeholder {
+  font-style: italic;
+  
+}
+
+
+.client-section form button:hover i{
+	position: relative;
+	right: -3px;
+}
+
+.client-section form a {
+	color: white;
+}
+
+/* .user-section .container form
+{
+  padd
+} */
+
+
+.p {
+  text-align: center;
+  margin-top: 120px;
+}
+
+/* Task modal */
+.task-section form {
+	background: #ededed;
+	height: 300px;
+   margin-top: 20px;
+}
+
+.task-section form p {
+	padding: 7px 0;
+	text-align: left;
+	font-style: italic;
+}
+
+.task-section form .col-sm-offset-1 {
+	height: 200px;
+	margin-top: 10px;
+}
+
+.task-section form .col-sm-offset-1 .input-group span {
+	margin-right: 10px;
+}
+
+.task-section form .col-sm-offset-1 .input-group input::placeholder {
+  font-style: italic;
+  
+}
+
+
+.task-section form button:hover i{
+	position: relative;
+	right: -3px;
+}
+
+.task-section form a {
+	color: white;
+}
+
+/* .user-section .container form
+{
+  padd
+} */
+
+
+.p {
+  text-align: center;
+  margin-top: 120px;
+}
+
+
+
 
 
 
