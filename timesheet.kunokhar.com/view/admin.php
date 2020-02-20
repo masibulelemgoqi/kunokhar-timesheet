@@ -217,7 +217,9 @@
                               <span class="input-group-addon">
                                 <label for="client_name">Client id</label>
                               </span>
-                              <input class="form-control" type="text" placeholder="client for a client">
+                              <input class="form-control" type="text" placeholder="Search for a client" id="client_name">
+                            </div>
+                            <div class="clients_list">
                             </div>
                           </div>
                       </form>

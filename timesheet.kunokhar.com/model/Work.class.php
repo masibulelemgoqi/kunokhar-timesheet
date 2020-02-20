@@ -97,4 +97,22 @@ class Work
     //     }
 
     // }
+
+    public function get_client_wildcat($name)
+    {
+        try
+        {
+            $stmt = $this->con->query("SELECT * FROM `client_tb` WHERE client_fname LIKE '%".$name."%'");
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $html = "<li>".$row['client_fname']."</li>";
+
+            return $html;
+            $this->con = null;
+
+        }catch(PDOException $e)
+        {
+            print("Error: ".$e->getMessage());
+        }
+    }
 }

@@ -80,6 +80,7 @@ $("#save_user").on('click', function(e)
     var email = $('#employee_email').val();
     var fname = $('#employee_fname').val();
     var lname = $('#employee_lname').val();
+    $('.client_status').empty();
 
     if(validate_email(email) && fname.length >= 3 && lname.length >= 3)
     {
@@ -113,6 +114,7 @@ $("#save_user").on('click', function(e)
 
     }else
     {
+        
         $('.client_status').append('<div class="text-danger">All the fields are required</div>');
     }
     
@@ -148,6 +150,51 @@ $('#save_client').on('click', function(e)
 /*============================================================
                         All Views
 ==============================================================*/
+
+//get client on keyup autocomplete event
+
+var c = [];
+$('#client_name').on('keyup', function()
+{
+     c.push($('#client_name').val());
+     $('.clients_list').empty();
+
+    if(c.length >= 6)
+    {
+        var name = "";
+        for(var i = 0; i < c.length; i++)
+        {
+            name=c[i];
+        }
+        console.log(name);
+        
+        $.ajax(
+        {
+            url: '../controller/controller.php',
+            method: 'POST',
+            data:{name: name, action: 'get_client'}
+
+        }).done(function(data)
+        {
+ 
+            $('.clients_list').html(data);
+            
+            // if(data.length > 0)
+            // {
+            //     data.forEach(function(user)
+            //     {
+            //         $('.clients_list').html('<li>'+user.get('client_fname')+'</li>');
+            //     });
+            // }else
+            // {
+            //     $('.clients_list').html('<li>There is no such client</li>');
+            // }
+
+        });
+    }
+     
+});
+
 
 //+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
 //                  FIRST THING THAT SHOWS ONCES AN EMPLOYEE LOGS IN

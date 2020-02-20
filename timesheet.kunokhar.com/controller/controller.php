@@ -39,5 +39,9 @@ if(isset($_POST['action']))
             }
         break;
 
+        case "get_client":
+                echo $work_object->get_client_wildcat($_POST['name']);
+        break;
+
     }
 }
