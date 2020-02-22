@@ -1,7 +1,40 @@
+/*===================================================================
+                        PAGE LOADER
+=====================================================================*/ 
+window.onload = function()
+{
+    var url = window.location.href.split("/");
+    page = url[url.length - 1].trim();
 
+    switch(page)
+    {
+        case "home.php":
+            this.done_tasks();
+            this.home();
+        break;
+
+        case "tasks.php":
+            this.done_tasks();
+            this.view_tasks();
+        break;
+
+        case "admin.php":
+            this.load_employees_with_their_client();
+        break;
+        
+    }
+
+}
+
+
+/*===================================================================
+                        AUTHENTIFICATION
+=====================================================================*/ 
+//------------------------| VARIABLES |-----------------------------
 var error = null;
 var employee_role = null;
 
+//------------------------| LOGIN |-----------------------------
 $("#btnLogin").click(function(event) 
 { //Fetch form to apply custom Bootstrap validation\r\n   
      var form = $("#formLogin");    
@@ -13,62 +46,14 @@ $("#btnLogin").click(function(event)
      form.addClass('was-validated');
 });
 
-$(function() {
-    App.init();
-});
-var App = {
-    init: function() {
-                this.side.nav(), this.search.bar(), this.navigation(), this.hyperlinks()
-    },
+//------------------------| LOGOUT |-----------------------------
 
-    title: function(e) {
-                return $(".header>.title").text(e)
-    },
-    side: {
-                nav: function() {
-                            this.toggle(), this.navigation()
-                },
-                toggle: function() {
-                            $(".ion-ios-navicon").on("touchstart click", function(e) {
-                                        e.preventDefault(), $(".sidebar").toggleClass("active"), $(".nav").removeClass("active"), $(".sidebar .sidebar-overlay").removeClass("fadeOut animated").addClass("fadeIn animated")
-                            }), $(".sidebar .sidebar-overlay").on("touchstart click", function(e) {
-                                        e.preventDefault(), $(".ion-ios-navicon").click(), $(this).removeClass("fadeIn").addClass("fadeOut")
-                            })
-                },
-                navigation: function() {
-                            $(".nav-left a").on("touchstart click", function(e) {
-                                        e.preventDefault();
-                                        var t = $(this).attr("href").replace("#", "");
-                                        $(".sidebar").toggleClass("active"), $(".html").removeClass("visible"), "home" == t || "" == t || null == t ? $(".html.welcome").addClass("visible") : $(".html." + t).addClass("visible"), App.title($(this).text())
-                            })
-                }
-    },
-    search: {
-                bar: function() {
-                            $(".header .ion-ios-search").on("touchstart click", function() {
-                                        var e = ($(".header .search input").hasClass("search-visible"), $(".header .search input").val());
-                                        return "" != e && null != e ? (App.search.html($(".header .search input").val()), !1) : ($(".nav").removeClass("active"), $(".header .search input").focus(), void $(".header .search input").toggleClass("search-visible"))
-                            }), $(".search form").on("submit", function(e) {
-                                        e.preventDefault(), App.search.html($(".header .search input").val())
-                            })
-                },
-                html: function(e) {
-                            $(".search input").removeClass("search-visible"), $(".html").removeClass("visible"), $(".html.search").addClass("visible"), App.title("Result"), $(".html.search").html($(".html.search").html()), $(".html.search .key").html(e), $(".header .search input").val("")
-                }
-    },
-    navigation: function() {
-                $(".button-pull .mask").on("touchstart click", function(e) {
-                            e.preventDefault(), $(this).parent().toggleClass("active")
-                })
-    },
-    hyperlinks: function() {
-                $(".button-pull .nav-item").on("click", function(e) {
-                            e.preventDefault();
-                            var t = $(this).attr("href").replace("#", "");
-                            $(".html").removeClass("visible"), $(".html." + t).addClass("visible"), $(".nav").toggleClass("active"), App.title($(this).text())
-                })
-    }
-};
+$('#logout').on('click', function(e)
+{
+    e.preventDefault();
+});
+
+
 
 /*===========================================================
                         All insertions
@@ -196,34 +181,6 @@ $('#client_name').on('keyup', function()
 });
 
 
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                  FIRST THING THAT SHOWS ONCES AN EMPLOYEE LOGS IN
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-window.onload = function()
-{
-    var url = window.location.href.split("/");
-    page = url[url.length - 1].trim();
-
-    switch(page)
-    {
-        case "home.php":
-            this.done_tasks();
-            this.home();
-        break;
-
-        case "tasks.php":
-            this.done_tasks();
-            this.view_tasks();
-        break;
-
-        case "admin.php":
-            this.load_employees_with_their_client();
-        break;
-        
-    }
-
-}
-
 $('.pause-task').hide();
 $(()=>
 {
@@ -235,9 +192,9 @@ $(()=>
         e.stopPropagation();
     });
 
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                        DISPLAYS TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+
+//--------------------| DISPLAYS TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE |-------------------
+
 
     $('#all_views').on('click', '.client-view', function(e)
     {
@@ -247,9 +204,9 @@ $(()=>
         sessionStorage.setItem('task_id', id);
         window.location.href = "tasks.html";
     });
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                      SHOW A MODAL TO START A TASK
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+
+//---------------------------| SHOW A MODAL TO START A TASK |-------------------------------------
+
     $('#all_views').on('click','.card-body', '.task-view', function(e)
     {
         e.preventDefault();
@@ -260,19 +217,10 @@ $(()=>
     
         
     });
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                        DISPLAYS HOME PAGE TO THE EMPLOYEE
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-    $('#all_views').on('click', '#to_home', function(e)
-    {
-        e.preventDefault();
-        e.stopPropagation();
-        home();
-    });
 
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                        START A TASK
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+
+//---------------------------------------| START A TASK |-----------------------------------------
+
     $('.start-task').on('click', function(e)
     {
         e.preventDefault();
@@ -287,9 +235,9 @@ $(()=>
 
     });
 
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                       PAUSE A TASK
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+
+//-----------------------------------| PAUSE A TASK |---------------------------------
+
 
     $('.pause-task').on('click', function(e)
     {
@@ -304,9 +252,9 @@ $(()=>
 
     });
 
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                        VERIFY A TASK COMMENT
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+
+//------------------------------| VERIFY A TASK COMMENT |---------------------------------------
+
 
     $('.task-comment textarea').on('keyup change focusout', function()
     {
@@ -321,9 +269,9 @@ $(()=>
         }
     });
 
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                  DONE WITH A TASK
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+
+//--------------------------------| DONE WITH A TASK |------------------------------------
+
     $('#done_task').on('click', function(e)
     {
         e.preventDefault();
@@ -350,9 +298,9 @@ $(()=>
 
 
 
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                   LOADS ALL THE CLIENTS ALLOCATED TO THE EMPLOYEE
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+
+//----------------------| LOADS ALL THE CLIENTS ALLOCATED TO THE EMPLOYEE |-----------------------------
+
 
 function home()
 {
@@ -371,9 +319,9 @@ function home()
 
 }
 
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                     VIEW ALL TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+
+//--------------------------| VIEW ALL TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE |--------------------
+
 
 function view_tasks()
 {
@@ -390,9 +338,9 @@ function view_tasks()
 
 }
 
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                      SHOW ALL DONE TASKS DONE BY EMPLOYEE IN A DAY
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+
+//-----------------| SHOW ALL DONE TASKS DONE BY EMPLOYEE IN A DAY |---------------------
+
 function done_tasks()
 {
     var html = `<div class="text-center font-weight-bold mb-4">DONE TASKS</div>
@@ -435,9 +383,9 @@ function done_tasks()
         $('#done_tasks_only').append(html);
 }
 
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                      SHOW ALL EMPLOYEES WITH CLIENTS LIST
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+
+//-------------------| SHOW ALL EMPLOYEES WITH CLIENTS LIST |--------------------
+
 
 function load_employees_with_their_client()
 {
@@ -536,9 +484,8 @@ function validate_email(email)
 /*============================================================
                         Other functions
 ==============================================================*/
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                                  generate password
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//------------------| GENERATE PASSWORD |----------------------
+
 function generate_password() 
 {
     var lowercase = "abcdefghijklmnopqrstuvwxyz",
@@ -560,9 +507,8 @@ function generate_password()
     return userPassword;
 }
 
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
-//                                  TIME FUNCTIONS AND METHODS
-//+-+-+-+-+-+-+-+-+-+-+-++-++-++-+-+-+--++-+-+-+++-+-+-++--++++-+--+-++-++-++++-+-++--++++-+--+-++-++-+++
+//-----------------------| TASK TIMER |----------------------------
+
 var second = 0; 
 var minute = 0;
 var hour = 0;
@@ -622,6 +568,64 @@ function get_hr(m)
          return hour;
      }
 }
+
+//-----------------------| BUTTON AT ADMIN CORNER |----------------------------
+$(function() {
+    App.init();
+});
+var App = {
+    init: function() {
+                this.side.nav(), this.search.bar(), this.navigation(), this.hyperlinks()
+    },
+
+    title: function(e) {
+                return $(".header>.title").text(e)
+    },
+    side: {
+                nav: function() {
+                            this.toggle(), this.navigation()
+                },
+                toggle: function() {
+                            $(".ion-ios-navicon").on("touchstart click", function(e) {
+                                        e.preventDefault(), $(".sidebar").toggleClass("active"), $(".nav").removeClass("active"), $(".sidebar .sidebar-overlay").removeClass("fadeOut animated").addClass("fadeIn animated")
+                            }), $(".sidebar .sidebar-overlay").on("touchstart click", function(e) {
+                                        e.preventDefault(), $(".ion-ios-navicon").click(), $(this).removeClass("fadeIn").addClass("fadeOut")
+                            })
+                },
+                navigation: function() {
+                            $(".nav-left a").on("touchstart click", function(e) {
+                                        e.preventDefault();
+                                        var t = $(this).attr("href").replace("#", "");
+                                        $(".sidebar").toggleClass("active"), $(".html").removeClass("visible"), "home" == t || "" == t || null == t ? $(".html.welcome").addClass("visible") : $(".html." + t).addClass("visible"), App.title($(this).text())
+                            })
+                }
+    },
+    search: {
+                bar: function() {
+                            $(".header .ion-ios-search").on("touchstart click", function() {
+                                        var e = ($(".header .search input").hasClass("search-visible"), $(".header .search input").val());
+                                        return "" != e && null != e ? (App.search.html($(".header .search input").val()), !1) : ($(".nav").removeClass("active"), $(".header .search input").focus(), void $(".header .search input").toggleClass("search-visible"))
+                            }), $(".search form").on("submit", function(e) {
+                                        e.preventDefault(), App.search.html($(".header .search input").val())
+                            })
+                },
+                html: function(e) {
+                            $(".search input").removeClass("search-visible"), $(".html").removeClass("visible"), $(".html.search").addClass("visible"), App.title("Result"), $(".html.search").html($(".html.search").html()), $(".html.search .key").html(e), $(".header .search input").val("")
+                }
+    },
+    navigation: function() {
+                $(".button-pull .mask").on("touchstart click", function(e) {
+                            e.preventDefault(), $(this).parent().toggleClass("active")
+                })
+    },
+    hyperlinks: function() {
+                $(".button-pull .nav-item").on("click", function(e) {
+                            e.preventDefault();
+                            var t = $(this).attr("href").replace("#", "");
+                            $(".html").removeClass("visible"), $(".html." + t).addClass("visible"), $(".nav").toggleClass("active"), App.title($(this).text())
+                })
+    }
+};
 
 
  

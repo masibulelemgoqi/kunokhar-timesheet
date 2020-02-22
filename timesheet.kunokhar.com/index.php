@@ -38,7 +38,7 @@
                                           <span class="custom-control-description small text-dark">Remember me on this computer</span>
                                         </label>
                                     </div>
-                                    <button type="submit" class="btn btn-success btn-lg float-right" id="btnLogin">Login</button>
+                                    <button class="btn btn-success btn-lg float-right" id="btnLogin">Login</button>
                                 </form>
                             </div>
                             <!--/card-block-->
