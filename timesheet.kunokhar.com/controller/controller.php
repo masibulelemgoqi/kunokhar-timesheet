@@ -70,7 +70,12 @@ if(isset($_POST['action']))
             echo json_encode($work_object->get_client_admin($id));
         break;
 
-
+        //--------------------[ AUTHENTIFICATION ]---------------------
+        case "login":
+            $email = $_POST['email'];
+            $password = $_POST['password'];
+            echo json_encode($work_object->login($email, $password));
+        break;
 
         //--------------------------[ CHECK ]---------------------------
 

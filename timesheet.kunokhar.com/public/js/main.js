@@ -33,14 +33,42 @@ window.onload = function()
 
 //------------------------| LOGIN |-----------------------------
 $("#btnLogin").click(function(event) 
-{ //Fetch form to apply custom Bootstrap validation\r\n   
+{ //Fetch form to apply custom Bootstrap validation\r\n  
+    event.preventDefault(); 
+    event.stopPropagation(); 
      var form = $("#formLogin");    
      if (form[0].checkValidity() === false) 
-     {
+    {
         event.preventDefault(); 
         event.stopPropagation();
-    }  
-     form.addClass('was-validated');
+    }else
+    {
+        form.addClass('was-validated');
+        var email = $('#uname1').val();
+        var password = $('#pwd1').val();
+
+        $.ajax(
+        {
+            url: "controller/controller.php",
+            method: "POST",
+            data: {email: email, password: password, action: "login"},
+            success: function(data)
+            {
+                if(data === null)
+                {
+                    console.log(data);
+                    
+                }else
+                {
+                    console.log("incorrect credentials");
+                    
+                }
+
+            }
+
+        });
+    } 
+     
 });
 
 //------------------------| LOGOUT |-----------------------------
@@ -344,6 +372,7 @@ $(()=>
 
 function home()
 {
+    
  var html = `<div class="font-weight-bold client_head">CLIENTS</div>
                 <div class="card mt-4 ml-4" style="width: 40rem;">
                     <ul class="list-group list-group-flush">
@@ -439,24 +468,28 @@ function load_employees_with_their_client()
         {
             // console.log(data);
             var html = "";
-            $.each(data, function(key, employee)
+            if(Object.entries(data).length !== 0 && data.constructor !== Object)
             {
-                var html = `<div class="card col-sm-3">
-                                <div class="card-body">
-                                <h5 class="card-title">${employee.emp_fname} ${employee.emp_lname}</h5>
-                                <div class="scrollable">
-                                    <p class="card-text">
-                                    <ul class="list-unstyled text-center" id="employees_clients-${employee.emp_id}">
-                                        ${load_clients_to_employee(employee.emp_id)}
-                                    </ul>
-                                    </p>
-                                </div>
-                                </div>
-                           </div>`;
-                $(".container-fluid #employees_view .row").append(html);
-            });
-            
-            
+                $.each(data, function(key, employee)
+                {
+                    var html = `<div class="card col-sm-3">
+                                    <div class="card-body">
+                                    <h5 class="card-title">${employee.emp_fname} ${employee.emp_lname}</h5>
+                                    <div class="scrollable">
+                                        <p class="card-text">
+                                        <ul class="list-unstyled text-center" id="employees_clients-${employee.emp_id}">
+                                            ${load_clients_to_employee(employee.emp_id)}
+                                        </ul>
+                                        </p>
+                                    </div>
+                                    </div>
+                               </div>`;
+                    $(".container-fluid #employees_view .row").append(html);
+                });
+            }else
+            {
+                $(".container-fluid #employees_view .row").html("<h1>NO EMPLOYEES IN THE SYSTEM</h1>");
+            }
             
         }
 
@@ -475,17 +508,19 @@ function load_clients_to_employee(id)
         success: function(data)
         {
             $("#employees_clients-"+id).empty();
-            if(data !== null)
+            if(Object.entries(data).length !== 0 && data.constructor !== Object)
             {
+                console.log("hello");
+                
                 var html = "";
                 $.each(data, function(key, client)
                 {
-                    html = `<li class="border p-3 mb-2" onclick="client_byId(${client.client_id});">${client.client_fname} ${client.client_fname}</li>`;
+                    html = `<li class="border p-3 mb-2 clients-employee-li" onclick="client_byId(${client.client_id});">${client.client_fname} ${client.client_fname}</li>`;
                     $("#employees_clients-"+id).append(html);
                 });
             }else
             {
-                $("#employees_clients-"+id).append('<li class="p-3 mb-2 text-disabled">You currently have no employee allocated to you!</li>');
+                $("#employees_clients-"+id).append('<li class="p-3 mb-2 text-disable h5 text-uppercase">Employee currently has no client allocated to them!</li>');
             }
         }
     });

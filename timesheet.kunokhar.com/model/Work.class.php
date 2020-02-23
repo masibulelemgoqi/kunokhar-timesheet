@@ -14,6 +14,32 @@ class Work
         $sql = $conn->connect();
         $this->con = $sql;
 
+
+    }
+
+    //---------------------[ ATHENTFICATION FUNCTIONS ]----------------------
+    public function login($email, $password)
+    {
+
+        $sql = "SELECT * FROM `employee_tb` WHERE `emp_email` = :email";
+        $stmt = $this->con->prepare($sql);
+        $stmt->execute(array(':email' => $email));
+        $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if($stmt->rowCount = 1)
+        {
+            $hash = $userRow['emp_password'];
+
+            if(password_verify($password, $hash))
+            {
+                if($statement->execute())
+                {
+                   return $userRow;
+                }
+            }
+        }
+
+
     }
 
     //--------------------------[ ADD FUNCTIONS ]---------------------------

@@ -523,6 +523,16 @@ datalist {
   
 }
 
+.clients-employee-li
+{
+  cursor: pointer;
+}
+
+ul .clients-employee-li:hover
+{
+  background-color: rgba(192, 191, 144, 0.815);
+}
+
 
 
 
