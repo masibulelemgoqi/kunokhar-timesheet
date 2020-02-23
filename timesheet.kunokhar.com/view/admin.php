@@ -35,66 +35,9 @@
 <div class="container-fluid">
     <div class="offset-lg-0" id="employees_view">
         <div class="row">
-            <div class="card col-sm-3">
-                <div class="card-body">
-                  <h5 class="card-title">Sive</h5>
-                  <div class="scrollable">
-                    <p class="card-text">
-                      <ul class="list-unstyled text-center" >
-                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
-                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
-                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
-                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
-                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
-                      </ul>
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="shadow card col-sm-3">
-                <div class="card-body">
-                  <h5 class="card-title">Sima</h5>
-                  <div class="scrollable">
-                    <p class="card-text">
-                        <ul class="list-unstyled text-center" >
-                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
-                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
-                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
-                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
-                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
-                        </ul>
-                    </p>
-                  </div>
-                </div>
-              </div>
-              <div class="shadow card col-sm-3">
-                <div class="card-body">
-                  <h5 class="card-title">Lukho</h5>
-                  <div class="scrollable">
-                    <p class="card-text">This portion and only this portion will have a very long text so much so that the vertical scroll bar may appear when required. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam congue neque et sollicitudin blandit. Vivamus vestibulum
-                      sed mauris a volutpat. Etiam quis arcu dictum, scelerisque ex sit amet, egestas eros. Sed convallis consectetur mauris, at fringilla mi gravida eu. Vivamus eu sagittis nulla. Vestibulum lobortis pretium metus, ut mattis libero aliquet ut. Sed
-                      facilisis elementum dolor. Suspendisse euismod nunc malesuada, laoreet lectus egestas, auctor ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean egestas odio nec ex suscipit vestibulum. Class aptent taciti sociosqu ad litora torquent
-                      per conubia nostra, per inceptos himenaeos. Nunc bibendum turpis eget erat volutpat, vel. </p>
-                  </div>
-                </div>
-              </div>  
-              <div class="shadow card col-sm-3">
-                <div class="card-body">
-                  <h5 class="card-title">Zizipho</h5>
-                  <div class="scrollable">
-                    <p class="card-text">This portion and only this portion will have a very long text so much so that the vertical scroll bar may appear when required. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam congue neque et sollicitudin blandit. Vivamus vestibulum
-                      sed mauris a volutpat. Etiam quis arcu dictum, scelerisque ex sit amet, egestas eros. Sed convallis consectetur mauris, at fringilla mi gravida eu. Vivamus eu sagittis nulla. Vestibulum lobortis pretium metus, ut mattis libero aliquet ut. Sed
-                      facilisis elementum dolor. Suspendisse euismod nunc malesuada, laoreet lectus egestas, auctor ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean egestas odio nec ex suscipit vestibulum. Class aptent taciti sociosqu ad litora torquent
-                      per conubia nostra, per inceptos himenaeos. Nunc bibendum turpis eget erat volutpat, vel. </p>
-                  </div>
-                </div>
-              </div>  
        
         </div>
     </div>
-
-    <!-- <a class="btn-float btn-lg"><i class="fa fa-plus text-white"></i></a> -->
-      
 </div>
 
 <div class="button-pull">

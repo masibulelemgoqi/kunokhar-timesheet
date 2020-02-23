@@ -178,11 +178,12 @@ $('#save_task').on('click', function(e)
 =============================================================*/
 
 /*============================================================
-                        All Views events
+                        All Views
 ==============================================================*/
 
-//---------------| GET CLIENTS ON KEY UP |----------------------
+//=====================|| EVENTS ||=============================
 
+//<<<<<<<<<<<<<<<<< GET CLIENTS ON KEY UP |>>>>>>>>>>>>>>>>>>>>>
 $('#clients_list').hide();
 $('#client_name').on('keyup', function()
 {
@@ -233,7 +234,7 @@ $(()=>
     });
 
 
-//--------------------| DISPLAYS TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE |-------------------
+//<<<<<<<<<< DISPLAYS TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE >>>>>>>>>>>>>>>>>>
 
     $('#all_views').on('click', '.client-view', function(e)
     {
@@ -244,7 +245,7 @@ $(()=>
         window.location.href = "tasks.html";
     });
 
-//---------------------------| SHOW A MODAL TO START A TASK |-------------------------------------
+//<<<<<<<<<<<<<<<<<<<<<<< SHOW A MODAL TO START A TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
     $('#all_views').on('click','.card-body', '.task-view', function(e)
     {
@@ -258,7 +259,7 @@ $(()=>
     });
 
 
-//-----------------------------------| START A TASK |-----------------------------------------
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< START A TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
     $('.start-task').on('click', function(e)
     {
@@ -275,7 +276,7 @@ $(()=>
     });
 
 
-//-------------------------------| PAUSE A TASK |---------------------------------
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< PAUSE A TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
     $('.pause-task').on('click', function(e)
@@ -292,7 +293,7 @@ $(()=>
     });
 
 
-//------------------------| VERIFY A TASK COMMENT |--------------------------------
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<< VERIFY A TASK COMMENT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 
     $('.task-comment textarea').on('keyup change focusout', function()
@@ -309,7 +310,7 @@ $(()=>
     });
 
 
-//-------------------------| DONE WITH A TASK |---------------------------------
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< DONE WITH A TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
     $('#done_task').on('click', function(e)
     {
@@ -337,8 +338,8 @@ $(()=>
 
 
 
-
-//----------------------| LOADS ALL THE CLIENTS ALLOCATED TO THE EMPLOYEE |-----------------------------
+//=====================|| FUNCTIONS ||=============================
+//<<<<< LOADS ALL THE CLIENTS ALLOCATED TO THE EMPLOYEE >>>>>>>>>>>
 
 
 function home()
@@ -437,10 +438,22 @@ function load_employees_with_their_client()
         success: function(data)
         {
             // console.log(data);
+            var html = "";
             $.each(data, function(key, employee)
             {
-                console.log(employee.emp_fname);
-                
+                var html = `<div class="card col-sm-3">
+                                <div class="card-body">
+                                <h5 class="card-title">${employee.emp_fname} ${employee.emp_lname}</h5>
+                                <div class="scrollable">
+                                    <p class="card-text">
+                                    <ul class="list-unstyled text-center" id="employees_clients-${employee.emp_id}">
+                                        ${load_clients_to_employee(employee.emp_id)}
+                                    </ul>
+                                    </p>
+                                </div>
+                                </div>
+                           </div>`;
+                $(".container-fluid #employees_view .row").append(html);
             });
             
             
@@ -449,6 +462,39 @@ function load_employees_with_their_client()
 
     });
 
+}
+
+function load_clients_to_employee(id)
+{
+    $.ajax(
+    {
+        url: "../controller/controller.php",
+        method: "POST",
+        dataType: "json",
+        data: {id: id, action: "get_clients"},
+        success: function(data)
+        {
+            $("#employees_clients-"+id).empty();
+            if(data !== null)
+            {
+                var html = "";
+                $.each(data, function(key, client)
+                {
+                    html = `<li class="border p-3 mb-2" onclick="client_byId(${client.client_id});">${client.client_fname} ${client.client_fname}</li>`;
+                    $("#employees_clients-"+id).append(html);
+                });
+            }else
+            {
+                $("#employees_clients-"+id).append('<li class="p-3 mb-2 text-disabled">You currently have no employee allocated to you!</li>');
+            }
+        }
+    });
+
+}
+
+function client_byId(id)
+{
+    alert(id);
 }
 
 /*============================================================

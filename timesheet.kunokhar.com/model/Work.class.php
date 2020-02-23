@@ -180,18 +180,31 @@ class Work
               $emp_array[] = $row; 
           }
 
-          if(count($emp_array) > 0)
-          {
-            return $emp_array;
-          }else
-          {
-              echo "no employees";
-          }
+          return $emp_array;
             
         }catch (PDOException $e) 
         {
             echo "Error: ".$e->getMessage();
         }
+    }
+
+    function get_client_admin($id)
+    {
+        try
+        {
+            $sql = "SELECT `client_id`, `client_fname`, `client_lname`, `allocate_date_allocated` FROM `client_tb` c, `allocate_client_tb` a WHERE a.`allocate_emp_id`='$id' AND c.`client_id`= a.`allocate_client_id`";
+            $stml = $this->con->query($sql);
+            $clients_arr = array();
+            while($row = $stml->fetch(PDO::FETCH_ASSOC))
+            {
+                $clients_arr[] = $row;
+            }
+            return $clients_arr;
+        }catch (PDOException $e) 
+        {
+            echo "Error: ".$e->getMessage();
+        }
+
     }
 
     //---------------------------[ CHECK FUNCTIONS ]------------------------------

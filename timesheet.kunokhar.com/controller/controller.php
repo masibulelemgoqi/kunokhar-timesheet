@@ -65,6 +65,11 @@ if(isset($_POST['action']))
             echo json_encode($work_object->get_employees());
         break;
 
+        case "get_clients":
+            $id = $_POST['id'];
+            echo json_encode($work_object->get_client_admin($id));
+        break;
+
 
 
         //--------------------------[ CHECK ]---------------------------
