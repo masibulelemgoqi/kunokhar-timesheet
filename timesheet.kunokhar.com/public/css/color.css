@@ -1,0 +1,54 @@
+.text-tomato
+{
+  color: tomato;
+}
+
+.bg-tomato
+{
+  background-color: tomato;
+}
+
+.btn-tomato
+{
+  background-color: tomato;
+  color: white;
+  transition: 0.6s ease;
+}
+
+.btn-tomato:hover
+{
+  background-color: transparent;
+  border: 1px solid tomato;
+  color: tomato;
+}
+
+.border-tomato
+{
+  border: 1px solid tomato;
+}
+
+.border-tomato:focus
+{
+  border: 1px solid tomato;
+}
+
+.btn-tomato-o
+{
+  background-color: transparent;
+  border: 1px solid tomato;
+  color: tomato;
+  transition: 0.6s ease;
+}
+
+.btn-tomato-o:hover
+{
+  background-color: tomato;
+  color: white;
+}
+
+
+.badge-tomato
+{
+  color: white;
+  background-color: tomato;
+}
