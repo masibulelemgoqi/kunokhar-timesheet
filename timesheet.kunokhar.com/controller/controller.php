@@ -9,6 +9,7 @@ if(isset($_POST['action']))
 
     switch($action)
     {
+        //---------------[ ADD ]----------------
         case "add_employee":
 
             $fname = $_POST['fname'];
@@ -18,7 +19,7 @@ if(isset($_POST['action']))
             $password = $_POST['password'];
             if($work_object->add_employee($fname, $lname, $email, $role, $password))
             {
-                print("<div class='text-success'>Employee added successfully!!!</div>");
+                print(1);
             }else
             {
                 print("<div class='text-success'>".$work_object->add_employee($fname, $lname, $email, $role, $password)."</div>");
@@ -39,9 +40,44 @@ if(isset($_POST['action']))
             }
         break;
 
-        case "get_client":
-                echo $work_object->get_client_wildcat($_POST['name']);
+        case "add_task":
+            $task_name = $_POST['task_name'];
+            $client_id = $_POST['client_id'];
+            $task_deadline = $_POST['task_deadline'];
+            $task_importance = $_POST['task_importance'];
+            if($work_object->add_task($task_name, $client_id, $task_deadline, $task_importance))
+            {
+                print("1");
+            }else
+            {
+                print($work_object->add_task($task_name, $client_id, $task_deadline, $task_importance));
+            }
         break;
+
+        //--------------------------[ GET ]-----------------------------
+
+        case "get_client":
+            $work_object->get_client_wildcat($_POST['name']);
+        break;
+
+        case "get_employees":
+           
+            echo json_encode($work_object->get_employees());
+        break;
+
+
+
+        //--------------------------[ CHECK ]---------------------------
+
+        case "check_email":
+            $email = $_POST['email'];
+            $work_object->check_email_exists($email);
+        break;
+
+        //--------------------------[ EDIT ]-----------------------------
+
+
+        //--------------------------[ DELETE ]---------------------------
 
     }
 }

@@ -23,7 +23,6 @@ window.onload = function()
         break;
         
     }
-
 }
 
 
@@ -31,8 +30,6 @@ window.onload = function()
                         AUTHENTIFICATION
 =====================================================================*/ 
 //------------------------| VARIABLES |-----------------------------
-var error = null;
-var employee_role = null;
 
 //------------------------| LOGIN |-----------------------------
 $("#btnLogin").click(function(event) 
@@ -56,26 +53,25 @@ $('#logout').on('click', function(e)
 
 
 /*===========================================================
-                        All insertions
+                  All insertions - events
 =============================================================*/
 
+//------------------------| ADD EMPLOYEE |-----------------------------
 $("#save_user").on('click', function(e)
 {
     e.preventDefault();
     var email = $('#employee_email').val();
     var fname = $('#employee_fname').val();
     var lname = $('#employee_lname').val();
-    $('.client_status').empty();
 
-    if(validate_email(email) && fname.length >= 3 && lname.length >= 3)
+    if(validate_email(email) && fname.length >= 3 && lname.length >= 3 && email_exists == null)
     {
         $('.client_status').empty();
         if(employee_role == null)
         {
-            $('.client_status').append('<div class="text-danger">Employee role is important</div>');
+            $('#user-add-status').html('<div class="text-danger">Employee role is important</div>');
         }else
         {
-            $('.client_status').empty();
             var password = generate_password();
             console.log(password);
             
@@ -86,7 +82,20 @@ $("#save_user").on('click', function(e)
                 data: {fname: fname, lname: lname, email: email, employee_role: employee_role, password: password, action: 'add_employee'},
                 success: function(data)
                 {
-                    console.log(data);
+                    
+                    if(data == 1)
+                    {
+                        $('#employee_email').val("");
+                        $('#employee_fname').val("");
+                        $('#employee_lname').val("");
+                        $('#employee_role').children().first().attr("selected");
+                        employee_role = null;
+                        $('#user-add-status').html('<div class="text-success">User has been successfully added</div>');
+
+                    }else
+                    {
+                        $('#user-add-status').html(data);
+                    }
                 },
 
                 error: function(data)
@@ -100,11 +109,13 @@ $("#save_user").on('click', function(e)
     }else
     {
         
-        $('.client_status').append('<div class="text-danger">All the fields are required</div>');
+        $('#user-add-status').html('<div class="text-danger">All the fields are required</div>');
     }
     
 });
 
+
+//------------------------| ADD CLIENT |-----------------------------
 $('#save_client').on('click', function(e)
 {
     e.preventDefault();
@@ -130,55 +141,84 @@ $('#save_client').on('click', function(e)
     }
 });
 
+//------------------------| ADD TASK |-----------------------------
 
+var client_id = null;
+
+$('#save_task').on('click', function(e)
+{
+    var taskName = $('#task_name').val();
+    $.ajax(
+    {
+        url: '../controller/controller.php',
+        method: 'POST',
+        data: {client_id: client_id, task_name: taskName, task_deadline: task_deadline, task_importance: task_importance, action: "add_task"},
+        success: function(data)
+        {
+            if(data == "1")
+            {
+                $('#task_name').val("");
+                $('#task-deadline').val("");
+                $('#task-importance').val("");
+                task_importance = null;
+                task_deadline = null;
+                $('#task-add-status').html("<div class='text-success'>Task added successfully, you can add another one</div>");
+
+            }else
+            {
+                $('#task-add-status').html(data);
+            }
+        }
+    });
+    
+});
+
+/*===========================================================
+                  All insertions - functions
+=============================================================*/
 
 /*============================================================
-                        All Views
+                        All Views events
 ==============================================================*/
 
-//get client on keyup autocomplete event
+//---------------| GET CLIENTS ON KEY UP |----------------------
 
-var c = [];
+$('#clients_list').hide();
 $('#client_name').on('keyup', function()
 {
-     c.push($('#client_name').val());
-     $('.clients_list').empty();
-
-    if(c.length >= 6)
+    var name = $('#client_name').val();
+    
+    $.ajax(
     {
-        var name = "";
-        for(var i = 0; i < c.length; i++)
+        url: '../controller/controller.php',
+        method: 'POST',
+        data:{name: name, action: 'get_client'},
+        success: function(data)
         {
-            name=c[i];
-        }
-        console.log(name);
-        
-        $.ajax(
-        {
-            url: '../controller/controller.php',
-            method: 'POST',
-            data:{name: name, action: 'get_client'}
-
-        }).done(function(data)
-        {
- 
-            $('.clients_list').html(data);
+            $('#clients_list').show();
+            $('#clients_list').empty();
+            $('#clients_list').append(data);
             
-            // if(data.length > 0)
-            // {
-            //     data.forEach(function(user)
-            //     {
-            //         $('.clients_list').html('<li>'+user.get('client_fname')+'</li>');
-            //     });
-            // }else
-            // {
-            //     $('.clients_list').html('<li>There is no such client</li>');
-            // }
+        }
 
-        });
-    }
+    });
+
      
 });
+
+function getClient(id)
+{
+    
+    $('#clients_list').on('click', '#client-'+id, function(e)
+    {
+        e.stopPropagation();
+        var fullname = $(this).text();
+        $('#clients_list').empty();
+        $('#client_name').val(fullname);
+        client_id = id;
+        
+    });
+}
 
 
 $('.pause-task').hide();
@@ -194,7 +234,6 @@ $(()=>
 
 
 //--------------------| DISPLAYS TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE |-------------------
-
 
     $('#all_views').on('click', '.client-view', function(e)
     {
@@ -219,7 +258,7 @@ $(()=>
     });
 
 
-//---------------------------------------| START A TASK |-----------------------------------------
+//-----------------------------------| START A TASK |-----------------------------------------
 
     $('.start-task').on('click', function(e)
     {
@@ -236,7 +275,7 @@ $(()=>
     });
 
 
-//-----------------------------------| PAUSE A TASK |---------------------------------
+//-------------------------------| PAUSE A TASK |---------------------------------
 
 
     $('.pause-task').on('click', function(e)
@@ -253,7 +292,7 @@ $(()=>
     });
 
 
-//------------------------------| VERIFY A TASK COMMENT |---------------------------------------
+//------------------------| VERIFY A TASK COMMENT |--------------------------------
 
 
     $('.task-comment textarea').on('keyup change focusout', function()
@@ -270,7 +309,7 @@ $(()=>
     });
 
 
-//--------------------------------| DONE WITH A TASK |------------------------------------
+//-------------------------| DONE WITH A TASK |---------------------------------
 
     $('#done_task').on('click', function(e)
     {
@@ -389,8 +428,32 @@ function done_tasks()
 
 function load_employees_with_their_client()
 {
+    $.ajax(
+    {
+        url: "../controller/controller.php",
+        method: "POST",
+        data: {action: "get_employees"},
+        dataType: "json",
+        success: function(data)
+        {
+            // console.log(data);
+            $.each(data, function(key, employee)
+            {
+                console.log(employee.emp_fname);
+                
+            });
+            
+            
+            
+        }
+
+    });
 
 }
+
+/*============================================================
+                        All Views functions
+==============================================================*/
 
 
 /*============================================================
@@ -406,54 +469,108 @@ function load_employees_with_their_client()
 /*============================================================
                         All validations
 ==============================================================*/
+//====================|| VARIABLES ||============================
 
-//events
+var email_exists = null;
+var task_deadline = null;
+var task_importance = null;
+var error = null;
+var employee_role = null;
 
+
+//====================|| EVENTS ||===============================
+
+//<<<<<<<<<<<<<<<<<<<<< EMPLOYEE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 $('#employee_role').on('change', function(e)
 {
     employee_role = $('#employee_role').val();
 });
 
-$('#employee_email').on('keyup', function(e)
+$('#employee_email').on('keyup focusout', function(e)
 {
     e.preventDefault();
-    $('.client_status').empty();
     if(!validate_email($('#employee_email').val()))
     {
-        $('.client_status').append('<div class="text-danger">A valid email address is like example@kunokhar.com</div>');
+        $('#user-add-status').html('<div class="text-danger">A valid email address is like example@kunokhar.com</div>');
     }else
     {
-        $('.client_status').empty();
+        setTimeout(function()
+        {
+            email_availability($('#employee_email').val());
+        }, 2000);
+
     }
 });
 
 $('#employee_fname').on('keyup focusout', function(e)
 {
     e.preventDefault();
-    $('.client_status').empty();
+
     if($('#employee_fname').val().length < 3)
     {
-        $('.client_status').append('<div class="text-danger">Name should be at least 3 letters long</div>');
+        $('#user-add-status').html('<div class="text-danger">Name should be at least 3 letters long</div>');
     }else
     {
-        $('.client_status').empty();
+        $('#user-add-status').html("");
     }
 });
 
 $('#employee_lname').on('keyup focusout', function(e)
 {
     e.preventDefault();
-    $('.client_status').empty();
     if($('#employee_lname').val().length < 3)
     {
-        $('.client_status').append('<div class="text-danger">Name should be at least 3 letters long</div>');
+        $('#user-add-status').html('<div class="text-danger">Name should be at least 3 letters long</div>');
     }else
     {
-        $('.client_status').empty();
+        $('#user-add-status').html("");
     }
 });
 
-//functions
+//<<<<<<<<<<<<<<<<<<<<< TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+$('#task_name').on('keyup focusout', function(e)
+{
+    e.preventDefault();
+    var taskName = $(this).val();
+    if(taskName.length < 3)
+    {
+        $('#task-add-status').html("<div class='text-danger'>Task name should be at least four letters long</div>");
+    }else
+    {
+        $('#task-add-status').html("");
+    }
+});
+
+$('#client_name').on('keyup focusout', function(e)
+{
+    e.preventDefault();
+    var clientName = $(this).val();
+    if(clientName.length < 3)
+    {
+        $('#task-add-status').html("<div class='text-danger'>Task name should be at least four letters long</div>");
+    }else
+    {
+        $('#task-add-status').html("");
+    }
+});
+
+$('#task-deadline').on('change', function(e)
+{
+    e.preventDefault();
+    task_deadline = $(this).val();
+
+});
+
+$('#task-importance').on('change', function(e)
+{
+    e.preventDefault();
+    task_importance = $(this).val();
+
+});
+//====================|| FUNCTIONS ||============================
+
+//<<<<<<<<<<<<<<<<<<<< EMPLOYEE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 function validate_email(email)
 {
   var mail = email.trim();
@@ -479,7 +596,31 @@ function validate_email(email)
   }
 }
 
+function email_availability(email)
+{
+    $.ajax(
+    {
+        url: "../controller/controller.php",
+        method: 'POST',
+        data: {email: email, action: 'check_email'},
+        success: function(data)
+        {
+            
+            if(data === "0")
+            {
+                $('#user-add-status').html('<div class="text-danger">Email address is already taken! try another one</div>');
+                email_exists = "Email taken";
+            }else
+            {
+                $('#user-add-status').html('');
+                email_exists = null;
+            }
 
+        }
+    });
+}
+
+//<<<<<<<<<<<<<<<<<<<<<<<<<< TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
 /*============================================================
                         Other functions
@@ -527,11 +668,11 @@ function stopTime()
     clearTimeout(t);
 }
 
- function checkTime(i) 
+function checkTime(i) 
  {
     if (i < 10) {i = "0" + i};  // add zero in front of numbers < 10
     return i;
- }
+}
 
 function get_secs(s)
 {

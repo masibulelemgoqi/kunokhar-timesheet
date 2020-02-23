@@ -39,23 +39,35 @@
                 <div class="card-body">
                   <h5 class="card-title">Sive</h5>
                   <div class="scrollable">
-                    <p class="card-text">This portion and only this portion will have a very long text so much so that the vertical scroll bar may appear when required. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam congue neque et sollicitudin blandit. Vivamus vestibulum
-                      sed mauris a volutpat. Etiam quis arcu dictum, scelerisque ex sit amet, egestas eros. Sed convallis consectetur mauris, at fringilla mi gravida eu. Vivamus eu sagittis nulla. Vestibulum lobortis pretium metus, ut mattis libero aliquet ut. Sed
-                      facilisis elementum dolor. Suspendisse euismod nunc malesuada, laoreet lectus egestas, auctor ex. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean egestas odio nec ex suscipit vestibulum. Class aptent taciti sociosqu ad litora torquent
-                      per conubia nostra, per inceptos himenaeos. Nunc bibendum turpis eget erat volutpat, vel. </p>
+                    <p class="card-text">
+                      <ul class="list-unstyled text-center" >
+                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
+                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
+                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
+                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
+                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
+                      </ul>
+                    </p>
                   </div>
                 </div>
               </div>
-              <div class="card col-sm-3">
+              <div class="shadow card col-sm-3">
                 <div class="card-body">
                   <h5 class="card-title">Sima</h5>
                   <div class="scrollable">
-                    <p class="card-text">This portion and only this portion will have a very long text so much so that the vertical scroll bar may appear when required. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam congue neque et sollicitudin blandit. Vivamus vestibulum
-                      sed mauris a volutpat. Etiam quis arcu bendum turpis eget erat volutpat, vel. </p>
+                    <p class="card-text">
+                        <ul class="list-unstyled text-center" >
+                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
+                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
+                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
+                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
+                          <li class="border p-3 mb-2">Masibulele Mgoqi</li>
+                        </ul>
+                    </p>
                   </div>
                 </div>
               </div>
-              <div class="card col-sm-3">
+              <div class="shadow card col-sm-3">
                 <div class="card-body">
                   <h5 class="card-title">Lukho</h5>
                   <div class="scrollable">
@@ -66,7 +78,7 @@
                   </div>
                 </div>
               </div>  
-              <div class="card col-sm-3">
+              <div class="shadow card col-sm-3">
                 <div class="card-body">
                   <h5 class="card-title">Zizipho</h5>
                   <div class="scrollable">
@@ -137,10 +149,11 @@
                               </select>
                             </div>
                             <div class="input-group form-group">
-                                <div class="client_status"></div>
+                              <div id="user-add-status"></div>
                             </div>
                           </div>
                       </form>
+                      
                  </div>
               </section>     
             </div>
@@ -181,6 +194,7 @@
                             </div>
                           </div>
                       </form>
+                      <div id="client-add-status"></div>
                  </div>
               </section>     
             </div>
@@ -196,7 +210,7 @@
         <div class="modal-dialog" role="document">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title" id="add_task">Client</h5>
+              <h5 class="modal-title" id="add_task">Task</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -206,23 +220,42 @@
                   <div class="container">
                       <form class="p-3">
                           <div class=" col-sm-offset-1 form-group">
-                            <p>Add a Client</p>
+                            <p>Add a Task</p>
                             <div class="input-group form-group">
                               <span class="input-group-addon">
                                 <label for="task_name">Task name</label>
                               </span>
-                              <input class="form-control" type="text" name="task_name" placeholder="task name">
+                              <input class="form-control" type="text" id="task_name" name="task_name" placeholder="task name">
                             </div>
                             <div class="input-group form-group">
                               <span class="input-group-addon">
-                                <label for="client_name">Client id</label>
+                                <label for="client_name">Client</label>
                               </span>
-                              <input class="form-control" type="text" placeholder="Search for a client" id="client_name">
+                              <input class="form-control" type="text" placeholder="Search for a client with name or surname" list="clients_list" id="client_name">
+                              <datalist id="clients_list">
+                              </datalist>
                             </div>
-                            <div class="clients_list">
+                            <div class="input-group form-group">
+                              <span class="input-group-addon">
+                                <label for="task-deadline">Deadline</label>
+                              </span>
+                              <input class="form-control" type="datetime-local" placeholder="yyyy mm dd H:m:s" id="task-deadline">
+                            </div>
+                            <div class="input-group form-group">
+                              
+                              <select class="form-control" id="task-importance">
+                                <option disabled selected>- Task Importance -</option>
+                                <option>Urgent</option>
+                                <option>Very urgent</option>
+                                <option>Very urgent</option>
+                              </select>
+                            </div>
+                            <div class="input-group form-group">
+                                <div id="task-add-status"></div>
                             </div>
                           </div>
                       </form>
+                      
                  </div>
               </section>     
             </div>
