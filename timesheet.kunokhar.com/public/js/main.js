@@ -51,10 +51,13 @@ $("#btnLogin").click(function(event)
         {
             url: "controller/controller.php",
             method: "POST",
+            dataType: "json",
             data: {email: email, password: password, action: "login"},
             success: function(data)
             {
-                if(data === null)
+                console.log(data);
+                
+                if(data !== null)
                 {
                     console.log(data);
                     
@@ -718,7 +721,7 @@ function generate_password()
         userPassword = "",
         passwordCharSet = "";
 
-    passwordCharSet = lowercase + uppercase + punctuation + numbers;
+    passwordCharSet = lowercase + uppercase + numbers;
 
     for (let i = 0; i < plength; i++) 
     {

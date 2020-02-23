@@ -21,21 +21,17 @@ class Work
     public function login($email, $password)
     {
 
-        $sql = "SELECT * FROM `employee_tb` WHERE `emp_email` = :email";
-        $stmt = $this->con->prepare($sql);
-        $stmt->execute(array(':email' => $email));
+        $sql = "SELECT * FROM `employee_tb` WHERE `emp_email` ='$email'";
+        $stmt = $this->con->query($sql);
         $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if($stmt->rowCount = 1)
+        if(count($userRow) == 1)
         {
             $hash = $userRow['emp_password'];
 
             if(password_verify($password, $hash))
             {
-                if($statement->execute())
-                {
-                   return $userRow;
-                }
+                return $userRow;
             }
         }
 
