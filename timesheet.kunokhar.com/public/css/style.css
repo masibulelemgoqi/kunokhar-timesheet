@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css?family=Abril+Fatface&display=swap');
 
 .logo
 {
@@ -7,10 +8,14 @@
 
 body
 {
-  background-color: #f5f5f5ea;
+  background-image: url('../img/kuno_bg.jpg');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  width: 100%;
+  height: 100vh;
 }
-
-
 
 .navbar-nav .nav-item .nav-link
 {
@@ -144,38 +149,99 @@ body
 
 .modal-body .row .task-comment textarea
 {
-  margin-left: 1em;
-  margin-top: 1.5em;
-  width: 29em;
-  height: 10em;
-  resize: none;
-  border: tomato solid 1px;
-
+	margin-left: 1em;
+	margin-top: 1.5em;
+	width: 29em;
+	height: 10em;
+	resize: none;
+	border: tomato solid 1px;
 }
 
 .btn-float
 {
-  position: fixed;
-  right: 2%;
-  bottom: 5%;
-  border-radius: 50px;
-  background-color: tomato;
+	position: fixed;
+	right: 2%;
+	bottom: 5%;
+	border-radius: 50px;
+	background-color: tomato;
 }
 
-#employees_view
+#employees_view .row
 {
-  margin-top: 7%;
-  margin-left: 4%;
+  display: grid;
+  grid-template-columns: 25% 25% 25% 25%;
+  margin: 10% auto;
 }
-#employees_view .card{
-  width: 24%;
-  height: 370px;
-  margin: 30px ;
-  
+
+#employees_view .card {
+  margin: 10px;
+  padding: 0 !important;
 }
-.scrollable{
+
+#employees_view .card h5 {
+	font-size: 20px;
+	color: #222;
+}
+
+#employees_view .card .card-body ol li {
+	font-size: 18px;
+	font-weight: bolder;
+	padding: 0 !important;
+	cursor: pointer;
+}
+
+#client_tasks {
+	margin-top: 7%;
+}
+
+#client_tasks .tasks-to-do .client-name h1 {
+	color: #fff;
+	margin: 0;
+	font-family: 'Abril Fatface', sans-serif;
+	letter-spacing: 2px;
+	font-size: 45px;
+}
+
+#client_tasks .tasks-to-do .client-name span {
+	color: #e6e6e6;
+}
+
+#client_tasks .tasks-to-do .client-name span b {
+	color: tomato;
+}
+
+#client_tasks .daily-history {
+	background-color: #fff;
+	padding: 0.5em;
+}
+
+#client_tasks .daily-history .tasks-done .actual-task {
+	background-color: #222;
+	padding: 0.5em;
+	border-radius: 5px;
+	margin: 10px 10px;
+}
+
+#client_tasks .daily-history .tasks-done .actual-task h4 {
+	color: #fff;
+	margin: 0;
+	font-size: 18px;
+	text-transform: uppercase;
+}
+
+#client_tasks .daily-history .tasks-done .actual-task small {
+	color: tomato;
+	font-size: 16px;
+}
+
+.no-content {
+	color: #ccc;
+	font-size: 18px;
+}
+
+.scrollable {
   overflow-y: auto;
-  max-height: 300px;
+  max-height: 150px;
 }
 
 /* width */
@@ -237,6 +303,31 @@ body
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, .75)
 }
 
+.card {
+  border-radius: 5px !important;
+}
+
+.card-header {
+  background-color: #f2f2f2 !important;
+  color: #000 !important;
+  border-radius: 0 !important;
+  /*border: none;*/
+  text-align: center;
+  padding: 0.5em;
+}
+
+.login-btn {
+  background-color: tomato;
+  border: none;
+  border-radius: 0;
+  color: #fff;
+  padding: 0.3em 1em;
+}
+
+.login-btn:hover {
+  background-color: #008222;
+}
+
 #add_user
 {
   z-index: 9999;
@@ -294,6 +385,12 @@ body
   position: absolute;
   text-align: center;
   transition: all .3s cubic-bezier(.68, 1.55, .265, 1)
+}
+
+.button-pull a:hover {
+  cursor: pointer;
+  color: #e6e6e6;
+  transition: 0.7s ease;
 }
 
 .button-pull.active .nav-count-1 {
@@ -381,9 +478,7 @@ body
 
 /* client modal */
 .client-section form {
-	background: #ededed;
-	height: 300px;
-   margin-top: 20px;
+
 }
 
 .client-section form p {

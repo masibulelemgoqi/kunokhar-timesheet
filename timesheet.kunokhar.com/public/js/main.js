@@ -472,16 +472,23 @@ function load_employees_with_their_client()
             {
                 $.each(data, function(key, employee)
                 {
-                    var html = `<div class="card col-sm-3">
+                    var html = `<div class="card" id="employee_card">
                                     <div class="card-body">
-                                    <h5 class="card-title">${employee.emp_fname} ${employee.emp_lname}</h5>
-                                    <div class="scrollable">
-                                        <p class="card-text">
-                                        <ul class="list-unstyled text-center" id="employees_clients-${employee.emp_id}">
-                                            ${load_clients_to_employee(employee.emp_id)}
-                                        </ul>
-                                        </p>
-                                    </div>
+                                        <h5 class="card-title">${employee.emp_fname} ${employee.emp_lname}</h5>
+                                        <div class="scrollable">
+                                            <p class="card-text">
+                                                <ol>
+                                                    <li onclick="employeeClient()">Name name</li>
+                                                    <li onclick="employeeClient()">Name name</li>
+                                                    <li onclick="employeeClient()">Name name</li>
+                                                    <li onclick="employeeClient()">Name name</li>
+                                                    <li onclick="employeeClient()">Name name</li>
+                                                    <li onclick="employeeClient()">Name name</li>
+                                                    <li onclick="employeeClient()">Name name</li>
+                                                    <li onclick="employeeClient()">Name name</li>
+                                                </ol>
+                                            </p>
+                                        </div>
                                     </div>
                                </div>`;
                     $(".container-fluid #employees_view .row").append(html);
@@ -520,7 +527,7 @@ function load_clients_to_employee(id)
                 });
             }else
             {
-                $("#employees_clients-"+id).append('<li class="p-3 mb-2 text-disable h5 text-uppercase">Employee currently has no client allocated to them!</li>');
+                $("#employees_clients-"+id).append('<li class="p-3 mb-2 no-content">No client(s) allocated!</li>');
             }
         }
     });
