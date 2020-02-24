@@ -74,7 +74,11 @@ if(isset($_POST['action']))
         case "login":
             $email = $_POST['email'];
             $password = $_POST['password'];
-            echo json_encode($work_object->login($email, $password));
+            if($work_object->login($email, $password) !== null)
+            {
+                echo json_encode($work_object->login($email, $password));
+            }
+            
         break;
 
         //--------------------------[ CHECK ]---------------------------
