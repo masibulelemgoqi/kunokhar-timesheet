@@ -137,48 +137,14 @@
                                     </div>
                                 </div>
                                 <div class="form-group">
-                                    <select name="select_employee" class="form-control" id="employee_list">
-                                        <option selected disabled>- Assign to -</option>
-                                        <option>Employee One</option>
-                                        <option>Employee Two</option>
-                                        <option>Employee Three</option>
-                                        <option>Employee Four</option>
-                                        <option>Employee Five</option>
+                                    <select class="form-control" id="employee_list">
+                                        <option selected disabled id="default">- Assign to -</option>
+
                                     </select>
                                 </div>
                                 <h5>Select Tasks</h5>
-                                <div class="form-group">
-                                    <div class="form-check">
-                                        <label class="form-check-label" for="check1">
-                                            <input type="checkbox" class="form-check-input" id="check1" name="option1" value="something">Bookkeeping
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <label class="form-check-label" for="check2">
-                                            <input type="checkbox" class="form-check-input" id="check2" name="option2" value="something">Income Tax registration-company
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <label class="form-check-label" for="check3">
-                                            <input type="checkbox" class="form-check-input" id="check3" name="option2" value="something">Advocates and Chambers
-                                        </label>
-                                    </div>
-
-                                    <div class="form-check">
-                                        <label class="form-check-label" for="check4">
-                                            <input type="checkbox" class="form-check-input" id="check4" name="option1" value="something">Bookkeeping
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <label class="form-check-label" for="check5">
-                                            <input type="checkbox" class="form-check-input" id="check5" name="option2" value="something">Income Tax registration-company
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <label class="form-check-label">
-                                            <input type="checkbox" class="form-check-input" id="check5" name="option2" value="something">Advocates and Chambers
-                                        </label>
-                                    </div>
+                                <div class="form-group" id="check-task">
+                                    
                                 </div>
                             </form>
                             <div id="client-add-status"></div>
@@ -210,36 +176,14 @@
                             <form class="p-3">
                                 <div class=" col-sm-offset-1 form-group">
                                     <p>Add a Task</p>
-                                    <div class="input-group form-group">
-                                        <span class="input-group-addon">
-                                            <label for="task_name">Task name</label>
-                                        </span>
-                                        <input class="form-control" type="text" id="task_name" name="task_name" placeholder="task name">
+                                    <div class="input-group form-group input-0">
+                                        <input class="form-control" type="text" id="task_name-0" name="task_name" placeholder="task name">
+                                        <button id="more-task" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> </button>
                                     </div>
-                                    <div class="input-group form-group">
-                                        <span class="input-group-addon">
-                                            <label for="client_name">Client</label>
-                                        </span>
-                                        <input class="form-control" type="text" placeholder="Search for a client with name or surname" list="clients_list" id="client_name">
-                                        <datalist id="clients_list"></datalist>
-                                    </div>
-                                    <div class="input-group form-group">
-                                        <span class="input-group-addon">
-                                            <label for="task-deadline">Deadline</label>
-                                        </span>
-                                        <input class="form-control" type="datetime-local" placeholder="yyyy mm dd H:m:s" id="task-deadline">
-                                    </div>
-                                    <div class="input-group form-group">
-                                        <select class="form-control" id="task-importance">
-                                            <option disabled selected>- Task Importance -</option>
-                                            <option>Urgent</option>
-                                            <option>Very urgent</option>
-                                            <option>Very urgent</option>
-                                        </select>
-                                    </div>
-                                    <div class="input-group form-group">
-                                        <div id="task-add-status"></div>
-                                    </div>
+                                    
+                                </div>
+                                <div class="input-group form-group">
+                                    <div id="task-add-status"></div>
                                 </div>
                             </form>
                         </div>

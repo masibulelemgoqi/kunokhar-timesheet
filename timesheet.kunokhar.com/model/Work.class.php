@@ -117,22 +117,17 @@ class Work
 
     }
 
-    public function add_task($task_name, $client_id, $task_deadline, $task_importance)
+    public function add_task($task_name)
     {
         try 
         {
-            date_default_timezone_set("Africa/Johannesburg");
-            $date_created = date("Y-m-d H:m:s");
-            $deadline = date("Y-m-d H:m:s", strtotime($task_deadline));
+            // date_default_timezone_set("Africa/Johannesburg");
+            // $date_created = date("Y-m-d H:m:s");
+            // $deadline = date("Y-m-d H:m:s", strtotime($task_deadline));
 
-            $sql = "INSERT INTO `task_tb` (`task_client_id`, `task_name`, `task_date_posted`, `task_importance`, `task_deadline`) 
-                    VALUES (:client_id, :task_name, :date_created, :task_importance, :deadline)";
+            $sql = "INSERT INTO `task_tb` (`task_name`) VALUES (:task_name)";
             $stmt = $this->con->prepare($sql);
             $stmt->bindParam(':task_name', $task_name);
-            $stmt->bindParam(':client_id', $client_id);
-            $stmt->bindParam(':date_created', $date_created);
-            $stmt->bindParam(':task_importance', $task_importance);
-            $stmt->bindParam(':deadline', $deadline);
             if($stmt->execute())
             {
                 return true;
@@ -145,52 +140,9 @@ class Work
     }
 
     //----------------------------------[ GET FUNCTIONS ]---------------------------------
-    public function get_client_wildcat($name)
-    {
-        try
-        {
-            $stmt = $this->con->query("SELECT * FROM `client_tb` WHERE UPPER(client_fname) LIKE UPPER('%".$name."%') OR UPPER(client_lname) LIKE UPPER('%".$name."%') LIMIT 3");
-            $html = "";
-            $arr = array();
-            if($name !== "")
-            {
-                
-                $html = "<ul id='list-of-clients'>";
-                while($row = $stmt->fetch(PDO::FETCH_ASSOC))
-                {
-                    $arr[] = $row;
-                }
-                
-                if(count($arr) > 0)
-                {
-                    foreach($arr as $client)
-                    {
-                        $fullname = $client['client_fname']." ".$client['client_lname'];
-                        $html .= "<li id='client-".$client['client_id']."' onclick='getClient(".$client['client_id'].");'>".$fullname."</li>";
-                    }
-                }else
-                {
-                    $html .= "<li> Client not found...</li>";
-                }
-    
-                $html .= "</ul>";
-    
-            }else
-            {
-                return;
-            }
-            echo $html;
-    
-            $this->con = null;
+   
 
-
-        }catch(PDOException $e)
-        {
-            print("Error: ".$e->getMessage());
-        }
-    }
-
-    function get_employees()
+    public function get_employees()
     {
         try 
         {
@@ -210,24 +162,27 @@ class Work
         }
     }
 
-    function get_client_admin($id)
+    public function get_tasks()
     {
-        try
+        try 
         {
-            $sql = "SELECT `client_id`, `client_fname`, `client_lname`, `allocate_date_allocated` FROM `client_tb` c, `allocate_client_tb` a WHERE a.`allocate_emp_id`='$id' AND c.`client_id`= a.`allocate_client_id`";
-            $stml = $this->con->query($sql);
-            $clients_arr = array();
-            while($row = $stml->fetch(PDO::FETCH_ASSOC))
+            $stmt = $this->con->query("SELECT * FROM `task_tb`");
+            $task_array = array();
+
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC))
             {
-                $clients_arr[] = $row;
+                $task_array[] = $row; 
             }
-            return $clients_arr;
+
+            return $task_array;
+            
         }catch (PDOException $e) 
         {
             echo "Error: ".$e->getMessage();
         }
-
+        
     }
+
 
     //---------------------------[ CHECK FUNCTIONS ]------------------------------
 

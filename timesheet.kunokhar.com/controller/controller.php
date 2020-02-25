@@ -42,32 +42,24 @@ if(isset($_POST['action']))
 
         case "add_task":
             $task_name = $_POST['task_name'];
-            $client_id = $_POST['client_id'];
-            $task_deadline = $_POST['task_deadline'];
-            $task_importance = $_POST['task_importance'];
-            if($work_object->add_task($task_name, $client_id, $task_deadline, $task_importance))
+
+            if($work_object->add_task($task_name))
             {
                 print("1");
             }else
             {
-                print($work_object->add_task($task_name, $client_id, $task_deadline, $task_importance));
+                print($work_object->add_task($task_name));
             }
         break;
 
         //--------------------------[ GET ]-----------------------------
 
-        case "get_client":
-            $work_object->get_client_wildcat($_POST['name']);
+        case "get_tasks":
+            echo json_encode($work_object->get_tasks());
         break;
 
         case "get_employees":
-           
             echo json_encode($work_object->get_employees());
-        break;
-
-        case "get_clients":
-            $id = $_POST['id'];
-            echo json_encode($work_object->get_client_admin($id));
         break;
 
         //--------------------[ AUTHENTIFICATION ]---------------------

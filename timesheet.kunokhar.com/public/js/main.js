@@ -19,11 +19,19 @@ window.onload = function()
         break;
 
         case "admin.php":
-            this.load_employees_with_their_client();
+            this.load_admin_home();
         break;
         
     }
 }
+
+
+/*===================================================================
+                        GLOBAL VARIABLES
+=====================================================================*/
+
+var task_array = [];
+
 
 
 /*===================================================================
@@ -147,6 +155,72 @@ $("#save_user").on('click', function(e)
 
 
 //------------------------| ADD CLIENT |-----------------------------
+
+var count = 0;
+
+
+$('.task-section').on('click', '#more-task', function(e)
+{
+    e.preventDefault();
+    e.stopPropagation();
+    var taskName = $('#task_name-'+count).val();
+    console.log(taskName);
+    
+    var parent = $("#task_name-"+count).parent();
+
+    if(taskName != null)
+    {
+        $('#task-add-status').empty();
+        if(taskName.length < 5)
+        {
+            $('#task-add-status').html('<div class="text-danger">Task name should be at least 5 letters</div>');
+        }else
+        {
+            
+            $(this).attr("disabled", true);
+            $.ajax(
+            {
+                url: '../controller/controller.php',
+                method: 'POST',
+                data: {task_name: taskName, action: "add_task"},
+                success: function(data)
+                {
+                    if(data == "1")
+                    {
+                        parent.fadeOut(10000, function()
+                        {
+                            setTimeout(function(){
+                                parent.remove()
+                            }, 1000);
+                        });
+                        $('#task-add-status').html("<div class='text-success'>Task successfully added</div>");
+
+                    }else
+                    {
+                        console.log(data);
+                        
+                    }
+                }
+            });
+
+            count++;
+            var inputField = '<div class="input-group form-group">\
+                            <input class="form-control" type="text" id="task_name-'+count+'" name="task_name" placeholder="task name">\
+                            <button id="more-task" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> </button>\
+                        </div>';
+            $('.modal-body .task-section .container .p-3 .col-sm-offset-1 p').after(inputField);
+
+            
+        }
+    }else
+    {
+        $('#task-add-status').html('<div class="text-danger">Task name cannot be empty</div>');
+    }
+
+
+});
+
+
 $('#save_client').on('click', function(e)
 {
     e.preventDefault();
@@ -174,33 +248,50 @@ $('#save_client').on('click', function(e)
 
 //------------------------| ADD TASK |-----------------------------
 
-var client_id = null;
 
 $('#save_task').on('click', function(e)
 {
-    var taskName = $('#task_name').val();
-    $.ajax(
-    {
-        url: '../controller/controller.php',
-        method: 'POST',
-        data: {client_id: client_id, task_name: taskName, task_deadline: task_deadline, task_importance: task_importance, action: "add_task"},
-        success: function(data)
-        {
-            if(data == "1")
-            {
-                $('#task_name').val("");
-                $('#task-deadline').val("");
-                $('#task-importance').val("");
-                task_importance = null;
-                task_deadline = null;
-                $('#task-add-status').html("<div class='text-success'>Task added successfully, you can add another one</div>");
+    e.preventDefault();
+    e.stopPropagation();
+    var taskName = $('#task_name-'+count).val();
+    console.log(taskName);
 
-            }else
+    if(taskName != null)
+    {
+        $('#task-add-status').empty();
+        if(taskName.length < 5)
+        {
+            $('#task-add-status').html('<div class="text-danger">Task name should be at least 5 letters</div>');
+        }else
+        {
+            
+            $(this).attr("disabled", true);
+            $.ajax(
             {
-                $('#task-add-status').html(data);
-            }
+                url: '../controller/controller.php',
+                method: 'POST',
+                data: {task_name: taskName, action: "add_task"},
+                success: function(data)
+                {
+                    if(data == "1")
+                    {
+                        $('#task_name-'+count).val("");
+                        $('#task-add-status').html("<div class='text-success'>Task added successfully</div>");
+                    }else
+                    {
+                        console.log(data);
+                        
+                    }
+                }
+            });
+            
         }
-    });
+    }else
+    {
+        $('#task-add-status').html('<div class="text-danger">Task name cannot be empty</div>');
+    }
+
+
     
 });
 
@@ -215,42 +306,6 @@ $('#save_task').on('click', function(e)
 //=====================|| EVENTS ||=============================
 
 //<<<<<<<<<<<<<<<<< GET CLIENTS ON KEY UP |>>>>>>>>>>>>>>>>>>>>>
-$('#clients_list').hide();
-$('#client_name').on('keyup', function()
-{
-    var name = $('#client_name').val();
-    
-    $.ajax(
-    {
-        url: '../controller/controller.php',
-        method: 'POST',
-        data:{name: name, action: 'get_client'},
-        success: function(data)
-        {
-            $('#clients_list').show();
-            $('#clients_list').empty();
-            $('#clients_list').append(data);
-            
-        }
-
-    });
-
-     
-});
-
-function getClient(id)
-{
-    
-    $('#clients_list').on('click', '#client-'+id, function(e)
-    {
-        e.stopPropagation();
-        var fullname = $(this).text();
-        $('#clients_list').empty();
-        $('#client_name').val(fullname);
-        client_id = id;
-        
-    });
-}
 
 
 $('.pause-task').hide();
@@ -363,6 +418,37 @@ $(()=>
         
     });
 
+    //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SELECT EMPLOYEE >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    $("#employee_list").on("change",".choose-emp", function(e)
+    {
+
+        var id = $("#employee-option").val();
+        console.log(id);
+        
+    });
+    
+});
+
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SELECT TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+$('#check-task').on('click', '#check', function(e)
+{
+    e.stopPropagation();
+
+    var checked = $(this).closest('.form-check-label').find('span')[0].innerHTML;
+    if(task_array.includes(checked))
+    {
+        task_array.splice(task_array.indexOf(checked), 1);
+        console.log(task_array);
+        
+    }else
+    {
+        task_array.push(checked);
+        console.log(task_array);
+        
+    }
     
     
 });
@@ -459,7 +545,7 @@ function done_tasks()
 //-------------------| SHOW ALL EMPLOYEES WITH CLIENTS LIST |--------------------
 
 
-function load_employees_with_their_client()
+function load_admin_home()
 {
     $.ajax(
     {
@@ -504,6 +590,51 @@ function load_employees_with_their_client()
         }
 
     });
+
+    $.ajax(
+    {
+        url: '../controller/controller.php',
+        method: 'POST',
+        dataType: 'json',
+        data: {action: 'get_tasks'},
+        success: function(tasks)
+        {
+            $.each(tasks, function(key, value)
+            {
+                var html = `<div class="form-check">
+                                <label class="form-check-label" for="check">
+                                    <input type="checkbox" class="form-check-input" id="check" name="option2" value="">
+                                    <span>${value.task_name}</span>
+                                </label>
+                            </div>`;
+                $('#add_client #check-task').append(html);
+            });
+        }
+
+    });
+
+    $.ajax(
+        {
+            url: '../controller/controller.php',
+            method: 'POST',
+            dataType: 'json',
+            data: {action: 'get_employees'},
+            success: function(employees)
+            {
+                var html = "";
+                $.each(employees, function(key, value)
+                {
+                    html += "<option id='"+value.emp_id+"' class='choose-emp'>"+value.emp_fname +" "+value.emp_lname+"</option>";
+                });
+                $('#add_client #employee_list #default').after(html);
+            }
+    
+        });
+
+
+
+
+
 
 }
 
