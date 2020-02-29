@@ -43,7 +43,7 @@ window.onload = function()
             
         break;
         case "clients.php":
-            if(sessionStorage.getItem('session_id') != null && sessionStorage.getItem('role') == 1)
+            if(sessionStorage.getItem('session_id') != null)
             {
                 this.loadTasks();
             }else
@@ -92,8 +92,6 @@ window.onload = function()
 =====================================================================*/
 
 var task_array = [];
-var get_fname = null ;
-var get_lname = null;
 var get_id = null;
 var email_exists = null;
 var error = null;
@@ -314,11 +312,49 @@ $('#save_task').on('click', function(e){
 
 //------------------------| ALLOCATE CLIENT |-----------------------------
 
-$('#client-add-status').on('click', function(e)
-{
+$('#allocate_client').on('click', function(e){
     e.preventDefault();
     var fname = $('#client_fname').val();
     var lname = $('#client_lname').val();
+
+    setTimeout(function(){
+        var id = get_id;
+        if(fname.length >= 3 && lname.length >= 3){
+            if(id != null){
+                if(task_array.length > 0){
+                    for(var i = 0; i < task_array.length; i++){
+                        $.ajax({
+                            url: '../controller/controller.php',
+                            method: 'POST',
+                            data: {fname: fname, lname: lname, id: id, task_name: task_array[i], action: "allocate_client"}
+                        }).then(function(data){
+                            if(data == 1){
+                                if(i == task_array.length){
+                                    $('#client-add-status').html("<div class='text-success'>Client allocated successfully</div>");
+                                    $('#client_fname').val("");
+                                    $('#client_lname').val("");
+                                }
+                            }else{
+                                $('#client-add-status').html("<div class='text-danger'>Oops, error occured while allocating client</div>");
+                                
+                            }
+                        }).catch(function(error){
+                            $('#client-add-status').html("<div class='text-danger'>Oops, error occured while allocating client</div>");
+                            
+                        });
+                    }
+                }else{
+                    $('#client-add-status').html("<div class='text-danger'>Add at least one task</div>");
+                }
+            }else{
+                $('#client-add-status').html("<div class='text-danger'>Select an employee</div>");
+            }
+        }else{
+            $('#client-add-status').html("<div class='text-danger'>Both first and last name should be at least 3 letters</div>");
+        }
+    
+
+    },2000);
 
 });
 
@@ -423,11 +459,14 @@ $(()=>{
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< GET CLIENT FROM SELECT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-    $('#employee_list').on('change', function(e)
-    {
-
+    $('#employee_list').change(function(e){
+        var user = $(this).val();
+        var get_fname = user.split(' ').slice(0, -1).join(' ');
+        var get_lname = user.split(' ').slice(-1).join(' ');
+        get_employee_id(get_fname, get_lname);
     });
-    
+
+
     
 });
 
@@ -466,6 +505,20 @@ $('#employee-with-clients').on('click', '.client-to-employee', function(e){
 });
 // $('#employee_view .row').trigger('click');
 
+//<<<<<<<<<<<<<<<<<<<<<<<<<< VIEW CLIENT TASKS EMPLOYEE >>>>>>>>>>>>>>>>>>>>>>>
+
+$('#emp-view-clients').on('click', '.client-view', function(e){
+    e.stopPropagation();
+    var name = $(this).text();
+    var id =  sessionStorage.getItem("session_id");
+    alert(id);
+    
+    sessionStorage.setItem('client_name', name);
+    sessionStorage.setItem('allocted_emp', id);
+    window.location.href = "./clients.php";
+    
+})
+
 
 
 //=====================|| FUNCTIONS ||=============================
@@ -487,10 +540,11 @@ function load_employee_home()
                 {           
                     $.each(data, function(key, client)
                     {
-                        var html = `<li class="list-group-item d-flex justify-content-between client-view" id="1">Lucks Surname<span>14</span></li>`;
-                        console.log(html);
+                       
+                        var html = `<li class="list-group-item d-flex justify-content-between client-view">${client.allocate_client_fname} ${client.allocate_client_lname}<span></span></li>`;
                         
                         $('#all_views').find('ul').append(html);
+                        //  get_unattended_tasks(client.allocate_client_fname, client.allocate_client_lname);
                     });
                 }else
                 {
@@ -498,11 +552,35 @@ function load_employee_home()
                 }
             }
         });
-    
-
-
 
 }
+
+// function get_unattended_tasks(fname, lname){
+//     $.ajax({
+//         url: "../controller/controller.php",
+//         method: "POST",
+//         dataType: "json",
+//         data: {fname: fname, lname: lname, id: sessionStorage.getItem('session_id'),  action: "get_client_tasks"}
+//     }).then(function(data){
+//         var html = "";
+//         var count = 1;
+//         $('.tasks-to-do #tasks-admin-view').empty();
+//         $('.tasks-done').empty();
+//         if(Object.entries(data).length !== 0 && data.constructor !== Object){
+//             $.each(data, function(key, value){
+//                 if(value.allocate_status == null){
+//                     ++count;
+                    
+//                 }
+//             });
+//             $('#all_views').append(count);
+             
+//         }
+//     }).catch(function(error){
+//         console.error(error.responseText);  
+//     });
+   
+// }
 
 
 

@@ -37,7 +37,7 @@
         <div class="col-sm-8 mt-4 offset-lg-0" id="all_views">
         <div class="font-weight-bold client_head">CLIENTS</div>
             <div class="card mt-4 ml-4" style="width: 40rem;">
-                <ul class="list-group list-group-flush">
+                <ul class="list-group list-group-flush" id="emp-view-clients">
 
                 </ul>
             </div>
