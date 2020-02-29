@@ -21,18 +21,34 @@ class Work
     public function login($email, $password)
     {
 
-        $sql = "SELECT * FROM `employee_tb` WHERE `emp_email` ='$email'";
-        $stmt = $this->con->query($sql);
-        $userRow = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if(count($userRow) == 1)
+        try
         {
-            $hash = $userRow['emp_password'];
-
-            if(password_verify($password, $hash))
+            $sql = "SELECT * FROM `employee_tb` WHERE `emp_email` ='$email'";
+            $stmt = $this->con->query($sql);
+            if($stmt->rowCount() == 0) 
             {
-                return $userRow;
+              echo json_encode(array('success' => false));
+    
+            } else 
+            {
+              $row = $stmt->fetch(PDO::FETCH_ASSOC);
+              $emp_id = $row['emp_id'];
+              $emp_role = $row['emp_power'];
+              $hash = $row['emp_password'];
+    
+              if(password_verify($password, $hash))
+              {
+                echo json_encode(array(
+                    'success' => true,
+                    'id' => $emp_id,
+                    'role' => $emp_role
+                  ));
+              }
+     
             }
+        }catch( PDOException $e)
+        {
+            echo "Error: ".$e->getMessage();
         }
 
 
@@ -44,7 +60,8 @@ class Work
         try 
         {
             $hash = password_hash($password, PASSWORD_DEFAULT);
-            $date_created = date("Y-m-d H:m:s");
+            date_default_timezone_set("Africa/Johannesburg");
+            $date_created = date("Y-m-d H:i:s");
             $user_status = 0;
 
             $power = 0;
@@ -92,31 +109,6 @@ class Work
         }
     }
 
-
-    public function add_client($fname, $lname)
-    {
-        try 
-        {
-            date_default_timezone_set("Africa/Johannesburg");
-            $date_created = date("Y-m-d H:m:s");
-
-            $sql = "INSERT INTO `client_tb` (`client_fname`, `client_lname`, `date_created`) 
-                    VALUES (:fname, :lname, :date_created)";
-            $stmt = $this->con->prepare($sql);
-            $stmt->bindParam(':fname', $fname);
-            $stmt->bindParam(':lname', $lname);
-            $stmt->bindParam(':date_created', $date_created);
-            if($stmt->execute())
-            {
-                return true;
-            }
-        } catch (PDOException $e) 
-        {
-            print("Error: ".$e->getMessage());
-        }
-
-    }
-
     public function add_task($task_name)
     {
         try 
@@ -137,6 +129,31 @@ class Work
             print("Error: ".$e->getMessage());
         }
 
+    }
+
+    public function allocate_client($fname, $lname, $task_name, $emp_id)
+    {
+        try 
+        {
+            date_default_timezone_set("Africa/Johannesburg");
+            $date_created = date("Y-m-d H:i:s");
+            
+
+            $sql = "INSERT INTO `allocate_tb` (`allocate_client_fname`, `allocate_client_lname`, `allocate_emp_id`, `allocate_task_name`, `allocate_date_created`) VALUES (:fname, :lname, :emp_id, :task_name, :date_created)";
+            $stmt = $this->con->prepare($sql);
+            $stmt->bindParam(':fname', $fname);
+            $stmt->bindParam(':lname', $lname);
+            $stmt->bindParam(':date_created', $date_created);
+            $stmt->bindParam(':emp_id', $emp_id);
+            $stmt->bindParam(':task_name', $task_name);
+            if($stmt->execute())
+            {
+                return true;
+            }
+        } catch (PDOException $e) 
+        {
+            print("Error: ".$e->getMessage());
+        }      
     }
 
     //----------------------------------[ GET FUNCTIONS ]---------------------------------
@@ -162,6 +179,33 @@ class Work
         }
     }
 
+    public function get_employeeId($fname, $lname)
+    {
+        try 
+        {
+          $stmt = $this->con->query("SELECT * FROM `employee_tb` WHERE `emp_fname`='$fname' AND `emp_lname`='$lname'");
+          if($stmt->rowCount() == 0) 
+          {
+            echo json_encode(array('success' => false));
+
+          } else 
+          {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $user_id = $row['emp_id'];
+          
+            echo json_encode(array(
+              'success' => true,
+              'id' => $user_id
+            ));
+          }
+            
+        }catch (PDOException $e) 
+        {
+            echo "Error: ".$e->getMessage();
+        }
+
+    }
+
     public function get_tasks()
     {
         try 
@@ -181,6 +225,61 @@ class Work
             echo "Error: ".$e->getMessage();
         }
         
+    }
+
+    public function get_client_tasks($id, $fname, $lname)
+    {
+        try 
+        {
+            $stmt = $this->con->query("SELECT * FROM `allocate_tb` WHERE `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND `allocate_emp_id`='$id'");
+            $task_array = array();
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+            {
+                $task_array[] = $row; 
+            }
+
+            echo json_encode($task_array);
+            
+        }catch (PDOException $e) 
+        {
+            echo "Error: ".$e->getMessage();
+        }    
+    }
+
+    public function get_emp_all_tasks($id){
+
+        try {
+            $stmt = $this->con->query("SELECT * FROM `allocate_tb` WHERE `allocate_emp_id`='$id'");
+            $task_array = array();
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC)){
+                $task_array[] = $row; 
+            }
+            echo json_encode($task_array);
+        }catch (PDOException $e) {
+            echo "Error: ".$e->getMessage();
+        }           
+    }
+
+    public function get_grouped_clients($emp_id)
+    {
+       
+        try 
+        {
+            $sql = "SELECT * FROM `allocate_tb` WHERE `allocate_emp_id` = '$emp_id'  GROUP BY `allocate_client_fname`, `allocate_client_lname`";        
+            $stmt = $this->con->query($sql);
+            $clients_array = array();
+
+            while($row = $stmt->fetch(PDO::FETCH_ASSOC))
+            {
+                $clients_array[] = $row; 
+            }
+
+            return $clients_array;
+            
+        }catch (PDOException $e) 
+        {
+            echo "Error: ".$e->getMessage();
+        } 
     }
 
 

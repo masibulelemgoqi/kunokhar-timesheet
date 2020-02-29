@@ -26,20 +26,6 @@ if(isset($_POST['action']))
             }
         break;
 
-        case "add_client":
-
-            $fname = $_POST['fname'];
-            $lname = $_POST['lname'];
-
-            if($work_object->add_client($fname, $lname))
-            {
-                print("<div class='text-success'>Client added successfully!!!</div>");
-            }else
-            {
-                print("<div class='text-success'>".$work_object->add_employee($fname, $lname, $email, $role, $password)."</div>");
-            }
-        break;
-
         case "add_task":
             $task_name = $_POST['task_name'];
 
@@ -52,24 +38,63 @@ if(isset($_POST['action']))
             }
         break;
 
+        case "allocate_client":
+            $fname = $_POST['fname'];
+            $lname = $_POST['lname'];
+            $emp_id = $_POST['id'];
+            $task_name = $_POST['task_name'];
+
+            if($work_object->allocate_client($fname, $lname, $task_name, $emp_id))
+            {
+                print(1);
+            }else
+            {
+                print($work_object->allocate_client($fname, $lname, $task_name, $emp_id));
+            }
+
+        break;
+
         //--------------------------[ GET ]-----------------------------
 
         case "get_tasks":
             echo json_encode($work_object->get_tasks());
         break;
 
+        case "get_client_tasks":
+            $id = $_POST['id'];
+            $fname = $_POST['fname'];
+            $lname = $_POST['lname'];
+
+            $work_object->get_client_tasks($id, $fname, $lname);
+        break;
+
+        case "get_done_emp_tasks":
+            $id = $_POST['id'];
+            $work_object->get_emp_all_tasks($id);
+        break;
+
         case "get_employees":
             echo json_encode($work_object->get_employees());
+        break;
+
+        case "get_employee":
+            $fname = $_POST['fname'];
+            $lname = $_POST['lname'];
+            $work_object->get_employeeId($fname, $lname);
+        break;
+
+        case "get_clients":
+            $id = $_POST['id'];
+            echo json_encode($work_object->get_grouped_clients($id));
         break;
 
         //--------------------[ AUTHENTIFICATION ]---------------------
         case "login":
             $email = $_POST['email'];
             $password = $_POST['password'];
-            if($work_object->login($email, $password) !== null)
-            {
-                echo json_encode($work_object->login($email, $password));
-            }
+
+            $work_object->login($email, $password);
+
             
         break;
 

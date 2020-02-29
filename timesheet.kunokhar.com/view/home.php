@@ -10,7 +10,7 @@
 <body>
 
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
-  <a class="navbar-brand ml-3" href="#">
+  <a class="navbar-brand ml-3">
 	<img src="../public/img/kunokharK.png" class="logo" alt="Kunokhar logo">
 	<span>Timesheet</span>
   </a>
@@ -24,7 +24,7 @@
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" id><i class="fas fa-sign-out-alt fa-2x"></i><div>Logout</div></a>
+        <a class="nav-link" id="logout"><i class="fas fa-sign-out-alt fa-2x"></i><div>Logout</div></a>
       </li>
 	
     </ul>
@@ -35,10 +35,20 @@
 <div class="container-fluid">
 	<div class="row">
         <div class="col-sm-8 mt-4 offset-lg-0" id="all_views">
+        <div class="font-weight-bold client_head">CLIENTS</div>
+            <div class="card mt-4 ml-4" style="width: 40rem;">
+                <ul class="list-group list-group-flush">
 
+                </ul>
+            </div>
         </div>
         <div class="col-sm-4 mt-4 mr-0" id="done_tasks_only">
+            <div class="daily-history bg-light">
+                <h3>Today</h3>
+                <div class="tasks-done">
 
+                </div>
+            </div>
         </div>
 		
     </div>

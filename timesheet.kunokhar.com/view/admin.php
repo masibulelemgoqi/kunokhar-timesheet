@@ -30,7 +30,7 @@
         </div>
     </nav>
 
-    <div class="container-fluid">
+    <div class="container-fluid" id="employee-with-clients"> 
         <div class="offset-lg-0" id="employees_view">
             <div class="row">
            
@@ -127,7 +127,7 @@
                 <div class="modal-body">
                     <section class="client-section">
                         <div class="container">
-                            <form class="p-3" method="POST">
+                            <form class="p-3 allocate-form" method="POST">
                                 <div class="form-group">
                                     <div class="input-group form-group">
                                         <input class="form-control" type="text" placeholder="First name" id="client_fname">
@@ -152,7 +152,7 @@
                     </section>     
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-tomato-o mr-3" id="save_client">
+                    <button class="btn btn-tomato-o mr-3" id="allocate_client">
                         <i class="fa fa-plus mr-2" aria-hidden="true"></i> Save client
                     </button>
                 </div>
@@ -200,12 +200,6 @@
     <script src="../public/js/bootstrap.min.js"></script>
     <script src="../public/css/fontawesome-free-5.12.1-web/js/all.min.js"></script>
     <script src="../public/js/main.js"></script>
-    <script type="text/javascript">
-        function employeeClient() {
-            var url= "clients.php"; 
-            window.location = url; 
-        }
-    </script>
 </body>
 </html>
 

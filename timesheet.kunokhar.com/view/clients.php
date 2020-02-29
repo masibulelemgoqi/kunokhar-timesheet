@@ -39,26 +39,16 @@
 	                    	<h1>Sive Ndabeni</h1>
 	                    	<span>Allocated to <b>Masibulele Mgoqi</b></span>
 	                    </div>
+                        <div class="pt-5 text-white" id="tasks-admin-view">
+
+                        </div>
                     </div>
                 </div>
                 <div class="col-4">
                     <div class="daily-history">
                     	<h3>Today</h3>
                     	<div class="tasks-done">
-                    		<div class="actual-task shadow">
-                    			<h4>Bookkeeping</h4>
-                    			<small>13:45 - 15:22</small>
-                    		</div>
 
-                    		<div class="actual-task shadow">
-                    			<h4>Requirements Gathering</h4>
-                    			<small>08:10 - 09:43</small>
-                    		</div>
-
-                    		<div class="actual-task shadow">
-                    			<h4>Web Development</h4>
-                    			<small>10:00 - 12:15</small>
-                    		</div>
                     	</div>
                     </div>
                 </div>
