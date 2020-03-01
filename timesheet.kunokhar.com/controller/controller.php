@@ -54,10 +54,44 @@ if(isset($_POST['action']))
 
         break;
 
+        case "add_task_start_time":
+            $task_id = $_POST['task_id'];
+            if($work_object->set_task_start_time($task_id)){
+                print(1);
+            }else{
+                print($work_object->set_task_start_time($task_id));
+            }
+        break;
+
+        case "add_task_end_time":
+            $task_id = $_POST['task_id'];
+            $task_time_taken = $_POST['task_time_taken'];
+            $task_comment = $_POST['task_comment'];
+            if($work_object->set_task_end_time($task_id, $task_time_taken, $task_comment)){
+                print(1);
+            }else{
+                print($work_object->set_task_end_time($task_id, $task_time_taken, $task_comment));
+            }
+        break;
+
+        case "add_task_pause":
+            $task_id = $_POST['task_id'];
+            $task_time_taken = $_POST['task_time_taken'];
+            if($work_object->set_pause_task($task_id, $task_time_taken)){
+                print(1);
+            }else{
+                print($work_object->set_pause_task($task_id, $task_time_taken));
+            }
+        break;
         //--------------------------[ GET ]-----------------------------
 
         case "get_tasks":
             echo json_encode($work_object->get_tasks());
+        break;
+
+        case "get_task_by_id":
+            $task_id = $_POST['task_id'];
+            $work_object->get_task_by_id($task_id);
         break;
 
         case "get_client_tasks":

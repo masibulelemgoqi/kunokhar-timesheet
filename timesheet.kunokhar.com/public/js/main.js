@@ -9,10 +9,10 @@ window.onload = function()
     switch(page)
     {
         case "home.php":
-            if(sessionStorage.getItem('session_id') != null && sessionStorage.getItem('role') == 0)
+            if(sessionStorage.getItem('user_session') != null && sessionStorage.getItem('role') == 0)
             {
-                this.done_tasks();
                 this.load_employee_home();
+                this.done_tasks();
             }else
             {
                 load_login();
@@ -21,7 +21,7 @@ window.onload = function()
         break;
 
         case "tasks.php":
-            if(sessionStorage.getItem('session_id') != null)
+            if(sessionStorage.getItem('user_session') != null)
             {
                 this.done_tasks();
                 this.view_tasks();
@@ -33,7 +33,7 @@ window.onload = function()
         break;
 
         case "admin.php":
-            if(sessionStorage.getItem('session_id') != null && sessionStorage.getItem('role') == 1)
+            if(sessionStorage.getItem('user_session') != null && sessionStorage.getItem('role') == 1)
             {
                 this.load_admin_home();
             }else
@@ -43,7 +43,7 @@ window.onload = function()
             
         break;
         case "clients.php":
-            if(sessionStorage.getItem('session_id') != null)
+            if(sessionStorage.getItem('user_session') != null)
             {
                 this.loadTasks();
             }else
@@ -53,7 +53,7 @@ window.onload = function()
             
         break;
         case "index.php":
-            if(sessionStorage.getItem('session_id') != null)
+            if(sessionStorage.getItem('user_session') != null)
             {
                if(sessionStorage.getItem('role') == 1)
                {
@@ -68,7 +68,7 @@ window.onload = function()
             }
         break;
         case "":
-            if(sessionStorage.getItem('session_id') != null)
+            if(sessionStorage.getItem('user_session') != null)
             {
                if(sessionStorage.getItem('role') == 1)
                {
@@ -92,11 +92,20 @@ window.onload = function()
 =====================================================================*/
 
 var task_array = [];
+var tasks_count = [];
 var get_id = null;
 var email_exists = null;
 var error = null;
 var employee_role = null;
 var count = 0;
+var task_status = null;
+var time_taken_for_this = null;
+var time_started = null;
+var second = 0; 
+var minute = 0;
+var hour = 0;
+var t;
+var time_taken = "00:00:00";
 
 
 
@@ -110,44 +119,36 @@ $("#btnLogin").click(function(event)
 { //Fetch form to apply custom Bootstrap validation\r\n  
     event.preventDefault(); 
     event.stopPropagation(); 
-     var form = $("#formLogin");    
-     if (form[0].checkValidity() === false) 
-    {
+    var form = $("#formLogin");    
+    if (form[0].checkValidity() === false) {
         event.preventDefault(); 
         event.stopPropagation();
-    }else
-    {
+    }else{
         form.addClass('was-validated');
         var email = $('#uname1').val();
         var password = $('#pwd1').val();
 
-        $.ajax(
-        {
+        $.ajax({
             url: "controller/controller.php",
             method: "POST",
             dataType: "json",
             data: {email: email, password: password, action: "login"}
-        }).then(function(data)
-        {
-            
-            if(data.success)
-            {
+        }).then(function(data){
+            if(data.success){
+                var d = new Date();
+                sessionStorage.setItem('user_session', d.getTime());
                 sessionStorage.setItem('session_id', data.id);
                 sessionStorage.setItem('role', data.role);
-                if(data.role == "ADMIN_USER")
-                {
+                if(data.role == "ADMIN_USER"){
                     window.location.href = 'view/admin.php';
                 }
                 window.location.href = 'view/home.php';
                 
-            }else
-            {
+            }else{
                 console.log(data);
             }
-        }).catch(function(error)
-        {
+        }).catch(function(error){
             console.log(error);
-
         });
     } 
      
@@ -200,6 +201,7 @@ $("#save_user").on('click', function(e){
                         $('#employee_role').children().first().attr("selected");
                         employee_role = null;
                         $('#user-add-status').html('<div class="text-success">User has been successfully added</div>');
+                        load_admin_home();
 
                     }else{
                         $('#user-add-status').html(data);
@@ -216,10 +218,7 @@ $("#save_user").on('click', function(e){
     }
 });
 
-
 //------------------------| ADD COMPANY TASKS |-----------------------------
-
-
 $('.task-section').on('click', '#more-task', function(e){
     e.preventDefault();
     e.stopPropagation();
@@ -273,10 +272,7 @@ $('.task-section').on('click', '#more-task', function(e){
 
 });
 
-
 //------------------------| SAVE LAST TASK |-----------------------------
-
-
 $('#save_task').on('click', function(e){
     e.preventDefault();
     e.stopPropagation();
@@ -311,7 +307,6 @@ $('#save_task').on('click', function(e){
 });
 
 //------------------------| ALLOCATE CLIENT |-----------------------------
-
 $('#allocate_client').on('click', function(e){
     e.preventDefault();
     var fname = $('#client_fname').val();
@@ -333,6 +328,7 @@ $('#allocate_client').on('click', function(e){
                                     $('#client-add-status').html("<div class='text-success'>Client allocated successfully</div>");
                                     $('#client_fname').val("");
                                     $('#client_lname').val("");
+                                    load_admin_home();
                                 }
                             }else{
                                 $('#client-add-status').html("<div class='text-danger'>Oops, error occured while allocating client</div>");
@@ -362,6 +358,42 @@ $('#allocate_client').on('click', function(e){
                   All insertions - functions
 =============================================================*/
 
+function add_start_task_time(modal_id){
+    $.ajax({
+        url: '../controller/controller.php',
+        method: 'POST',
+        data: {task_id: modal_id, action: 'add_task_start_time'}
+    }).then(function(data){
+        console.log(data);
+    }).catch(function(error){
+        console.error(error.responseText);
+    });
+}
+
+function add_end_task_time(modal_id, time_taken, comment){
+    $.ajax({
+        url: '../controller/controller.php',
+        method: 'POST',
+        data: {task_id: modal_id, task_time_taken: time_taken, task_comment: comment, action: 'add_task_end_time'}
+    }).then(function(data){
+        console.log(data);
+    }).catch(function(error){
+        console.error(error.responseText);
+    });
+}
+
+function add_pause_task_time(modal_id, exact_time_taken){
+    $.ajax({
+        url: '../controller/controller.php',
+        method: 'POST',
+        data: {task_id: modal_id, task_time_taken: exact_time_taken, action: 'add_task_pause'}
+    }).then(function(data){
+        console.log(data);
+    }).catch(function(error){
+        console.error(error.responseText);
+    });
+}
+
 /*============================================================
                         All Views
 ==============================================================*/
@@ -373,7 +405,7 @@ $('#allocate_client').on('click', function(e){
 
 $('.pause-task').hide();
 $(()=>{
-    var modal_id = "";
+    var modal_id = null;
 
     $('#all_views').on('click', function(e){
         e.preventDefault(); 
@@ -381,8 +413,7 @@ $(()=>{
     });
 
 
-//<<<<<<<<<< DISPLAYS TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE >>>>>>>>>>>>>>>>>>
-
+//<<<<<<<<<< DISPLAYS TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE >>>>>>>>>>>>>>>>>
     $('#all_views').on('click', '.client-view', function(e){
         e.preventDefault();
         e.stopPropagation();
@@ -392,8 +423,7 @@ $(()=>{
         window.location.href = "tasks.html";
     });
 
-//<<<<<<<<<<<<<<<<<<<<<<< SHOW A MODAL TO START A TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+//<<<<<<<<<<<<<<<<<<<<<<< SHOW A MODAL TO START A TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     $('#all_views').on('click','.card-body', '.task-view', function(e){
         e.preventDefault();
         e.stopPropagation();
@@ -402,33 +432,48 @@ $(()=>{
         modal_id = sessionStorage.getItem('task_id');
     });
 
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< START A TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< START A TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     $('.start-task').on('click', function(e){
         e.preventDefault();
         e.stopPropagation();
-        
-        $('.close').hide(); 
-        startTime();
-        $('.start-task').hide();
-        $('.pause-task').show();
-        $('.toast').toast('show');
+        get_task(modal_id);
+        setTimeout(function(){
+            $('.close').hide(); 
+            if(time_started == "NULL" || time_started == null){
+                startTime();
+                $('.start-task').hide();
+                $('.pause-task').show();
+                add_start_task_time(modal_id);
+            }else{
+                if(hour == 0 && minute == 0 && second == 0){
+                    var time_str = time_taken_for_this;
+                    var hr = time_str.slice(0, 2);
+                    var ms = time_str.slice(3, 5);
+                    var sc = time_str.slice(6, 8);
+                    hour = parseInt(hr);
+                    minute = parseInt(ms);
+                    second = parseInt(sc);
+                }
+                startTime();
+                $('.start-task').hide();
+                $('.pause-task').show();
+            }    
+        }, 1000);
     });
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< PAUSE A TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
     $('.pause-task').on('click', function(e){
         e.preventDefault();
         e.stopPropagation();
 
         $('.close').show(); 
         stopTime();
+        add_pause_task_time(modal_id, time_taken);
         $('.pause-task').hide();
         $('.start-task').show();
     });
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<< VERIFY A TASK COMMENT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
     $('.task-comment textarea').on('keyup change focusout', function(){
         var comment = $('.task-comment textarea').val();
         if(comment.length < 10){
@@ -439,8 +484,7 @@ $(()=>{
         }
     });
 
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< DONE WITH A TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< DONE WITH A TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>
     $('#done_task').on('click', function(e){
         e.preventDefault();
         var comment = $('.task-comment textarea').val();
@@ -450,15 +494,18 @@ $(()=>{
             $('.task-status').append("<div class='text-tomato'>Your comment should be at least 10 letters</div>");
         }else{
             stopTime();
+            add_end_task_time(modal_id, time_taken, comment);
             $('.task-status').empty();
-            $('.task-status').text(comment+"  =>"+checkTime(hour)+":"+checkTime(minute)+":"+checkTime(second));
-            $('.close').show(); 
+            $('.close').trigger('click'); 
+            $('.tasks-to-do #tasks-admin-view').empty();
+            $('.tasks-done').empty();
+            loadTasks();
+           
         } 
     });
 
 
-//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< GET CLIENT FROM SELECT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< GET CLIENT FROM SELECT >>>>>>>>>>>>>>>>>>>>>>>>
     $('#employee_list').change(function(e){
         var user = $(this).val();
         var get_fname = user.split(' ').slice(0, -1).join(' ');
@@ -466,59 +513,86 @@ $(()=>{
         get_employee_id(get_fname, get_lname);
     });
 
-
-    
-});
-
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SELECT TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-
-
-$('#check-task').on('click', '#check', function(e)
-{
-    e.stopPropagation();
-
-    var checked = $(this).closest('.form-check-label').find('span')[0].innerHTML;
-    if(task_array.includes(checked))
+    $('#check-task').on('click', '#check', function(e)
     {
-        task_array.splice(task_array.indexOf(checked), 1);
-        console.log(task_array);
-    }else
-    {
-        task_array.push(checked);
-        console.log(task_array); 
-    }
-});
+        e.stopPropagation();
 
-//<<<<<<<<<<<<<<<<<<<<<<<<<< SELECT CLIENT >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+        var checked = $(this).closest('.form-check-label').find('span')[0].innerHTML;
+        if(task_array.includes(checked))
+        {
+            task_array.splice(task_array.indexOf(checked), 1);
+            console.log(task_array);
+        }else
+        {
+            task_array.push(checked);
+            console.log(task_array); 
+        }
+    });
 
-$('#employee-with-clients').on('click', '.client-to-employee', function(e){
-    e.stopPropagation();
-    var fullname = $(this).text();
-    var emp_name = $(this).closest('#employee_card').find('.card-title').text();
-    console.log(emp_name);
-    
-    let user = $(this).closest('.emp-list').attr('id');
-    sessionStorage.setItem('allocted_emp', user);
-    sessionStorage.setItem('emp_name', emp_name);
-    sessionStorage.setItem('client_name', fullname);
-    window.location.href = "clients.php";
-});
-// $('#employee_view .row').trigger('click');
+//<<<<<<<<<<<<<<<<<<<<<<<<<< VIEW CLIENT TASK ADMIN >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    $('#employee-with-clients').on('click', '.client-to-employee', function(e){
+        e.stopPropagation();
+        var fullname = $(this).text();
+        var emp_name = $(this).closest('#employee_card').find('.card-title').text();
+        console.log(emp_name);
+        
+        let user = $(this).closest('.emp-list').attr('id');
+        sessionStorage.setItem('allocted_emp', user);
+        sessionStorage.setItem('emp_name', emp_name);
+        sessionStorage.setItem('client_name', fullname);
+        window.location.href = "clients.php";
+    });
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<< VIEW CLIENT TASKS EMPLOYEE >>>>>>>>>>>>>>>>>>>>>>>
+    $('#emp-view-clients').on('click', '.client-view', function(e){
+        e.stopPropagation();
+        var name = $(this).children().first().text();
+        var id =  sessionStorage.getItem("session_id");
+        
+        sessionStorage.setItem('client_name', name);
+        sessionStorage.setItem('allocted_emp', id);
+        sessionStorage.setItem('emp_name', "Me");
+        window.location.href = "./clients.php";
+        
+    });
 
-$('#emp-view-clients').on('click', '.client-view', function(e){
-    e.stopPropagation();
-    var name = $(this).text();
-    var id =  sessionStorage.getItem("session_id");
-    alert(id);
-    
-    sessionStorage.setItem('client_name', name);
-    sessionStorage.setItem('allocted_emp', id);
-    window.location.href = "./clients.php";
-    
-})
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< START TASK MODAL >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    $('#client_tasks').on('click', '#task-action', function(e){
+        
+        e.stopPropagation();
+        if(sessionStorage.getItem('role') != 1){
+            var task_id = $(this).find('p').text();
+            var task_name = $(this).find('span').text();
+            $('.show_start_task').attr('id', 'exampleModal'+task_id);
+            $('#exampleModal'+task_id).find('h5').text(task_name);
+            modal_id = task_id;
+            get_task(modal_id);
+            setTimeout(function(){
+                if(time_started == "NULL" || time_started == null){
+                    $('.time-show').empty();
+                    $('.time-show').append("00:00:00");  
+                    $('#exampleModal'+task_id).modal("show");
+                }else{
+                    $('.time-show').empty();
+                    time_taken = time_taken_for_this;
+                    $('.time-show').append(time_taken_for_this);
+                    $('#exampleModal'+task_id).modal("show");
+                }
+            }, 2000);
+        }
+    });
 
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< CLOSE MODAL ACTION >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    $('#exampleModal'+modal_id).on('click', '.close', function(e){
+        stopTime();
+        second = 0;
+        hour = 0;
+        minute = 0;
+        $('.time-show').empty();
+        $('.time-show').text("00:00:00");
+    })  
+});
 
 
 //=====================|| FUNCTIONS ||=============================
@@ -527,66 +601,71 @@ $('#emp-view-clients').on('click', '.client-view', function(e){
 
 function load_employee_home()
 {
-    $.ajax(
-        {
-            url: "../controller/controller.php",
-            method: "POST",
-            dataType: "json",
-            data: {id: sessionStorage.getItem('session_id'), action: "get_clients"},
-            success: function(data)
+    setTimeout(function(){
+        $.ajax(
             {
-                $('#all_views').find('ul').empty();
-                if(Object.entries(data).length !== 0 && data.constructor !== Object)
-                {           
-                    $.each(data, function(key, client)
-                    {
-                       
-                        var html = `<li class="list-group-item d-flex justify-content-between client-view">${client.allocate_client_fname} ${client.allocate_client_lname}<span></span></li>`;
-                        
-                        $('#all_views').find('ul').append(html);
-                        //  get_unattended_tasks(client.allocate_client_fname, client.allocate_client_lname);
-                    });
-                }else
+                url: "../controller/controller.php",
+                method: "POST",
+                dataType: "json",
+                data: {id: sessionStorage.getItem('session_id'), action: "get_clients"},
+                success: function(data)
                 {
-                    $('#all_views').find('ul').append("<h3>No clients allocated for you</h3>");
+                    var count = 0;
+                    $('#all_views').find('ul').empty();
+                    if(Object.entries(data).length !== 0 && data.constructor !== Object)
+                    {           
+                        $.each(data, function(key, client)
+                        {
+                            get_unattended_tasks(client.allocate_client_fname, client.allocate_client_lname);
+                            setTimeout(function(){
+                                var html = `<li class="list-group-item d-flex justify-content-between client-view"><span>${client.allocate_client_fname} ${client.allocate_client_lname}</span><span>${tasks_count[count]}</span></li>`;
+                            
+                                $('#all_views').find('ul').append(html);
+                                count++;                           
+                            },1000);
+    
+                        });
+                    }else
+                    {
+                        $('#all_views').find('ul').append("<h3>No clients allocated for you</h3>");
+                    }
+    
                 }
-            }
-        });
-
+            });
+    
+    },1000);
 }
 
-// function get_unattended_tasks(fname, lname){
-//     $.ajax({
-//         url: "../controller/controller.php",
-//         method: "POST",
-//         dataType: "json",
-//         data: {fname: fname, lname: lname, id: sessionStorage.getItem('session_id'),  action: "get_client_tasks"}
-//     }).then(function(data){
-//         var html = "";
-//         var count = 1;
-//         $('.tasks-to-do #tasks-admin-view').empty();
-//         $('.tasks-done').empty();
-//         if(Object.entries(data).length !== 0 && data.constructor !== Object){
-//             $.each(data, function(key, value){
-//                 if(value.allocate_status == null){
-//                     ++count;
+function get_unattended_tasks(fname, lname){
+    $.ajax({
+        url: "../controller/controller.php",
+        method: "POST",
+        dataType: "json",
+        data: {fname: fname, lname: lname, id: sessionStorage.getItem('session_id'),  action: "get_client_tasks"}
+    }).then(function(data){
+        var html = "";
+        var count = 0;
+        $('.tasks-to-do #tasks-admin-view').empty();
+
+        if(Object.entries(data).length !== 0 && data.constructor !== Object){
+            $.each(data, function(key, value){
+                if(value.allocate_status == null){
+                    ++count;
                     
-//                 }
-//             });
-//             $('#all_views').append(count);
+                }
+            });
+            tasks_count.push(count);
              
-//         }
-//     }).catch(function(error){
-//         console.error(error.responseText);  
-//     });
+        }
+    }).catch(function(error){
+        console.error(error.responseText);  
+    });
    
-// }
+}
 
 
 
 //--------------------------| VIEW ALL TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE |--------------------
-
-
 function view_tasks()
 {
     var html = `<a id="to_home" class="m-3 ml-4" onclick="history.back(-1)"><i class="fa fa-angle-left"></i></a>
@@ -602,28 +681,26 @@ function view_tasks()
 
 }
 
-
 //-----------------| SHOW ALL DONE TASKS DONE BY EMPLOYEE IN A DAY |---------------------
-
 function done_tasks(){
 
-    var id = sessionStorage.getItem('user_id');
+    var id = sessionStorage.getItem('session_id');
     $.ajax({
         url: '../controller/controller.php',
         method: 'POST',
         dataType: 'json',
         data: {id: id, action: 'get_done_emp_tasks'}
     }).then(function(tasks){
+        var count = 0;
         $('#done_tasks_only .tasks-done').empty();
         if(Object.entries(tasks).length !== 0 && tasks.constructor !== Object){
             $.each(tasks, function(key, task){
-                var date_created = new Date(task.allocate_date_created);
                 var start_time = new Date(task.allocate_start_time);
                 var end_time = new Date(task.allocate_end_time);
                 var current_date = new Date();
-                var d = date_created.getDate();
-                var m = date_created.getMonth();
-                var y = date_created.getFullYear();
+                var d = end_time.getDate();
+                var m = end_time.getMonth();
+                var y = end_time.getFullYear();
                 var start_hr = start_time.getHours();
                 var start_ms = start_time.getMinutes();
                 var end_hr = end_time.getHours();
@@ -635,15 +712,15 @@ function done_tasks(){
                                 <small>${start_hr}:${start_ms} - ${end_hr}:${end_ms}</small>
                                 <small>Time taken ${task.allocate_time_taken}</small>
                             </div>`;
+                            count++;
                     
-                    $('#done_tasks_only .daily-history .tasks-done').append(html);
-                }else
-                {
-                    $('#done_tasks_only .tasks-done').append("<div>No tasks done yet!</div>");
+                    $('#done_tasks_only .tasks-done').append(html);
                 }
             });
-        }else{
-            $('#done_tasks_only .tasks-done').append("<div>No tasks done yet!</div>");
+
+            if(count == 0){
+                $('#done_tasks_only .tasks-done').append("<div>No tasks done yet!</div>");
+            }
         }
     }).catch(function(error){
         console.log(error);
@@ -664,6 +741,7 @@ function load_admin_home()
         dataType: "json",
         success: function(data){
             var html = "";
+            $(".container-fluid #employees_view .row").empty();
             if(Object.entries(data).length !== 0 && data.constructor !== Object){
                 $.each(data, function(key, employee){
                     var html = `<div class="card" id="employee_card">
@@ -693,6 +771,7 @@ function load_admin_home()
         dataType: 'json',
         data: {action: 'get_tasks'},
         success: function(tasks){
+            $('#add_client #check-task').empty();
             $.each(tasks, function(key, value){
                 var html = `<div class="form-check">
                                 <label class="form-check-label" for="check">
@@ -711,6 +790,7 @@ function load_admin_home()
             dataType: 'json',
             data: {action: 'get_employees'},
             success: function(employees){
+                $('.client-section #employee_list').empty();
                 $.each(employees, function(key, value){
                     var html = "<option class='option-btn' id='"+value.emp_id+"'>"+value.emp_fname +" "+value.emp_lname+"</option>";
                     $('.client-section #employee_list').append(html);
@@ -724,8 +804,10 @@ function loadTasks(){
     var fname = fullname.split(' ').slice(0, -1).join(' ');
     var lname = fullname.split(' ').slice(-1).join(' ');
     var id = sessionStorage.getItem('allocted_emp');
-    $('.client-name').find('h1').text(fullname);
-    $('.client-name').find('b').text(sessionStorage.getItem('emp_name'));
+    setTimeout(function(){
+        $('.client-name').find('h1').text(fullname);
+        $('.client-name').find('b').text(sessionStorage.getItem('emp_name'));
+    },2000);
     $.ajax({
         url: "../controller/controller.php",
         method: "POST",
@@ -734,24 +816,25 @@ function loadTasks(){
     }).then(function(data){
         
         var html = "";
+        var task_done_check = 0;
         $('.tasks-to-do #tasks-admin-view').empty();
         $('.tasks-done').empty();
         if(Object.entries(data).length !== 0 && data.constructor !== Object){
             $.each(data, function(key, value){
-                var date_created = new Date(value.allocate_date_created);
+
                 var start_time = new Date(value.allocate_start_time);
                 var end_time = new Date(value.allocate_end_time);
                 var current_date = new Date();
-                var d = date_created.getDate();
-                var m = date_created.getMonth();
-                var y = date_created.getFullYear();
+                var d = end_time.getDate();
+                var m = end_time.getMonth();
+                var y = end_time.getFullYear();
                 var start_hr = start_time.getHours();
                 var start_ms = start_time.getMinutes();
                 var end_hr = end_time.getHours();
                 var end_ms = end_time.getMinutes();  
 
-                if(value.allocate_status == null){
-                    html = `<div id="task-action" class="py-2">${value.allocate_task_name}</div>`;
+                if(value.allocate_status != "Done"){
+                    html = `<div id="task-action" class="py-2"><span>${value.allocate_task_name}</span><p hidden>${value.allocate_id}</p></div>`;
                     $('.tasks-to-do #tasks-admin-view').append(html);
                 }
 
@@ -763,9 +846,14 @@ function loadTasks(){
                             </div>`;
                     
                     $('.tasks-done').append(html);
+                    task_done_check++;
                 }
-                
             });
+
+            if(task_done_check == 0)
+            {
+                $('.tasks-done').append("No tasks done at the moment!");
+            }
         }
     }).catch(function(error){
         console.error(error.responseText);  
@@ -808,6 +896,26 @@ function load_clients_to_employee(id){
         }else{
             $("#"+id).append('No client(s) allocated!');
         }
+    }).catch(function(error){
+        console.error(error);
+    });
+}
+
+function get_task(task_id){
+    $.ajax({
+        url: '../controller/controller.php',
+        method: 'POST',
+        dataType: 'json',
+        data: {task_id: task_id, action: 'get_task_by_id'}
+    }).then(function(task){
+        if(task.success){
+            task_status = task.task_status;
+            time_started = task.start_time;
+            time_taken_for_this = task.time_taken;
+        }else{
+            console.log("error loading data");
+        }
+
     }).catch(function(error){
         console.error(error);
     });
@@ -983,10 +1091,6 @@ function generate_password()
 
 //-----------------------| TASK TIMER |----------------------------
 
-var second = 0; 
-var minute = 0;
-var hour = 0;
-var t;
 function startTime() 
 {
     $('.time-show').empty();
@@ -997,6 +1101,7 @@ function startTime()
 function stopTime()
 {
     $('.time-show').empty();
+    time_taken = this.checkTime(this.get_hr(minute))+":"+this.checkTime(this.get_mins(second))+":"+this.checkTime(this.get_secs(second));
     $('.time-show').text(this.checkTime(this.get_hr(minute))+":"+this.checkTime(this.get_mins(second))+":"+this.checkTime(this.get_secs(second)));
     clearTimeout(t);
 }
@@ -1100,6 +1205,8 @@ var App = {
                 })
     }
 };
+
+//---------------------------- LOADER ---------------------------------
 
 
  

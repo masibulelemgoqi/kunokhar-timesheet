@@ -9,7 +9,7 @@
 </head>
 <body>
 	<nav class="navbar navbar-expand-sm fixed-top navbar-light bg-light">
-        <a class="navbar-brand ml-3" href="#">
+        <a class="navbar-brand ml-3" onclick="history.back(-1)">
             <img src="../public/img/kunokharK.png" class="logo" alt="Kunokhar logo">
             <span>Timesheet</span>
         </a>
@@ -54,6 +54,38 @@
                 </div>
             </div>
         </div>
+
+      <!-- Modal -->
+      <div class="modal fade show_start_task" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel"></h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+               <div class="row">
+                   <p class="time-show">00:00</p>
+               </div>
+               <div class="row">
+                   <div class="start-task"><i class="fa fa-play fa-3x text-tomato"></i></div>
+                   <div class="pause-task"><i class="fa fa-pause fa-3x text-tomato"></i></div>
+               </div>
+               <div class="row">
+                   <div class="task-comment">
+                       <textarea class="form-control" placeholder="Comment on task(Compulsory)..."></textarea>
+                   </div>
+               </div>
+              <div class="task-status"></div>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-tomato-o" id="done_task">Done</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
 	<script src="../public/js/jquery.js"></script>

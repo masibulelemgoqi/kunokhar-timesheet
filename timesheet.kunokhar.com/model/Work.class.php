@@ -282,7 +282,103 @@ class Work
         } 
     }
 
+    public function get_task_by_id($task_id){
+        try 
+        {
+          $stmt = $this->con->query("SELECT * FROM `allocate_tb` WHERE `allocate_id`='$task_id'");
+          if($stmt->rowCount() == 0) 
+          {
+            echo json_encode(array('success' => false));
 
+          } else 
+          {
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            $task_status = $row['allocate_status'];
+            $start_time = $row['allocate_start_time'];
+            $time_taken = $row['allocate_time_taken'];
+          
+            echo json_encode(array(
+              'success' => true,
+              'task_status' => $task_status,
+              'start_time' => $start_time,
+              'time_taken' => $time_taken 
+            ));
+          }
+            
+        }catch (PDOException $e) 
+        {
+            echo "Error: ".$e->getMessage();
+        }       
+    }
+
+    //----------------------------[ EDIT FUNCTIONS ]------------------------------
+
+    public function set_task_start_time($task_id){
+        date_default_timezone_set("Africa/Johannesburg");
+        $start_task_time = date("Y-m-d H:m:s");  
+        $task_status = "Running";
+
+        try {
+            $sql = "UPDATE `allocate_tb` SET `allocate_start_time`=:start_task_time, `allocate_status`=:task_status WHERE `allocate_id`=:task_id";
+            $stml = $this->con->prepare($sql);
+            $stml->bindParam(':start_task_time', $start_task_time);
+            $stml->bindParam(':task_id', $task_id);
+            $stml->bindParam(':task_status', $task_status);
+
+            if($stml->execute()){
+                return true;
+            }
+        } catch (PDOException $e) {
+            echo "Error: ".$e->getMessage();
+        }
+    }
+
+    public function set_task_end_time($task_id, $task_time_taken, $task_comment){
+        date_default_timezone_set("Africa/Johannesburg");
+        $end_task_time = date("Y-m-d H:m:s"); 
+        $task_status = "Done"; 
+
+        try {
+            $sql = "UPDATE `allocate_tb` SET `allocate_end_time`=:end_task_time,
+                    `allocate_time_taken`=:task_time_taken, `allocate_comment`=:task_comment,  
+                    `allocate_status`=:task_status WHERE `allocate_id`=:task_id";
+            $stml = $this->con->prepare($sql);
+            $stml->bindParam(':end_task_time', $end_task_time);
+            $stml->bindParam(':task_id', $task_id);
+            $stml->bindParam(':task_time_taken', $task_time_taken);
+            $stml->bindParam(':task_comment', $task_comment);
+            $stml->bindParam(':task_status', $task_status);
+
+            if($stml->execute()){
+                return true;
+            }
+        } catch (PDOException $e) {
+            echo "Error: ".$e->getMessage();
+        }
+    }
+
+    public function set_pause_task($task_id, $task_time_taken){
+        date_default_timezone_set("Africa/Johannesburg");
+        $end_task_time = date("Y-m-d H:m:s"); 
+        $task_status = "Pause"; 
+
+        try {
+            $sql = "UPDATE `allocate_tb` SET `allocate_end_time`=:end_task_time,
+                    `allocate_time_taken`=:task_time_taken,
+                    `allocate_status`=:task_status WHERE `allocate_id`=:task_id";
+            $stml = $this->con->prepare($sql);
+            $stml->bindParam(':end_task_time', $start_task_time);
+            $stml->bindParam(':task_id', $task_id);
+            $stml->bindParam(':task_time_taken', $task_time_taken);
+            $stml->bindParam(':task_status', $task_status);
+
+            if($stml->execute()){
+                return true;
+            }
+        } catch (PDOException $e) {
+            echo "Error: ".$e->getMessage();
+        }
+    }
     //---------------------------[ CHECK FUNCTIONS ]------------------------------
 
     public function check_email_exists($email)

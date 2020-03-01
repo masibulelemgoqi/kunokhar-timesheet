@@ -10,7 +10,7 @@
 <body>
 
 <nav class="navbar navbar-expand-sm navbar-light bg-light">
-  <a class="navbar-brand ml-3">
+  <a class="navbar-brand ml-3" onclick="history.back(-1)">
 	<img src="../public/img/kunokharK.png" class="logo" alt="Kunokhar logo">
 	<span>Timesheet</span>
   </a>
