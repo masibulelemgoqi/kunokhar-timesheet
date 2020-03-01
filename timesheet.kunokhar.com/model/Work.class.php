@@ -316,7 +316,7 @@ class Work
 
     public function set_task_start_time($task_id){
         date_default_timezone_set("Africa/Johannesburg");
-        $start_task_time = date("Y-m-d H:m:s");  
+        $start_task_time = date("Y-m-d H:i:s");  
         $task_status = "Running";
 
         try {
@@ -336,7 +336,7 @@ class Work
 
     public function set_task_end_time($task_id, $task_time_taken, $task_comment){
         date_default_timezone_set("Africa/Johannesburg");
-        $end_task_time = date("Y-m-d H:m:s"); 
+        $end_task_time = date("Y-m-d H:i:s"); 
         $task_status = "Done"; 
 
         try {
@@ -360,7 +360,7 @@ class Work
 
     public function set_pause_task($task_id, $task_time_taken){
         date_default_timezone_set("Africa/Johannesburg");
-        $end_task_time = date("Y-m-d H:m:s"); 
+        $end_task_time = date("Y-m-d H:i:s"); 
         $task_status = "Pause"; 
 
         try {
