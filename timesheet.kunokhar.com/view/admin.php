@@ -138,7 +138,6 @@
                                 </div>
                                 <div class="form-group">
                                     <select class="form-control" id="employee_list">
-                                        <option selected disabled id="default">- Assign to -</option>
 
                                     </select>
                                 </div>

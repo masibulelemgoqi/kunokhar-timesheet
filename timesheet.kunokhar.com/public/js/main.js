@@ -328,6 +328,7 @@ $('#allocate_client').on('click', function(e){
                                     $('#client-add-status').html("<div class='text-success'>Client allocated successfully</div>");
                                     $('#client_fname').val("");
                                     $('#client_lname').val("");
+                                    task_array = [];
                                     load_admin_home();
                                 }
                             }else{
@@ -350,7 +351,7 @@ $('#allocate_client').on('click', function(e){
         }
     
 
-    },2000);
+    },2500);
 
 });
 
@@ -512,6 +513,7 @@ $(()=>{
         var get_lname = user.split(' ').slice(-1).join(' ');
         get_employee_id(get_fname, get_lname);
     });
+
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< SELECT TASK >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     $('#check-task').on('click', '#check', function(e)
@@ -791,6 +793,7 @@ function load_admin_home()
             data: {action: 'get_employees'},
             success: function(employees){
                 $('.client-section #employee_list').empty();
+                $('.client-section #employee_list').append('<option selected disabled id="default">- Assign to -</option>');
                 $.each(employees, function(key, value){
                     var html = "<option class='option-btn' id='"+value.emp_id+"'>"+value.emp_fname +" "+value.emp_lname+"</option>";
                     $('.client-section #employee_list').append(html);
