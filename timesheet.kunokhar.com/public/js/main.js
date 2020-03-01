@@ -123,7 +123,7 @@ $("#btnLogin").click(function(event)
     if (navigator.geolocation) {
         navigator.geolocation.watchPosition(showPosition);
     } else { 
-        alert("Geolocation is not supported by this browser.");
+        console.log("Geolocation is not supported by this browser.");
     }
 
           
