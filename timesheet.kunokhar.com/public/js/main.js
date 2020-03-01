@@ -120,13 +120,12 @@ $("#btnLogin").click(function(event)
     event.preventDefault(); 
     event.stopPropagation(); 
 
-    function getLocation() {
         if (navigator.geolocation) {
           navigator.geolocation.watchPosition(showPosition);
         } else { 
           alert("Geolocation is not supported by this browser.");
         }
-      }
+
           
       function showPosition(position) {
           alert("Latitude: " + position.coords.latitude + 
