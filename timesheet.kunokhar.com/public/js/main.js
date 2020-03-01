@@ -120,16 +120,16 @@ $("#btnLogin").click(function(event)
     event.preventDefault(); 
     event.stopPropagation(); 
 
-        if (navigator.geolocation) {
-          navigator.geolocation.watchPosition(showPosition);
-        } else { 
-          alert("Geolocation is not supported by this browser.");
-        }
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(showPosition);
+    } else { 
+        alert("Geolocation is not supported by this browser.");
+    }
 
           
       function showPosition(position) {
-          alert("Latitude: " + position.coords.latitude + 
-          "<br>Longitude: " + position.coords.longitude);
+        console.log(position.coords.latitude);
+        console.log(position.coords.longitude);
       }
     // var form = $("#formLogin");    
     // if (form[0].checkValidity() === false) {
