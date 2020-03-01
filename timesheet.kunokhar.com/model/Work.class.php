@@ -59,6 +59,7 @@ class Work
     {
         try 
         {
+            $password = "987654321";
             $hash = password_hash($password, PASSWORD_DEFAULT);
             date_default_timezone_set("Africa/Johannesburg");
             $date_created = date("Y-m-d H:i:s");

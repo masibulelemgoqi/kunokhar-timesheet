@@ -183,7 +183,7 @@ $("#save_user").on('click', function(e){
         if(employee_role == null){
             $('#user-add-status').html('<div class="text-danger">Employee role is important</div>');
         }else{
-            var password = generate_password();
+            var password = "123";
             console.log(password);
             
             $.ajax({
