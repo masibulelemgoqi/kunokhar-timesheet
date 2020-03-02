@@ -1,5 +1,5 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="utf-8">
     <title>Kunokhar Timesheet</title>
@@ -19,12 +19,25 @@
 
         <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="./profile"><i class="far fa-user fa-2x"></i><div>Profile</div></a>
+                <li class="nav-item text-center">
+                    <a class="nav-link" href="./history.php">
+                        <i class="fa fa-history fa-2x" aria-hidden="true"></i>
+                        <div>History</div>
+                    </a>
+                </li>
+                
+                <li class="nav-item text-center">
+                    <a class="nav-link" href="./profile">
+                        <i class="far fa-user fa-2x"></i>
+                        <div>Profile</div>
+                    </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" id="logout"><i class="fas fa-sign-out-alt fa-2x"></i><div>Logout</div></a>
+                <li class="nav-item text-center">
+                    <a class="nav-link" id="logout">
+                        <i class="fas fa-sign-out-alt fa-2x"></i>
+                        <div>Logout</div>
+                    </a>
                 </li>
             </ul>
         </div>

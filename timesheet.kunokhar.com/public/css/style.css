@@ -17,7 +17,6 @@ body
   height: 100vh;
 }
 
-
 .navbar-nav .nav-item .nav-link
 {
 	margin-left: 1.5em;
@@ -124,6 +123,9 @@ body
   background-color: whitesmoke;
 }
 
+.modal-dialog {
+
+}
 
 /*testing*/
 .modal-header, .modal-footer
@@ -133,27 +135,23 @@ body
 
 .modal-body .row .time-show
 {
-  margin-left: 47.8%;
+  text-align: center;
   font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: 50px;
 }
 
-.modal-body .row .start-task
-{
-  margin-left: 50%;
-}
-
+.modal-body .row .start-task,
 .modal-body .row .pause-task
 {
-  margin-left: 50%;
+  text-align: center;
 }
-
 
 .modal-body .row .task-comment textarea
 {
 	margin-left: 1em;
 	margin-top: 1.5em;
 	width: 29em;
-	height: 10em;
+	height: 8em;
 	resize: none;
 	border: tomato solid 1px;
 }
@@ -211,28 +209,48 @@ body
 	color: tomato;
 }
 
-#client_tasks .daily-history {
+#client_tasks #task-action span {
+  font-size: 25px;
+  border-bottom: 1px solid #e6e6e6;
+  width: 100%;
+  font-weight: 600;
+  color: #222;
+  padding: 0.3em;
+  border-radius: 5px;
+  cursor: pointer;
+  background-image: -webkit-linear-gradient(top, #f4f1ee, #fff);
+  background-image: linear-gradient(top, #f4f1ee, #fff);
+  box-shadow: 0px 8px 10px 0px rgba(0, 0, 0, .3), inset 0px 4px 1px 1px white, inset 0px -3px 1px 1px rgba(204,198,197,.5);
+}
+
+.daily-history {
 	background-color: #fff;
 	padding: 0.5em;
 }
 
-#client_tasks .daily-history .tasks-done .actual-task {
+.daily-history .tasks-done .actual-task {
 	background-color: #222;
 	padding: 0.5em;
 	border-radius: 5px;
 	margin: 10px 10px;
+  position: relative;
 }
 
-#client_tasks .daily-history .tasks-done .actual-task h4 {
+.daily-history .tasks-done .actual-task h4 {
 	color: #fff;
 	margin: 0;
 	font-size: 18px;
 	text-transform: uppercase;
 }
 
-#client_tasks .daily-history .tasks-done .actual-task small {
+.daily-history .tasks-done .actual-task small {
 	color: tomato;
 	font-size: 16px;
+}
+
+.time-taken {
+  position: absolute;
+  right: 20px;
 }
 
 .no-content {

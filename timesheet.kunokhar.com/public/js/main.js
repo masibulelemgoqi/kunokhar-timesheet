@@ -712,7 +712,7 @@ function done_tasks(){
                     html = `<div class="actual-task shadow">
                                 <h4>${task.allocate_task_name}</h4>
                                 <small>${start_hr}:${start_ms} - ${end_hr}:${end_ms}</small>
-                                <small>Time taken ${task.allocate_time_taken}</small>
+                                <small class="time-taken">Time Taken ${task.allocate_time_taken}</small>
                             </div>`;
                             count++;
                     
@@ -845,7 +845,7 @@ function loadTasks(){
                     html = `<div class="actual-task shadow">
                                 <h4>${value.allocate_task_name}</h4>
                                 <small>${start_hr}:${start_ms} - ${end_hr}:${end_ms}</small>
-                                <small>Time taken ${value.allocate_time_taken}</small>
+                                <small class="time-taken">Time taken ${value.allocate_time_taken}</small>
                             </div>`;
                     
                     $('.tasks-done').append(html);

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
     <title>Kunokhar Timesheet</title>
@@ -19,73 +19,85 @@
 
         <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="./profile"><i class="far fa-user fa-2x"></i><div>Profile</div></a>
+                <li class="nav-item text-center">
+                    <a class="nav-link" href="./profile">
+                        <i class="far fa-user fa-2x"></i>
+                        <div>Profile</div>
+                    </a>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" id="logout"><i class="fas fa-sign-out-alt fa-2x"></i><div>Logout</div></a>
+                <li class="nav-item text-center">
+                    <a class="nav-link" id="logout">
+                        <i class="fas fa-sign-out-alt fa-2x"></i>
+                        <div>Logout</div>
+                    </a>
                 </li>
             </ul>
         </div>
     </nav>
 
-    <section id="client_tasks">
-        <div class="container">
-            <div class="row">
-                <div class="col-8">
-                    <div class="tasks-to-do">
-                    	<div class="client-name">
-	                    	<h1>Sive Ndabeni</h1>
-	                    	<span>Allocated to <b>Masibulele Mgoqi</b></span>
-	                    </div>
-                        <div class="pt-5 text-white" id="tasks-admin-view">
+    <section id="client_tasks" class="p-4">
+        <div class="row">
+            <div class="col-8">
+                <div class="tasks-to-do">
+                    <div class="client-name">
+                        <h1>Hello!!</h1>
+                        <span>Allocated to <b>Masibulele Mgoqi</b></span>
+                    </div>
+                  <div class="pt-5" id="tasks-admin-view">
 
+                  </div>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="daily-history">
+                    <h3>Today</h3>
+                    <div class="tasks-done">
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade show_start_task" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <p class="time-show"><!-- displaying time --></p>
+                            </div>
                         </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="start-task">
+                                    <i class="fa fa-play fa-3x text-tomato"></i>
+                                </div>
+                                <div class="pause-task">
+                                    <i class="fa fa-pause fa-3x text-tomato"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="task-comment">
+                                <textarea class="form-control" placeholder="Comment on task(Compulsory)"></textarea>
+                            </div>
+                        </div>
+                        <div class="task-status"></div>
                     </div>
-                </div>
-                <div class="col-4">
-                    <div class="daily-history">
-                    	<h3>Today</h3>
-                    	<div class="tasks-done">
-
-                    	</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-tomato-o" id="done_task">Done</button>
                     </div>
                 </div>
             </div>
         </div>
-
-      <!-- Modal -->
-      <div class="modal fade show_start_task" role="dialog" data-backdrop="static" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel"></h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-              </button>
-            </div>
-            <div class="modal-body">
-               <div class="row">
-                   <p class="time-show">00:00</p>
-               </div>
-               <div class="row">
-                   <div class="start-task"><i class="fa fa-play fa-3x text-tomato"></i></div>
-                   <div class="pause-task"><i class="fa fa-pause fa-3x text-tomato"></i></div>
-               </div>
-               <div class="row">
-                   <div class="task-comment">
-                       <textarea class="form-control" placeholder="Comment on task(Compulsory)..."></textarea>
-                   </div>
-               </div>
-              <div class="task-status"></div>
-            </div>
-            <div class="modal-footer">
-              <button class="btn btn-tomato-o" id="done_task">Done</button>
-            </div>
-          </div>
-        </div>
-      </div>
     </section>
 
 	<script src="../public/js/jquery.js"></script>
