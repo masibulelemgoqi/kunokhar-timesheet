@@ -119,38 +119,50 @@ $("#btnLogin").click(function(event)
 { //Fetch form to apply custom Bootstrap validation\r\n  
     event.preventDefault(); 
     event.stopPropagation(); 
-    var form = $("#formLogin");    
-    if (form[0].checkValidity() === false) {
-        event.preventDefault(); 
-        event.stopPropagation();
-    }else{
-        form.addClass('was-validated');
-        var email = $('#uname1').val();
-        var password = $('#pwd1').val();
 
-        $.ajax({
-            url: "controller/controller.php",
-            method: "POST",
-            dataType: "json",
-            data: {email: email, password: password, action: "login"}
-        }).then(function(data){
-            if(data.success){
-                var d = new Date();
-                sessionStorage.setItem('user_session', d.getTime());
-                sessionStorage.setItem('session_id', data.id);
-                sessionStorage.setItem('role', data.role);
-                if(data.role == "ADMIN_USER"){
-                    window.location.href = 'view/admin.php';
-                }
-                window.location.href = 'view/home.php';
+    if (navigator.geolocation) {
+        navigator.geolocation.watchPosition(showPosition);
+    } else { 
+        console.log("Geolocation is not supported by this browser.");
+    }
+
+          
+      function showPosition(position) {
+        console.log(position.coords.latitude);
+        console.log(position.coords.longitude);
+      }
+    // var form = $("#formLogin");    
+    // if (form[0].checkValidity() === false) {
+    //     event.preventDefault(); 
+    //     event.stopPropagation();
+    // }else{
+    //     form.addClass('was-validated');
+    //     var email = $('#uname1').val();
+    //     var password = $('#pwd1').val();
+
+    //     $.ajax({
+    //         url: "controller/controller.php",
+    //         method: "POST",
+    //         dataType: "json",
+    //         data: {email: email, password: password, action: "login"}
+    //     }).then(function(data){
+    //         if(data.success){
+    //             var d = new Date();
+    //             sessionStorage.setItem('user_session', d.getTime());
+    //             sessionStorage.setItem('session_id', data.id);
+    //             sessionStorage.setItem('role', data.role);
+    //             if(data.role == "ADMIN_USER"){
+    //                 window.location.href = 'view/admin.php';
+    //             }
+    //             window.location.href = 'view/home.php';
                 
-            }else{
-                console.log(data);
-            }
-        }).catch(function(error){
-            console.log(error);
-        });
-    } 
+    //         }else{
+    //             console.log(data);
+    //         }
+    //     }).catch(function(error){
+    //         console.log(error);
+    //     });
+    // } 
      
 });
 
