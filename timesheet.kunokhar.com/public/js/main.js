@@ -120,49 +120,49 @@ $("#btnLogin").click(function(event)
     event.preventDefault(); 
     event.stopPropagation(); 
 
-    if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(showPosition);
-    } else { 
-        console.log("Geolocation is not supported by this browser.");
-    }
+    // if (navigator.geolocation) {
+    //     navigator.geolocation.watchPosition(showPosition);
+    // } else { 
+    //     console.log("Geolocation is not supported by this browser.");
+    // }
 
           
-      function showPosition(position) {
-        console.log(position.coords.latitude);
-        console.log(position.coords.longitude);
-      }
-    // var form = $("#formLogin");    
-    // if (form[0].checkValidity() === false) {
-    //     event.preventDefault(); 
-    //     event.stopPropagation();
-    // }else{
-    //     form.addClass('was-validated');
-    //     var email = $('#uname1').val();
-    //     var password = $('#pwd1').val();
+    //   function showPosition(position) {
+    //     console.log(position.coords.latitude);
+    //     console.log(position.coords.longitude);
+    //   }
+    var form = $("#formLogin");    
+    if (form[0].checkValidity() === false) {
+        event.preventDefault(); 
+        event.stopPropagation();
+    }else{
+        form.addClass('was-validated');
+        var email = $('#uname1').val();
+        var password = $('#pwd1').val();
 
-    //     $.ajax({
-    //         url: "controller/controller.php",
-    //         method: "POST",
-    //         dataType: "json",
-    //         data: {email: email, password: password, action: "login"}
-    //     }).then(function(data){
-    //         if(data.success){
-    //             var d = new Date();
-    //             sessionStorage.setItem('user_session', d.getTime());
-    //             sessionStorage.setItem('session_id', data.id);
-    //             sessionStorage.setItem('role', data.role);
-    //             if(data.role == "ADMIN_USER"){
-    //                 window.location.href = 'view/admin.php';
-    //             }
-    //             window.location.href = 'view/home.php';
+        $.ajax({
+            url: "controller/controller.php",
+            method: "POST",
+            dataType: "json",
+            data: {email: email, password: password, action: "login"}
+        }).then(function(data){
+            if(data.success){
+                var d = new Date();
+                sessionStorage.setItem('user_session', d.getTime());
+                sessionStorage.setItem('session_id', data.id);
+                sessionStorage.setItem('role', data.role);
+                if(data.role == "ADMIN_USER"){
+                    window.location.href = 'view/admin.php';
+                }
+                window.location.href = 'view/home.php';
                 
-    //         }else{
-    //             console.log(data);
-    //         }
-    //     }).catch(function(error){
-    //         console.log(error);
-    //     });
-    // } 
+            }else{
+                console.log(data);
+            }
+        }).catch(function(error){
+            console.log(error);
+        });
+    } 
      
 });
 
@@ -506,13 +506,30 @@ $(()=>{
             $('.task-status').empty();
             $('.task-status').append("<div class='text-tomato'>Your comment should be at least 10 letters</div>");
         }else{
-            stopTime();
-            add_end_task_time(modal_id, time_taken, comment);
-            $('.task-status').empty();
-            $('.close').trigger('click'); 
-            $('.tasks-to-do #tasks-admin-view').empty();
-            $('.tasks-done').empty();
-            loadTasks();
+            if(hour == 0 && minute == 0 && second == 0){
+                add_end_task_time(modal_id, time_taken, comment);
+                $('.task-status').empty();
+                $('.close').trigger('click'); 
+                $('.tasks-to-do #tasks-admin-view').empty();
+                $('.tasks-done').empty();
+                time_taken = "00:00:00";
+                loadTasks();
+                
+            }else{
+                stopTime();
+                add_end_task_time(modal_id, time_taken, comment);
+                $('.task-status').empty();
+                $('.close').trigger('click'); 
+                $('.tasks-to-do #tasks-admin-view').empty();
+                $('.tasks-done').empty();
+                hour = 0;
+                minute = 0; 
+                second = 0;
+                time_taken = "00:00:00";
+                loadTasks();
+
+            }
+
            
         } 
     });
@@ -675,24 +692,6 @@ function get_unattended_tasks(fname, lname){
         console.error(error.responseText);  
     });
    
-}
-
-
-
-//--------------------------| VIEW ALL TASKS OF THE CLIENT ALLOCATED TO THE EMPLOYEE |--------------------
-function view_tasks()
-{
-    var html = `<a id="to_home" class="m-3 ml-4" onclick="history.back(-1)"><i class="fa fa-angle-left"></i></a>
-                <div class="font-weight-bold ml-4">client with id ${sessionStorage.getItem('task_id')}</div>
-                <div class="card mt-4 ml-4 bg-chocolate" style="width: 40rem;">
-                    <div class="card-body">
-                        <a class="task-view" id="1" data-toggle="modal" data-target="#exampleModal"> This is some text within a card body. </a>
-                    </div>
-                </div>
-                `;
-    $('#all_views').empty();
-    $('#all_views').append(html);
-
 }
 
 //-----------------| SHOW ALL DONE TASKS DONE BY EMPLOYEE IN A DAY |---------------------
