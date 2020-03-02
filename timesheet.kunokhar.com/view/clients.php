@@ -87,7 +87,7 @@
                         </div>
                         <div class="row">
                             <div class="task-comment">
-                                <textarea class="form-control" placeholder="Comment on task(Compulsory)"></textarea>
+                                <textarea class="form-control text-tomato" placeholder="Comment on task(Compulsory)"></textarea>
                             </div>
                         </div>
                         <div class="task-status"></div>

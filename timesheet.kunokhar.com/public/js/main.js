@@ -151,7 +151,7 @@ $("#btnLogin").click(function(event)
                 sessionStorage.setItem('user_session', d.getTime());
                 sessionStorage.setItem('session_id', data.id);
                 sessionStorage.setItem('role', data.role);
-                if(data.role == "ADMIN_USER"){
+                if(data.role == 1){
                     window.location.href = 'view/admin.php';
                 }
                 window.location.href = 'view/home.php';
@@ -377,7 +377,13 @@ function add_start_task_time(modal_id){
         method: 'POST',
         data: {task_id: modal_id, action: 'add_task_start_time'}
     }).then(function(data){
-        console.log(data);
+        if(data == 1){
+            $('.task-status').empty();
+            $('.task-status').append("<div class='text-success'>task started succefully!!!</div>");
+        }else{
+            $('.task-status').empty();
+            $('.task-status').append("<div class='text-tomato'>Oops, error ocurred while starting task</div>");
+        }
     }).catch(function(error){
         console.error(error.responseText);
     });
@@ -389,7 +395,13 @@ function add_end_task_time(modal_id, time_taken, comment){
         method: 'POST',
         data: {task_id: modal_id, task_time_taken: time_taken, task_comment: comment, action: 'add_task_end_time'}
     }).then(function(data){
-        console.log(data);
+        if(data == 1){
+            $('.task-status').empty();
+            $('.task-status').append("<div class='text-success'>task is done</div>");
+        }else{
+            $('.task-status').empty();
+            $('.task-status').append("<div class='text-tomato'>Oops, could not save done task</div>");
+        }
     }).catch(function(error){
         console.error(error.responseText);
     });
@@ -401,7 +413,13 @@ function add_pause_task_time(modal_id, exact_time_taken){
         method: 'POST',
         data: {task_id: modal_id, task_time_taken: exact_time_taken, action: 'add_task_pause'}
     }).then(function(data){
-        console.log(data);
+        if(data == 1){
+            $('.task-status').empty();
+            $('.task-status').append("<div class='text-success'>task is paused</div>");
+        }else{
+            $('.task-status').empty();
+            $('.task-status').append("<div class='text-tomato'>Oops, error ocurred while pausing task</div>");
+        }
     }).catch(function(error){
         console.error(error.responseText);
     });
@@ -467,6 +485,8 @@ $(()=>{
                     minute = parseInt(ms);
                     second = parseInt(sc);
                 }
+                $('.task-status').empty();
+                $('.task-status').append("<div class='text-success'>Task resumed</div>");
                 startTime();
                 $('.start-task').hide();
                 $('.pause-task').show();
@@ -592,7 +612,27 @@ $(()=>{
     $('#client_tasks').on('click', '#task-action', function(e){
         
         e.stopPropagation();
+        $('.task-status').empty();
         if(sessionStorage.getItem('role') != 1){
+            var task_id = $(this).find('p').text();
+            var task_name = $(this).find('span').text();
+            $('.show_start_task').attr('id', 'exampleModal'+task_id);
+            $('#exampleModal'+task_id).find('h5').text(task_name);
+            modal_id = task_id;
+            get_task(modal_id);
+            setTimeout(function(){
+                if(time_started == "NULL" || time_started == null){
+                    $('.time-show').empty();
+                    $('.time-show').append("00:00:00");  
+                    $('#exampleModal'+task_id).modal("show");
+                }else{
+                    $('.time-show').empty();
+                    time_taken = time_taken_for_this;
+                    $('.time-show').append(time_taken_for_this);
+                    $('#exampleModal'+task_id).modal("show");
+                }
+            }, 2000);
+        }else if(sessionStorage.getItem('role') == 1 && sessionStorage.getItem('session_id') == sessionStorage.getItem('allocted_emp')){
             var task_id = $(this).find('p').text();
             var task_name = $(this).find('span').text();
             $('.show_start_task').attr('id', 'exampleModal'+task_id);
@@ -615,8 +655,9 @@ $(()=>{
     });
 
 //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< CLOSE MODAL ACTION >>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-    $('#exampleModal'+modal_id).on('click', '.close', function(e){
+    $('.close').on('click', function(e){
         stopTime();
+        $('.task-comment textarea').val("")
         second = 0;
         hour = 0;
         minute = 0;
