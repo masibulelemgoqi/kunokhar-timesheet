@@ -107,7 +107,20 @@ var hour = 0;
 var t;
 var time_taken = "00:00:00";
 
+/*===================================================================
+                        LOADER
+=====================================================================*/
+    function showLoader(){
+        var loaderHtml = '<div id="loader"><div></div><div></div></div>';
+        if ($('body').find('#loader').length == 0) {
+            $('body').append(loaderHtml);
+        }
+        $("#loader").addClass("lds-ripple");
+    }
 
+    function hideLoader(){
+        $("#loader").removeClass("lds-ripple");
+    }
 
 /*===================================================================
                         AUTHENTIFICATION
@@ -270,7 +283,7 @@ $('.task-section').on('click', '#more-task', function(e){
 
             count++;
             var inputField = '<div class="input-group form-group">\
-                            <input class="form-control" type="text" id="task_name-'+count+'" name="task_name" placeholder="task name">\
+                            <input class="form-control" type="text" id="task_name-'+count+'" name="task_name" placeholder="Task name">\
                             <button id="more-task" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> </button>\
                         </div>';
             $('.modal-body .task-section .container .p-3 .col-sm-offset-1 p').after(inputField);

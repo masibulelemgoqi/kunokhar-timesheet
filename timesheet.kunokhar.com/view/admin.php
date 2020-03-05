@@ -71,7 +71,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="add_user">Employee</h5>
+                    <h5 class="modal-title" id="add_user">Add Employee</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -81,35 +81,18 @@
                         <div class="container">
                             <form class="p-3" method="POST">
                                 <div class="col-sm-offset-1 form-group">
-                                    <p>Add an employee</p>
-                                    <div class="input-group form-group">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-envelope fa-fw"></i>
-                                        </span>
-                                        <input class="form-control" type="text" placeholder="Email address" id="employee_email">
-                                    </div>
-                                    <div class="input-group form-group">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-user fa-fw"></i>
-                                        </span>
-                                        <input class="form-control" type="text" placeholder="First name" id="employee_fname">
-                                    </div>
-                                    <div class="input-group form-group">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-user fa-fw"></i>
-                                        </span>
-                                        <input class="form-control" type="text" placeholder="Last name" id="employee_lname">
-                                    </div>
-                                    <div class="input-group form-group">
-                                        <span class="input-group-addon">
-                                            <i class="fa fa-user-tag fa-fw"></i>
-                                        </span>
-                                        <select name="" id="employee_role" class=" form-control">
-                                            <option disabled selected>- Select type of user -</option>
-                                            <option>ADMIN USER</option>
-                                            <option>ORDINARY USER</option>
-                                        </select>
-                                    </div>
+                                    <input class="form-control" type="text" placeholder="Email address" id="employee_email">
+                                    
+                                    <input class="form-control" type="text" placeholder="First name" id="employee_fname">
+
+                                    <input class="form-control" type="text" placeholder="Last name" id="employee_lname">
+
+                                    <select name="" id="employee_role" class=" form-control">
+                                        <option disabled selected>- Select type of user -</option>
+                                        <option>ADMIN USER</option>
+                                        <option>ORDINARY USER</option>
+                                    </select>
+                                   
                                     <div class="input-group form-group">
                                         <div id="user-add-status"></div>
                                     </div>
@@ -141,20 +124,14 @@
                     <section class="client-section">
                         <div class="container">
                             <form class="p-3 allocate-form" method="POST">
-                                <div class="form-group">
-                                    <div class="input-group form-group">
-                                        <input class="form-control" type="text" placeholder="First name" id="client_fname">
-                                    </div>
-                                    <div class="input-group form-group">
-                                        <input class="form-control" type="text" placeholder="Last name" id="client_lname">
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <select class="form-control" id="employee_list">
+                                <input class="form-control" type="text" placeholder="First name" id="client_fname">
+                                <input class="form-control" type="text" placeholder="Last name" id="client_lname">
+                                <select class="form-control" id="employee_list">
 
-                                    </select>
-                                </div>
+                                </select>
+                                
                                 <h5>Select Tasks</h5>
+
                                 <div class="form-group" id="check-task">
                                     
                                 </div>
@@ -177,7 +154,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="add_task">Task</h5>
+                    <h5 class="modal-title" id="add_task">Add Task</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -187,22 +164,21 @@
                         <div class="container">
                             <form class="p-3">
                                 <div class=" col-sm-offset-1 form-group">
-                                    <p>Add a Task</p>
+                                    <p style="margin: 0"></p>
                                     <div class="input-group form-group input-0">
-                                        <input class="form-control" type="text" id="task_name-0" name="task_name" placeholder="task name">
-                                        <button id="more-task" class="btn btn-success"><i class="fa fa-plus" aria-hidden="true"></i> </button>
+                                        <input class="form-control" type="text" id="task_name-0" name="task_name" placeholder="Task name">
+                                        <button id="more-task" class="btn btn-success">
+                                            <i class="fa fa-plus" aria-hidden="true"></i>
+                                        </button>
                                     </div>
-                                    
                                 </div>
+                                
                                 <div class="input-group form-group">
                                     <div id="task-add-status"></div>
                                 </div>
                             </form>
                         </div>
                     </section>     
-                </div>
-                <div class="modal-footer">
-                    <button class="btn btn-tomato-o mr-3" id="save_task"> <i class="fa fa-plus mr-2" aria-hidden="true"></i>Save Task</button>
                 </div>
             </div>
         </div>

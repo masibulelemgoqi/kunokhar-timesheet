@@ -4,6 +4,11 @@
 {
 	height: 15%;
 	width: 15%;
+  cursor: pointer;
+}
+
+a.navbar-brand {
+  cursor: pointer !important;
 }
 
 body
@@ -15,6 +20,49 @@ body
   background-attachment: fixed;
   width: 100%;
   height: 100vh;
+}
+
+.lds-ripple {
+  position: fixed; 
+  top:0;
+  left:0; 
+  right:0; 
+  bottom:0;     
+  background:rgba(255,255,255,1);
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  min-height: 100%;
+}
+.lds-ripple div {
+  border: 4px solid #222;
+  width: 100px;
+  height: 100px;
+  opacity: 1;
+  border-radius: 50%;
+  animation: lds-ripple 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+}
+.lds-ripple div:nth-child(2) {
+  animation-delay: -0.5s;
+}
+@keyframes lds-ripple {
+  0% {
+    top: 36px;
+    left: 36px;
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    top: 0px;
+    left: 0px;
+    width: 72px;
+    height: 72px;
+    opacity: 0;
+  }
 }
 
 .navbar-nav .nav-item .nav-link
@@ -123,14 +171,23 @@ body
   background-color: whitesmoke;
 }
 
-.modal-dialog {
-
-}
-
 /*testing*/
 .modal-header, .modal-footer
 {
   border: none;
+}
+
+.modal-footer {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+.modal-header .modal-title {
+  text-align: center;
+}
+
+.modal-body {
+  
 }
 
 .modal-body .row .time-show
@@ -340,11 +397,12 @@ body
   border: none;
   border-radius: 0;
   color: #fff;
-  padding: 0.3em 1em;
+  padding: 0.3em 2em;
 }
 
 .login-btn:hover {
-  background-color: #008222;
+  background-color: #222;
+  color: #fff;
 }
 
 #add_user
@@ -448,15 +506,7 @@ body
 
 /* user modal */
 .user-section form {
-	background: #ededed;
-	height: 330px;
-   margin-top: 20px;
-}
-
-.user-section form p {
-	padding: 7px 0;
-	text-align: left;
-	font-style: italic;
+	
 }
 
 .user-section form .col-sm-offset-1 {
@@ -464,13 +514,13 @@ body
 	margin-top: 10px;
 }
 
-.user-section form .col-sm-offset-1 .input-group span {
-	margin-right: 10px;
+.user-section form .col-sm-offset-1 input {
+  margin-bottom: 10px;
 }
 
-.user-section form .col-sm-offset-1 .input-group input::placeholder {
-  font-style: italic;
-  
+.user-section form .col-sm-offset-1 input::placeholder {
+  font-style: normal;
+  color: #b3b3b3;
 }
 
 
@@ -501,25 +551,24 @@ body
 }
 
 .client-section form p {
-	padding: 7px 0;
 	text-align: left;
 	font-style: italic;
 }
 
-.client-section form .col-sm-offset-1 {
-	height: 200px;
-	margin-top: 10px;
+.client-section form input::placeholder {
+  font-style: normal;
+  color: #b3b3b3;
 }
 
-.client-section form .col-sm-offset-1 .input-group span {
-	margin-right: 10px;
+.client-section form input,
+.client-section form select {
+  margin-bottom: 10px;
 }
 
-.client-section form .col-sm-offset-1 .input-group input::placeholder {
-  font-style: italic;
-  
+.client-section form #check-task {
+  height: 200px;
+  overflow-y: scroll;
 }
-
 
 .client-section form button:hover i{
 	position: relative;
@@ -541,13 +590,6 @@ body
   margin-top: 120px;
 }
 
-/* Task modal */
-.task-section form {
-	background: #ededed;
-	height: 300px;
-   margin-top: 20px;
-}
-
 .task-section form p {
 	padding: 7px 0;
 	text-align: left;
@@ -555,7 +597,6 @@ body
 }
 
 .task-section form .col-sm-offset-1 {
-	height: 200px;
 	margin-top: 10px;
 }
 
@@ -564,10 +605,17 @@ body
 }
 
 .task-section form .col-sm-offset-1 .input-group input::placeholder {
-  font-style: italic;
-  
+  font-style: normal;
+  color: #b3b3b3;
 }
 
+.task-section form .col-sm-offset-1 .input-group input {
+  border-radius: 5px 0 0 5px;
+}
+
+.task-section form .input-group button {
+  border-radius: 0 5px 5px 0;
+}
 
 .task-section form button:hover i{
 	position: relative;
