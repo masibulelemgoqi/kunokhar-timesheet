@@ -107,7 +107,18 @@ var hour = 0;
 var t;
 var time_taken = "00:00:00";
 
+function onPositionReceived(position) {
 
+    if(position.coords.latitude <= -31.5945941 && position.coords.latitude >= -31.5948278 && position.coords.longitude >= 28.7735795 && position.coords.longitude <= 28.7740795) {
+        return true;
+    }else{
+        return false;
+    }
+}
+
+if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(onPositionReceived);
+}
 
 /*===================================================================
                         AUTHENTIFICATION
@@ -120,17 +131,6 @@ $("#btnLogin").click(function(event)
     event.preventDefault(); 
     event.stopPropagation(); 
 
-    // if (navigator.geolocation) {
-    //     navigator.geolocation.watchPosition(showPosition);
-    // } else { 
-    //     console.log("Geolocation is not supported by this browser.");
-    // }
-
-          
-    //   function showPosition(position) {
-    //     console.log(position.coords.latitude);
-    //     console.log(position.coords.longitude);
-    //   }
     var form = $("#formLogin");    
     if (form[0].checkValidity() === false) {
         event.preventDefault(); 
@@ -146,8 +146,10 @@ $("#btnLogin").click(function(event)
             dataType: "json",
             data: {email: email, password: password, action: "login"}
         }).then(function(data){
+            console.log(data.responseText);
             if(data.success){
                 var d = new Date();
+                
                 sessionStorage.setItem('user_session', d.getTime());
                 sessionStorage.setItem('session_id', data.id);
                 sessionStorage.setItem('role', data.role);
@@ -160,7 +162,7 @@ $("#btnLogin").click(function(event)
                 console.log(data);
             }
         }).catch(function(error){
-            console.log(error);
+            console.error(error.responseText);
         });
     } 
      
@@ -171,12 +173,24 @@ $("#btnLogin").click(function(event)
 $('#logout').on('click', function(e)
 {
     e.preventDefault();
-    sessionStorage.clear();
-    load_login();
+    $.ajax({
+        url: "../controller/controller.php",
+        method: "POST",
+        data: {id: sessionStorage.getItem('session_id'), action: "logout"}
+    }).then(function(){
+        sessionStorage.clear();
+        load_login();
+    }).catch(function(error){
+        console.error(error);
+    })
 });
 
 function load_login(){
     window.location.href = '../index.php';
+}
+
+function user_location(){
+
 }
 
 /*===========================================================

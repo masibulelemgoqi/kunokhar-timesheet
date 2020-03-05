@@ -141,6 +141,14 @@ if(isset($_POST['action']))
 
         //--------------------------[ EDIT ]-----------------------------
 
+        case "logout":
+            $id = $_POST['id'];
+            if($work_object->add_to_register_exit_time($id)){
+                print(1);
+            }else{
+                print($work_object->add_to_register_exit_time($id));
+            }
+        break;
 
         //--------------------------[ DELETE ]---------------------------
 
