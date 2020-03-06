@@ -13,13 +13,16 @@ class Work{
         $this->con = $sql;
     }
 
-    //---------------------[ ATHENTFICATION FUNCTIONS ]----------------------
+    //ANCHOR  ATHENTFICATION FUNCTIONS 
 	public function login($email, $password){
 		try{
 			$sql = "SELECT * FROM `employee_tb` WHERE `emp_email` ='$email'";
 			$stmt = $this->con->query($sql);
 			if($stmt->rowCount() == 0) {
-				echo json_encode(array('success' => false));
+				echo json_encode(array(
+                    'success' => false,
+                    'message' => "User not found"
+                ));
 			} else {
 				$row = $stmt->fetch(PDO::FETCH_ASSOC);
 				$emp_id = $row['emp_id'];
@@ -37,7 +40,12 @@ class Work{
 					'id' => $emp_id,
 					'role' => $emp_role
 					));
-				}
+				}else {
+                    echo json_encode(array(
+                        'success' => false,
+                        'message' => "Incorrect username or password"
+                    ));
+                }
 
 			}
 		}catch( PDOException $e){
@@ -45,10 +53,9 @@ class Work{
 		}
 	}
 
-    //--------------------------[ ADD FUNCTIONS ]---------------------------
+    //ANCHOR  ADD FUNCTIONS 
     public function add_employee($fname, $lname, $email, $role, $password){
         try {
-            $password = "987654321";
             $hash = password_hash($password, PASSWORD_DEFAULT);
             date_default_timezone_set("Africa/Johannesburg");
             $date_created = date("Y-m-d H:i:s");
@@ -83,7 +90,8 @@ class Work{
                             Kunokhar IT Support team
 
                         </h3>";
-            if($this->sendEmail($email, $message)){
+            $subject = "Timesheet Registraion";
+            if($this->sendEmail($email, $message, $subject)){
                 if($stmt->execute()){
                     return true;
                 }  
@@ -111,7 +119,7 @@ class Work{
         try {
             date_default_timezone_set("Africa/Johannesburg");
             $date_created = date("Y-m-d H:i:s");
-            
+            $employee = $this->get_employee($emp_id);            
             $sql = "INSERT INTO `allocate_tb` (`allocate_client_fname`, `allocate_client_lname`, `allocate_emp_id`, `allocate_task_name`, `allocate_date_created`) VALUES (:fname, :lname, :emp_id, :task_name, :date_created)";
             $stmt = $this->con->prepare($sql);
             $stmt->bindParam(':fname', $fname);
@@ -119,9 +127,20 @@ class Work{
             $stmt->bindParam(':date_created', $date_created);
             $stmt->bindParam(':emp_id', $emp_id);
             $stmt->bindParam(':task_name', $task_name);
-            if($stmt->execute()){
-                return true;
+            $msg = "<div>
+                        <h5>Hi, ".$employee['emp_fname']."</h5>
+                        <h5>You have task(s) allocated to you under the client ".$fname." ".$lname."</h5>
+                        <h5>Please login to timesheet.kunokhar.co.za to start the task</h5><br>
+                        <h5>Kunokhar Management</h5>
+                    </div>";
+            $subject = "Timesheet Task Allocation";
+
+            if($this->sendEmail($employee['emp_email'], $msg, $subject)) {
+                if($stmt->execute()){
+                    return true;
+                }
             }
+
         } catch (PDOException $e) {
             print("Error: ".$e->getMessage());
         }      
@@ -145,7 +164,7 @@ class Work{
 	}
 
 
-    //----------------------------------[ GET FUNCTIONS ]---------------------------------
+    //ANCHOR GET FUNCTIONS
    
 
     public function get_employees() {
@@ -160,6 +179,15 @@ class Work{
         }catch (PDOException $e) {
             echo "Error: ".$e->getMessage();
         }
+    }
+
+    public function get_employee($id) {
+        try {
+            $stmt = $this->con->query("SELECT * FROM `employee_tb` WHERE `emp_id`='$id'");
+            return $stmt->fetch(PDO::FETCH_ASSOC);  
+          }catch (PDOException $e) {
+              echo "Error: ".$e->getMessage();
+          }       
     }
 
     public function get_employeeId($fname, $lname) {
@@ -249,12 +277,14 @@ class Work{
             $task_status = $row['allocate_status'];
             $start_time = $row['allocate_start_time'];
             $time_taken = $row['allocate_time_taken'];
+            $comment = $row['allocate_comment'];
           
             echo json_encode(array(
               'success' => true,
               'task_status' => $task_status,
               'start_time' => $start_time,
-              'time_taken' => $time_taken 
+              'time_taken' => $time_taken,
+              'comment' => $comment
             ));
           }
             
@@ -286,25 +316,65 @@ class Work{
 	}
 
 	public function get_all_history($range){
-		$days = null;
-		date_default_timezone_set("Africa/Johannesburg");
-		$date_now = date("Y-m-d"); 
-		if($range == "Today") {
-			$days = 0;
-		}else if($range == "1 Week") {
-			$days = 7;
-		}else if($range == "1 Month") {
-			$days = 30;
-		}else if($range == "3 Month") {
-			$days = 90;
-		}else if($range == "6 Month") {
-			$days = 180;
-		}else if($range == "1 Year") {
-			$days = 365;
-		}
-		
 		try {
-			$sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days'";
+            $days = null;
+            date_default_timezone_set("Africa/Johannesburg");
+            $date_now = date("Y-m-d"); 
+            $sql = null;
+            if($range == "Today") {
+                $days = 0;
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) ='$days'";
+            }else if($range == "Yesterday") {
+                $days = 1;
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) ='$days'";
+            }else if($range == "1 Week") {
+                $days = 7;
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days'";
+            }else if($range == "1 Month") {
+                $days = 30;
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days'";
+            }else if($range == "3 Month") {
+                $days = 90;
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days'";
+            }
+
+			$stmt = $this->con->query($sql);
+			$arr = array();
+			while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+				$arr[] = $row;
+			}
+			return $arr;
+		} catch (PDOException $e) {
+			print("Error: ".$e->getMessage());
+		}
+    }
+    
+    public function get_employee_client_history($fullname, $emp_id,$range){
+		try {
+            $days = null;
+            date_default_timezone_set("Africa/Johannesburg");
+            $date_now = date("Y-m-d"); 
+            $sql = null;
+            $name = explode(" ",$fullname, 2);
+            $fname = $name[0];
+            $lname = $name[1];
+            if($range == "Today") {
+                $days = 0;
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) ='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND AND `allocate_emp_id`='$emp_id'";
+            }else if($range == "Yesterday") {
+                $days = 1;
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) ='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND AND `allocate_emp_id`='$emp_id'";
+            }else if($range == "1 Week") {
+                $days = 7;
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND AND `allocate_emp_id`='$emp_id'";
+            }else if($range == "1 Month") {
+                $days = 30;
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND AND `allocate_emp_id`='$emp_id'";
+            }else if($range == "3 Month") {
+                $days = 90;
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND AND `allocate_emp_id`='$emp_id'";
+            }
+            
 			$stmt = $this->con->query($sql);
 			$arr = array();
 			while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -316,7 +386,7 @@ class Work{
 		}
 	}
 
-    //----------------------------[ EDIT FUNCTIONS ]------------------------------
+    // ANCHOR  EDIT FUNCTIONS
 
     public function set_task_start_time($task_id) {
         date_default_timezone_set("Africa/Johannesburg");
@@ -362,17 +432,15 @@ class Work{
         }
     }
 
-    public function set_pause_task($task_id, $task_time_taken) {
+    public function set_pause_task($task_id, $task_time_taken, $task_comment) {
         date_default_timezone_set("Africa/Johannesburg");
-        $end_task_time = date("Y-m-d H:i:s"); 
 		$task_status = "Pause"; 
 		
         try {
-            $sql = "UPDATE `allocate_tb` SET `allocate_end_time`=:end_task_time,
-                    `allocate_time_taken`=:task_time_taken,
-                    `allocate_status`=:task_status WHERE `allocate_id`=:task_id";
+            $sql = "UPDATE `allocate_tb` SET `allocate_time_taken`=:task_time_taken,
+                    `allocate_status`=:task_status, `allocate_comment`=:task_comment WHERE `allocate_id`=:task_id";
             $stml = $this->con->prepare($sql);
-            $stml->bindParam(':end_task_time', $start_task_time);
+            $stml->bindParam(':task_comment', $task_comment);
             $stml->bindParam(':task_id', $task_id);
             $stml->bindParam(':task_time_taken', $task_time_taken);
             $stml->bindParam(':task_status', $task_status);
@@ -417,7 +485,22 @@ class Work{
 			echo "Error: ".$e->getMessage();
 		}
 	}
-    //---------------------------[ CHECK FUNCTIONS ]------------------------------
+
+	public function edit_password($id, $password) {
+		try {
+			$hash = password_hash($password, PASSWORD_DEFAULT);
+			$sql = "UPDATE `employee_tb` SET `emp_password`=:hash WHERE `emp_id`=:id";
+			$stmt = $this->con->prepare($sql);
+			$stmt->bindParam(':id', $id);
+			$stmt->bindParam(':password', $password);
+			if($stmt->execute()) {
+				return true;
+			}
+		} catch (PDOException $e) {
+			echo "Error: ".$e->getMessage();
+		}
+	}
+    //ANCHOR  CHECK FUNCTIONS 
 
     public function check_email_exists($email) {
         try {
@@ -466,8 +549,8 @@ class Work{
 			echo "Error: ".$e->getMessage();
 		}
 	}
-    //--------------------------[ SEND EMAIL FUNCTION ]---------------------------
-    public function sendEmail($email, $message) {
+    //ANCHOR  SEND EMAIL FUNCTION
+    public function sendEmail($email, $message, $subject) {
 		require 'phpmailer/PHPMailerAutoload.php';
 
 		$to = $email; // this is your Email address
@@ -486,7 +569,7 @@ class Work{
 		$mail->addReplyTo($from);
 
 		$mail->isHTML(true);
-		$mail->Subject = 'Timesheet - Registration';
+		$mail->Subject = $subject;
 		$mail->Body = $message;
 
 		if($mail->send()) {

@@ -8,6 +8,7 @@
     <link href="public/css/fontawesome-free-5.12.1-web/css/all.min.css" type="text/css">
 </head>
 <body>
+    <div id="snackbar"></div>
     <div class="container">
         <div class="row">
             <div class="col-md-12 min-vh-100 d-flex flex-column justify-content-center">
