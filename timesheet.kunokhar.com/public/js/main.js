@@ -112,20 +112,20 @@ var time_taken = "00:00:00";
                         POSITION
 =====================================================================*/
 
-function onPositionReceived(position) {
-    alert("Lat"+position.coords.latitude+"Lon"+position.coords.longitude);
-    if(position.coords.latitude <= -31.5945941 && position.coords.latitude >= -31.5948278 && position.coords.longitude >= 28.7735795 && position.coords.longitude <= 28.7740795) {
-        alert("in the range");
-    }else{
-        alert("outside the range");
-    }
+// function onPositionReceived(position) {
+//     alert("Lat"+position.coords.latitude+"Lon"+position.coords.longitude);
+//     if(position.coords.latitude <= -31.5945941 && position.coords.latitude >= -31.5948278 && position.coords.longitude >= 28.7735795 && position.coords.longitude <= 28.7740795) {
+//         alert("in the range");
+//     }else{
+//         alert("outside the range");
+//     }
     
     
-}
+// }
 
-if(navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(onPositionReceived);
-}
+// if(navigator.geolocation) {
+//     navigator.geolocation.getCurrentPosition(onPositionReceived);
+// }
 /*===================================================================
                         LOADER
 =====================================================================*/
@@ -198,9 +198,11 @@ $('#logout').on('click', function(e)
         url: "../controller/controller.php",
         method: "POST",
         data: {id: sessionStorage.getItem('session_id'), action: "logout"}
-    }).then(function(){
-        sessionStorage.clear();
-        load_login();
+    }).then(function(data){
+        if(data == 1) {
+            sessionStorage.clear();
+            load_login();
+        }
     }).catch(function(error){
         console.error(error);
     })
@@ -230,11 +232,8 @@ $("#save_user").on('click', function(e){
         if(employee_role == null){
             $('#user-add-status').html('<div class="text-danger">Employee role is important</div>');
         }else{
-            var password = "123";
-            console.log(password);
-            
+            var password = generate_password();
             $.ajax({
-
                 url:'../controller/controller.php',
                 method: 'POST',
                 data: {fname: fname, lname: lname, email: email, employee_role: employee_role, password: password, action: 'add_employee'},

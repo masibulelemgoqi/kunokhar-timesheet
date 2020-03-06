@@ -31,6 +31,7 @@ class Work{
 				}
 
 				if(password_verify($password, $hash)) {
+				$this->set_user_status($emp_id, 1);
 				echo json_encode(array(
 					'success' => true,
 					'id' => $emp_id,
@@ -260,7 +261,60 @@ class Work{
         }catch (PDOException $e) {
             echo "Error: ".$e->getMessage();
         }       
-    }
+	}
+	
+	public function get_profile($id) {
+		try {
+			$sql = "SELECT * FROM `employee_tb` WHERE `emp_id`='$id'";
+			$stmt = $this->con->query($sql);
+			if($stmt->rowCount() == 1) {
+				$row = $stmt->fetch(PDO::FETCH_ASSOC);
+				$fname = $row['emp_fname'];
+				$lname = $row['emp_lname'];
+				$email = $row['emp_email'];
+
+				echo json_decode(array(
+					'success' => true,
+					'fname' => $fname,
+					'lname' => $lname,
+					'email' => $email
+				));
+			}
+		} catch (PDOException $e) {
+			print("Error: ".$e->getMessage());
+		}
+	}
+
+	public function get_all_history($range){
+		$days = null;
+		date_default_timezone_set("Africa/Johannesburg");
+		$date_now = date("Y-m-d"); 
+		if($range == "Today") {
+			$days = 0;
+		}else if($range == "1 Week") {
+			$days = 7;
+		}else if($range == "1 Month") {
+			$days = 30;
+		}else if($range == "3 Month") {
+			$days = 90;
+		}else if($range == "6 Month") {
+			$days = 180;
+		}else if($range == "1 Year") {
+			$days = 365;
+		}
+		
+		try {
+			$sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days'";
+			$stmt = $this->con->query($sql);
+			$arr = array();
+			while($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+				$arr[] = $row;
+			}
+			return $arr;
+		} catch (PDOException $e) {
+			print("Error: ".$e->getMessage());
+		}
+	}
 
     //----------------------------[ EDIT FUNCTIONS ]------------------------------
 
@@ -343,11 +397,24 @@ class Work{
 			$stmt->bindParam(":id", $id);
 			$stmt->bindParam(":date_now", $date_now);
 			if($stmt->execute()) {
+				$this->set_user_status($id, 0);
 				return true;
 			}
 			
 		}catch (PDOException $e) {
 			print("Error: ".$e->getMessage());
+		}
+	}
+
+	public function set_user_status($id, $value) {
+		try {
+			$sql = "UPDATE `employee_tb` SET `emp_active_status`=:value WHERE `emp_id`=:id";
+			$stmt = $this->con->prepare($sql);
+			$stmt->bindParam(':id', $id);
+			$stmt->bindParam(':value', $value);
+			$stmt->execute();
+		} catch (PDOException $e) {
+			echo "Error: ".$e->getMessage();
 		}
 	}
     //---------------------------[ CHECK FUNCTIONS ]------------------------------
@@ -381,6 +448,22 @@ class Work{
 			
 		}catch (PDOException $e) {
 			print("Error: ".$e->getMessage());
+		}
+	}
+
+	public function check_password($id, $password) {
+		try{
+			$sql = "SELECT * FROM `employee_tb` WHERE `emp_id` ='$id'";
+			$stmt = $this->con->query($sql);
+			if($stmt->rowCount() == 1) {
+				$row = $stmt->fetch(PDO::FETCH_ASSOC);
+				$hash = $row['emp_password'];
+				if(password_verify($password, $hash)) {
+					return true;
+				}
+			}
+		}catch( PDOException $e){
+			echo "Error: ".$e->getMessage();
 		}
 	}
     //--------------------------[ SEND EMAIL FUNCTION ]---------------------------
