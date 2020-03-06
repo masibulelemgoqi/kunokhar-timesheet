@@ -101,29 +101,53 @@ var count = 0;
 var task_status = null;
 var time_taken_for_this = null;
 var time_started = null;
+var pause_task_comment = null;
 var second = 0; 
 var minute = 0;
 var hour = 0;
 var t;
 var time_taken = "00:00:00";
+var position = null;
 
+
+/*===================================================================
+                    ANCHOR  POSITION
+=====================================================================*/
+
+function onPositionReceived(position) {
+
+    if(position.coords.latitude <= -31.5945941 && position.coords.latitude >= -31.5948278 && position.coords.longitude >= 28.7735795 && position.coords.longitude <= 28.7740795) {
+        position = "in the range";
+    }else{
+        position = "outside the range";
+    }
+    
+    
+}
+
+if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(onPositionReceived);
+}
 /*===================================================================
                         LOADER
 =====================================================================*/
     function showLoader(){
-        var loaderHtml = '<div id="loader"><div></div><div></div></div>';
+        var loaderHtml = '<div id="loader"><img src="../public/img/cc00b40751911eb1a4708af4ca90faea.gif"></div>';
         if ($('body').find('#loader').length == 0) {
+            
             $('body').append(loaderHtml);
+            document.getElementById("loader").style.backgroundColor = "#1b1b1b";
         }
         $("#loader").addClass("lds-ripple");
     }
 
     function hideLoader(){
         $("#loader").removeClass("lds-ripple");
+        $('#loader').empty();
     }
 
 /*===================================================================
-                        AUTHENTIFICATION
+                        ANCHOR    AUTHENTIFICATION
 =====================================================================*/ 
 //------------------------| VARIABLES |-----------------------------
 
@@ -133,26 +157,14 @@ $("#btnLogin").click(function(event)
     event.preventDefault(); 
     event.stopPropagation(); 
 
-    // if (navigator.geolocation) {
-    //     navigator.geolocation.watchPosition(showPosition);
-    // } else { 
-    //     console.log("Geolocation is not supported by this browser.");
-    // }
-
-          
-    //   function showPosition(position) {
-    //     console.log(position.coords.latitude);
-    //     console.log(position.coords.longitude);
-    //   }
     var form = $("#formLogin");    
     if (form[0].checkValidity() === false) {
-        event.preventDefault(); 
-        event.stopPropagation();
+        $('#snackbar').html("Email and password are required to login");
+        snackBar();
     }else{
         form.addClass('was-validated');
         var email = $('#uname1').val();
         var password = $('#pwd1').val();
-
         $.ajax({
             url: "controller/controller.php",
             method: "POST",
@@ -161,6 +173,7 @@ $("#btnLogin").click(function(event)
         }).then(function(data){
             if(data.success){
                 var d = new Date();
+                
                 sessionStorage.setItem('user_session', d.getTime());
                 sessionStorage.setItem('session_id', data.id);
                 sessionStorage.setItem('role', data.role);
@@ -170,10 +183,11 @@ $("#btnLogin").click(function(event)
                 window.location.href = 'view/home.php';
                 
             }else{
-                console.log(data);
+                $('#snackbar').html(data.message);
+                snackBar();
             }
         }).catch(function(error){
-            console.log(error);
+            console.error(error);
         });
     } 
      
@@ -184,16 +198,31 @@ $("#btnLogin").click(function(event)
 $('#logout').on('click', function(e)
 {
     e.preventDefault();
-    sessionStorage.clear();
-    load_login();
+    logout();
 });
+
+function logout() {
+    $.ajax({
+        url: "../controller/controller.php",
+        method: "POST",
+        data: {id: sessionStorage.getItem('session_id'), action: "logout"}
+    }).then(function(data){
+        if(data == 1) {
+            sessionStorage.clear();
+            load_login();
+        }
+    }).catch(function(error){
+        console.error(error);
+    });
+}
 
 function load_login(){
     window.location.href = '../index.php';
 }
 
+
 /*===========================================================
-                  All insertions - events
+                 ANCHOR  All insertions - events
 =============================================================*/
 
 //------------------------| ADD EMPLOYEE |-----------------------------
@@ -208,11 +237,8 @@ $("#save_user").on('click', function(e){
         if(employee_role == null){
             $('#user-add-status').html('<div class="text-danger">Employee role is important</div>');
         }else{
-            var password = "123";
-            console.log(password);
-            
+            var password = generate_password();
             $.ajax({
-
                 url:'../controller/controller.php',
                 method: 'POST',
                 data: {fname: fname, lname: lname, email: email, employee_role: employee_role, password: password, action: 'add_employee'},
@@ -420,11 +446,11 @@ function add_end_task_time(modal_id, time_taken, comment){
     });
 }
 
-function add_pause_task_time(modal_id, exact_time_taken){
+function add_pause_task_time(modal_id, exact_time_taken, comment){
     $.ajax({
         url: '../controller/controller.php',
         method: 'POST',
-        data: {task_id: modal_id, task_time_taken: exact_time_taken, action: 'add_task_pause'}
+        data: {task_id: modal_id, task_time_taken: exact_time_taken,task_comment: comment, action: 'add_task_pause'}
     }).then(function(data){
         if(data == 1){
             $('.task-status').empty();
@@ -439,7 +465,7 @@ function add_pause_task_time(modal_id, exact_time_taken){
 }
 
 /*============================================================
-                        All Views
+                      ANCHOR   All Views
 ==============================================================*/
 
 //=====================|| EVENTS ||=============================
@@ -511,10 +537,10 @@ $(()=>{
     $('.pause-task').on('click', function(e){
         e.preventDefault();
         e.stopPropagation();
-
+        var comment = $('.task-comment textarea').val();
         $('.close').show(); 
         stopTime();
-        add_pause_task_time(modal_id, time_taken);
+        add_pause_task_time(modal_id, time_taken, comment);
         $('.pause-task').hide();
         $('.start-task').show();
     });
@@ -643,6 +669,10 @@ $(()=>{
                     time_taken = time_taken_for_this;
                     $('.time-show').append(time_taken_for_this);
                     $('#exampleModal'+task_id).modal("show");
+                    if(pause_task_comment != "NULL" || pause_task_comment != null) {
+                        $('.task-comment textarea').empty();
+                        $('.task-comment textarea').val(pause_task_comment);
+                    }
                 }
             }, 2000);
         }else if(sessionStorage.getItem('role') == 1 && sessionStorage.getItem('session_id') == sessionStorage.getItem('allocted_emp')){
@@ -662,6 +692,11 @@ $(()=>{
                     time_taken = time_taken_for_this;
                     $('.time-show').append(time_taken_for_this);
                     $('#exampleModal'+task_id).modal("show");
+                    
+                    if(pause_task_comment != "NULL" || pause_task_comment != null) {
+                        $('.task-comment textarea').empty();
+                        $('.task-comment textarea').val(pause_task_comment);
+                    }
                 }
             }, 2000);
         }
@@ -686,6 +721,7 @@ $(()=>{
 
 function load_employee_home()
 {
+    showLoader();
     setTimeout(function(){
         $.ajax(
             {
@@ -706,12 +742,15 @@ function load_employee_home()
                                 var html = `<li class="list-group-item d-flex justify-content-between client-view"><span>${client.allocate_client_fname} ${client.allocate_client_lname}</span><span>${tasks_count[count]}</span></li>`;
                             
                                 $('#all_views').find('ul').append(html);
-                                count++;                           
+                                count++; 
+                                hideLoader();                          
                             },1000);
     
                         });
+                        
                     }else
                     {
+                        hideLoader();
                         $('#all_views').find('ul').append("<h3>No clients allocated for you</h3>");
                     }
     
@@ -868,6 +907,7 @@ function load_admin_home()
 }
 
 function loadTasks(){
+    showLoader();
     var fullname = sessionStorage.getItem('client_name');
     var fname = fullname.split(' ').slice(0, -1).join(' ');
     var lname = fullname.split(' ').slice(-1).join(' ');
@@ -922,6 +962,10 @@ function loadTasks(){
             {
                 $('.tasks-done').append("No tasks done at the moment!");
             }
+
+            setTimeout(function(){hideLoader();},2000);
+
+            
         }
     }).catch(function(error){
         console.error(error.responseText);  
@@ -980,6 +1024,7 @@ function get_task(task_id){
             task_status = task.task_status;
             time_started = task.start_time;
             time_taken_for_this = task.time_taken;
+            pause_task_comment = task.comment;
         }else{
             console.log("error loading data");
         }
@@ -990,17 +1035,17 @@ function get_task(task_id){
 }
 
 /*============================================================
-                        All Edit
+                     ANCHOR    All Edit
 ==============================================================*/
 
 
 /*============================================================
-                        All delete
+                     ANCHOR    All delete
 ==============================================================*/
 
 
 /*============================================================
-                        All validations
+                    ANCHOR  All validations
 ==============================================================*/
 
 
@@ -1135,7 +1180,7 @@ function email_availability(email)
 }
 
 /*============================================================
-                        Other functions
+                    ANCHOR     Other functions
 ==============================================================*/
 //------------------| GENERATE PASSWORD |----------------------
 
@@ -1273,6 +1318,12 @@ var App = {
                 })
     }
 };
+
+function snackBar() {
+    var x = document.getElementById("snackbar");
+    x.className = "show";
+    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+  }
 
 //---------------------------- LOADER ---------------------------------
 

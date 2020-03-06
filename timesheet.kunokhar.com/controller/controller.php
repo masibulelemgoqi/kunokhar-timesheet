@@ -9,7 +9,7 @@ if(isset($_POST['action']))
 
     switch($action)
     {
-        //---------------[ ADD ]----------------
+        //ANCHOR  ADD
         case "add_employee":
 
             $fname = $_POST['fname'];
@@ -77,13 +77,14 @@ if(isset($_POST['action']))
         case "add_task_pause":
             $task_id = $_POST['task_id'];
             $task_time_taken = $_POST['task_time_taken'];
-            if($work_object->set_pause_task($task_id, $task_time_taken)){
+            $task_comment = $_POST['task_comment'];
+            if($work_object->set_pause_task($task_id, $task_time_taken, $task_comment)){
                 print(1);
             }else{
-                print($work_object->set_pause_task($task_id, $task_time_taken));
+                print($work_object->set_pause_task($task_id, $task_time_taken, $task_comment));
             }
         break;
-        //--------------------------[ GET ]-----------------------------
+        //ANCHOR  GET 
 
         case "get_tasks":
             echo json_encode($work_object->get_tasks());
@@ -122,7 +123,24 @@ if(isset($_POST['action']))
             echo json_encode($work_object->get_grouped_clients($id));
         break;
 
-        //--------------------[ AUTHENTIFICATION ]---------------------
+        case 'get_all_history':
+            $range = $_POST['range'];
+            echo json_encode($work_object->get_all_history($range));    
+        break;
+
+        case 'get_employee_client_history':
+            $id = $_POST['id'];
+            $fullname = $_POST['fullname'];
+            $range = $_POST['range'];
+            echo json_encode($work_object->get_employee_client_history($fullname, $id, $range));    
+        break;
+
+        case 'get_profile':
+            $id = $_POST['id'];
+            echo json_encode($work_object->get_profile($id));
+        break;
+
+        //ANCHOR  AUTHENTIFICATION
         case "login":
             $email = $_POST['email'];
             $password = $_POST['password'];
@@ -132,17 +150,25 @@ if(isset($_POST['action']))
             
         break;
 
-        //--------------------------[ CHECK ]---------------------------
+        //ANCHOR  CHECK 
 
         case "check_email":
             $email = $_POST['email'];
             $work_object->check_email_exists($email);
         break;
 
-        //--------------------------[ EDIT ]-----------------------------
+        //ANCHOR  EDIT 
 
+        case "logout":
+            $id = $_POST['id'];
+            if($work_object->add_to_register_exit_time($id)){
+                print(1);
+            }else{
+                print($work_object->add_to_register_exit_time($id));
+            }
+        break;
 
-        //--------------------------[ DELETE ]---------------------------
+        //ANCHOR  DELETE 
 
     }
 }
