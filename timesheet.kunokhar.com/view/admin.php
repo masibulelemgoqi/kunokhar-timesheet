@@ -9,7 +9,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-sm fixed-top navbar-light bg-light">
-        <a class="navbar-brand ml-3" href="#">
+        <a class="navbar-brand ml-3" style="cursor: pointer;">
             <img src="../public/img/kunokharK.png" class="logo" alt="Kunokhar logo">
             <span>Timesheet</span>
         </a>

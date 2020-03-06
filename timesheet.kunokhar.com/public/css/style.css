@@ -695,8 +695,157 @@ ul .clients-employee-li:hover
   background-color: rgba(192, 191, 144, 0.815);
 }
 
+#task_history {
+  margin-top: 100px;
+  z-index: -1;
+}
 
+#task_history .content {
+  margin-top: 100px;
+  padding-top: 100px;
+  margin-left: 10px;
+}
 
+#task_history .paused-tasks {
+  width: 350px;
+  position: fixed;
+  right: 3px;
+  top: 100px;
+}
 
+.paused-tasks {
+	background-color: #fff;
+	padding: 0.5em;
+}
 
+#task_history .paused-tasks .daily-history .actual-task {
+	background-color: #000;
+	padding: 0.5em;
+	border-radius: 5px;
+  position: relative;
+}
 
+#task_history .paused-tasks .daily-history .actual-task h4 {
+	color: #fff;
+	margin: 0;
+	font-size: 18px;
+	text-transform: uppercase;
+}
+
+#task_history .paused-tasks .daily-history .actual-task .client-attandee {
+	line-height: 17px;
+}
+
+#task_history .paused-tasks .daily-history .actual-task .client-attandee small {
+	color: #b3b3b3;
+	font-size: 16px;
+}
+
+#task_history .paused-tasks .daily-history .actual-task .client-attandee small span {
+	color: tomato;
+	font-weight: bold;
+}
+
+#task_history .page-title {
+  background-color: #fff;
+  width: 800px;
+  margin-bottom: 20px;
+  padding: 0.5em;
+  position: fixed;
+  z-index: +1;
+  border-radius: 5px;
+}
+
+#task_history .page-title h2 {
+  font-size: 30px;
+  color: #222;
+  text-align: center;
+}
+
+#task_history .page-title .select-date {
+  list-style-type: none;
+  margin: 0;
+  margin-left: 5px;
+  padding: 0;
+  display: flex;
+  text-align: center;
+  width: 100%
+}
+
+#task_history .page-title .select-date li {
+  display: inline-block;
+  padding: 5px 30px;
+  margin-left: 10px;
+  background-color: #000;
+  color: #fff;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 1px 2px 2px rgba(0,0,0,0.5);
+}
+
+#task_history .page-title .select-date li:hover {
+  background-color: #222;
+  transition: all 0.7s ease;
+}
+
+.active-date {
+  color: tomato !important;
+  transform: translate(5px;);
+}
+
+#task_history .task {
+  background-color: #000;
+  padding: 0.5em;
+  width: 780px;
+  border-radius: 10px;
+  box-shadow: 0 1px 2px 0.1rem rgba(0, 0, 0, 0.5);
+  margin-bottom: 15px;
+  position: relative;
+  margin: 
+}
+
+#task_history .task .header {
+  line-height: 15px;
+}
+
+#task_history .task .header h1 {
+  margin: 0;
+  color: #e6e6e6;
+  padding: 0;
+}
+
+#task_history .task small {
+  font-size: 18px;
+  color: #e6e6e6;
+}
+
+#task_history .task small span {
+  font-weight: bolder;
+  color: tomato;
+}
+
+#task_history .task p {
+  color: #b3b3b3;
+  line-height: 18px;
+  margin-top: 10px;
+}
+
+#task_history .task .date-and-time {
+  display: block;
+  position: absolute;
+  right: 10px;
+  text-align: right;
+  top: 0.5em;
+  line-height: 18px;
+}
+
+#task_history .task .date-and-time span {
+  margin: 0;
+  padding: 0;
+  color: tomato;
+}
+
+#task_history .task .date-and-time span:first-child {
+  color: white;
+}
