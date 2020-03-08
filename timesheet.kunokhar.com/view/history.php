@@ -43,7 +43,7 @@
             </ul>
         </div>
     </nav>
-
+    <div id="snackbar"></div>
     <div id="task_history">
     	<div class="container">
     		<div class="page-title w3-card-4">
@@ -67,65 +67,7 @@
     			</div>
     		</div>
     		<div class="content">
-    			<div class="task">
-	    			<div class="header">
-	    				<h1>Client Name</h1>
-	    				<small>Attended by <span>Employee Name</span></small>
-	    			</div>
-	    			<div class="date-and-time">
-	    				<span>20/05/2015</span><br>
-	    				<span>13:23 - 14:45</span><br>
-	    				<span>Took 00:10:34</span>
-	    			</div>
-	    			<p>
-	    				This is a comment that the employee write after attending a client. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-	    			</p>
-	    		</div>
-
-	    		<div class="task">
-	    			<div class="header">
-	    				<h1>Client Name</h1>
-	    				<small>Attended by <span>Employee Name</span></small>
-	    			</div>
-	    			<div class="date-and-time">
-	    				<span>20/05/2015</span><br>
-	    				<span>13:23 - 14:45</span><br>
-	    				<span>Took 00:10:34</span>
-	    			</div>
-	    			<p>
-	    				This is a comment that the employee write after attending a client. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-	    			</p>
-	    		</div>
-
-	    		<div class="task">
-	    			<div class="header">
-	    				<h1>Client Name</h1>
-	    				<small>Attended by <span>Employee Name</span></small>
-	    			</div>
-	    			<div class="date-and-time">
-	    				<span>20/05/2015</span><br>
-	    				<span>13:23 - 14:45</span><br>
-	    				<span>Took 00:10:34</span>
-	    			</div>
-	    			<p>
-	    				This is a comment that the employee write after attending a client. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-	    			</p>
-	    		</div>
-
-	    		<div class="task">
-	    			<div class="header">
-	    				<h1>Client Name</h1>
-	    				<small>Attended by <span>Employee Name</span></small>
-	    			</div>
-	    			<div class="date-and-time">
-	    				<span>20/05/2015</span><br>
-	    				<span>13:23 - 14:45</span><br>
-	    				<span>Took 00:10:34</span>
-	    			</div>
-	    			<p>
-	    				This is a comment that the employee write after attending a client. Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-	    			</p>
-	    		</div>
+                <!-- Dynamic content goes here -->
     		</div>
     		<div class="paused-tasks">
     			<div class="daily-history">
@@ -140,7 +82,21 @@
 	                    </div>
 	                    <div id="pauseReason" class="w3-dropdown-content w3-bar-block w3-border" style="margin-top: 5px; padding: 0.3em">
 	                    	<p>
-	                    		This is a comment that the employee write after attending a client. Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+	                    		1
+	                    	</p>
+					    </div>
+                    </div>
+                	<div class="w3-dropdown-click" style="width: 100%;">
+                		<div class="actual-task shadow" onclick="viewPausedComment()">
+	                        <h4>Task Name</h4>
+	                        <div class="client-attandee">
+	                        	<small>Client: <span>Simamkele Ndabeni</span></small><br>
+	                        	<small class="employee-name">Attendent by <span>Silindile Ngwane</span></small>
+	                        </div>
+	                    </div>
+	                    <div id="pauseReason" class="w3-dropdown-content w3-bar-block w3-border" style="margin-top: 5px; padding: 0.3em">
+	                    	<p>
+	                    		2
 	                    	</p>
 					    </div>
                 	</div>
@@ -153,15 +109,9 @@
     <script src="../public/js/bootstrap.min.js"></script>
     <script src="../public/css/fontawesome-free-5.12.1-web/js/all.min.js"></script>
     <script src="../public/js/main.js"></script>
+    <script src="../public/js/moment.js"></script>
     <script type="text/javascript">
-    	function viewPausedComment() {
-			var x = document.getElementById("pauseReason");
-			if (x.className.indexOf("w3-show") == -1) { 
-				x.className += " w3-show";
-			} else {
-				x.className = x.className.replace(" w3-show", "");
-			}
-		} function viewPausedComment() {
+		 function viewPausedComment() {
 	  		var x = document.getElementById("pauseReason");
 	  		if (x.className.indexOf("w3-show") == -1) { 
 	    		x.className += " w3-show";

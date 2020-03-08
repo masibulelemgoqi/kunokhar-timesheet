@@ -184,7 +184,11 @@ class Work{
     public function get_employee($id) {
         try {
             $stmt = $this->con->query("SELECT * FROM `employee_tb` WHERE `emp_id`='$id'");
-            return $stmt->fetch(PDO::FETCH_ASSOC);  
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            echo json_encode(array(
+                'fname' => $row['emp_fname'],
+                'lname' => $row['emp_lname']
+            )); 
           }catch (PDOException $e) {
               echo "Error: ".$e->getMessage();
           }       
@@ -327,13 +331,16 @@ class Work{
             }else if($range == "Yesterday") {
                 $days = 1;
                 $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) ='$days'";
-            }else if($range == "1 Week") {
+            }else if($range == "Last 7 Days") {
                 $days = 7;
                 $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days'";
-            }else if($range == "1 Month") {
+            }else if($range == "30 Days") {
                 $days = 30;
                 $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days'";
-            }else if($range == "3 Month") {
+            }else if($range == "60 Days") {
+                $days = 60;
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days'";
+            }else if($range == "90 Days") {
                 $days = 90;
                 $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days'";
             }
@@ -360,19 +367,22 @@ class Work{
             $lname = $name[1];
             if($range == "Today") {
                 $days = 0;
-                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) ='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND AND `allocate_emp_id`='$emp_id'";
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) ='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND `allocate_emp_id`='$emp_id'";
             }else if($range == "Yesterday") {
                 $days = 1;
-                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) ='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND AND `allocate_emp_id`='$emp_id'";
-            }else if($range == "1 Week") {
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) ='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND `allocate_emp_id`='$emp_id'";
+            }else if($range == "Last 7 Days") {
                 $days = 7;
-                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND AND `allocate_emp_id`='$emp_id'";
-            }else if($range == "1 Month") {
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND `allocate_emp_id`='$emp_id'";
+            }else if($range == "30 Days") {
                 $days = 30;
-                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND AND `allocate_emp_id`='$emp_id'";
-            }else if($range == "3 Month") {
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND `allocate_emp_id`='$emp_id'";
+            }else if($range == "60 Days") {
+                $days = 60;
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND `allocate_emp_id`='$emp_id'";
+            }else if($range == "90 Days") {
                 $days = 90;
-                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND AND `allocate_emp_id`='$emp_id'";
+                $sql = "SELECT * FROM `allocate_tb` WHERE DATEDIFF('$date_now', `allocate_date_created`) <='$days' AND `allocate_client_fname`='$fname' AND `allocate_client_lname`='$lname' AND `allocate_emp_id`='$emp_id'";
             }
             
 			$stmt = $this->con->query($sql);

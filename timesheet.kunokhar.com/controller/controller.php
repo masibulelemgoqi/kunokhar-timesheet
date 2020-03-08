@@ -118,6 +118,11 @@ if(isset($_POST['action']))
             $work_object->get_employeeId($fname, $lname);
         break;
 
+        case "get_employee_by_id":
+            $id = $_POST['id'];
+            $work_object->get_employee($id);
+        break;
+
         case "get_clients":
             $id = $_POST['id'];
             echo json_encode($work_object->get_grouped_clients($id));

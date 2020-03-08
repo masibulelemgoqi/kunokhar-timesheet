@@ -82,6 +82,15 @@ window.onload = function()
                }
             }
         break;
+        case "history.php":
+            if(sessionStorage.getItem('user_session') != null) {
+                if(sessionStorage.getItem('role') == 1) {
+                    get_all_history();
+                }else if(sessionStorage.getItem('role') == 0) {
+                    this.get_your_history();
+                }
+            }
+        break;
         
     }
 }
@@ -108,6 +117,9 @@ var hour = 0;
 var t;
 var time_taken = "00:00:00";
 var position = null;
+var range = "Today";
+var emp_fname = null;
+var emp_lname = null;
 
 
 /*===================================================================
@@ -711,7 +723,22 @@ $(()=>{
         minute = 0;
         $('.time-show').empty();
         $('.time-show').text("00:00:00");
-    })  
+    });
+    
+//<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< HISTORY >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+    $('.select-date').on('click', 'li', function(e){
+        e.stopPropagation();
+        $('.select-date li').removeClass('active-date');
+        $(this).addClass('active-date');
+        range = $(this).text();
+        get_all_history();
+    });
+
+    $('.w3-dropdown-click').on('click', 'actual-task', function(e){
+        e.stopPropagation();
+        viewPausedComment();
+    })
 });
 
 
@@ -1034,6 +1061,132 @@ function get_task(task_id){
     });
 }
 
+
+function get_all_history() {
+    showLoader();
+    $.ajax({
+        url: '../controller/controller.php',
+        method: 'POST',
+        dataType: 'json',
+        data: {range: range, action: 'get_all_history'}
+    }).then(function(history) {
+        var count = 0;
+        $('#task_history .content').empty();
+        // $('.paused-tasks .w3-dropdown-click').empty();
+        if(Object.entries(history).length !== 0 && history.constructor !== Object) {
+            $.each(history, function(key, value) {
+                if(value.allocate_status == "Done") {
+                    count++;
+                    get_employee_by_id(value.allocate_emp_id);
+                    setTimeout(function(){
+                        var start_tm = "";
+                        var end_tm = "";
+
+                        if(value.allocate_start_time != null) {
+                            start_tm = moment(value.allocate_start_time).format("H:mm");
+                        }
+
+                        if(value.allocate_end_time != null) {
+                            end_tm = moment(value.allocate_end_time).format("H:mm");
+                        }
+                        var html = `
+                                <div class="task">
+                                    <div class="header">
+                                        <h1>${value.allocate_client_fname} ${value.allocate_client_lname}</h1>
+                                        <small>Attended by <span>${emp_fname} ${emp_lname}</span></small>
+                                    </div>
+                                    <div class="date-and-time">
+                                        <span>${moment(value.allocate_date_created).format("DD/MM/YYYY")}</span><br>
+                                        <span>${start_tm} - ${end_tm}</span><br>
+                                        <span>Took ${value.allocate_time_taken}</span>
+                                    </div>
+                                    <p>
+                                        ${value.allocate_comment}
+                                    </p>
+                                </div>
+                        
+                        `;
+                        $('#task_history .content').append(html);
+                    }, 1000);
+                }
+
+                if(value.allocate_status == "Pause") {
+                    count++;
+                    get_employee_by_id(value.allocate_emp_id);
+                    var comment = "No comment!!";
+                    if(value.allocate_comment !== null) {
+                        comment = value.allocate_comment;
+                    }
+                    setTimeout(function(){
+                        var html = `
+                        <div class="actual-task shadow mb-3">
+                            <h4>Task Name</h4>
+                            <div class="client-attandee">
+                                <small>Client: <span>${value.allocate_client_fname} ${value.allocate_client_lname}</span></small><br>
+                                <small class="employee-name">Attendent by <span>${emp_fname} ${emp_lname}</span></small>
+                            </div>
+                        </div>
+                        <div id="pauseReason" class="w3-dropdown-content w3-bar-block w3-border" style="margin-top: 5px; padding: 0.3em">
+                            <p>
+                            ${comment}
+                            </p>
+                        </div>
+                        `;
+                        $('.paused-tasks .w3-dropdown-click').append(html);
+                    }, 1000);
+
+                }
+            });
+
+            if(count == 0) {
+                $('#task_history .content').append(
+                    `
+                    <div class="task p-4 text-light">
+                        No Info for this day
+                    </div>
+                    `
+                );
+              setTimeout(function(){hideLoader();}, 1000);                
+            }else {
+                setTimeout(function(){hideLoader();}, 1000); 
+            }
+        }else {
+            if(count == 0) {
+                $('#task_history .content').append(
+                    `
+                    <div class="task p-4 text-light">
+                        No Info for this day
+                    </div>
+                    `
+                );
+              setTimeout(function(){hideLoader();}, 1000);                
+            }else {
+                setTimeout(function(){hideLoader();}, 1000); 
+            }
+
+        }
+        
+    }).catch(function(error) {
+        console.error(error);
+    });
+}
+
+function get_employee_by_id(id) {
+    $.ajax({
+        url: '../controller/controller.php',
+        method: 'POST',
+        dataType: 'json',
+        data: {id: id, action: 'get_employee_by_id'}
+    }).then(function(data) {
+        emp_fname = data.fname;
+        emp_lname = data.lname;
+    });
+}
+
+function get_your_history() {
+
+}
+
 /*============================================================
                      ANCHOR    All Edit
 ==============================================================*/
@@ -1323,7 +1476,8 @@ function snackBar() {
     var x = document.getElementById("snackbar");
     x.className = "show";
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
-  }
+}
+
 
 //---------------------------- LOADER ---------------------------------
 
