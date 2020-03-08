@@ -144,9 +144,12 @@ var emp_lname = null;
 function onPositionReceived(position) {
 
     if(position.coords.latitude <= -31.5945941 && position.coords.latitude >= -31.5948278 && position.coords.longitude >= 28.7735795 && position.coords.longitude <= 28.7740795) {
-        position = "in the range";
+        position = "inside";
+        console.log("in ---> "+position.coords.latitude+" "+position.coords.longitude);
+        
     }else{
-        position = "outside the range";
+        position = "outside";
+        console.log("out ---> "+position.coords.latitude+" "+position.coords.longitude);
     }
     
     
@@ -196,7 +199,7 @@ $("#btnLogin").click(function(event)
             url: "controller/controller.php",
             method: "POST",
             dataType: "json",
-            data: {email: email, password: password, action: "login"}
+            data: {email: email, password: password, position: position, action: "login"}
         }).then(function(data){
             if(data.success){
                 var d = new Date();

@@ -14,7 +14,7 @@ class Work{
     }
 
     //ANCHOR  ATHENTFICATION FUNCTIONS 
-	public function login($email, $password){
+	public function login($email, $password, $position){
 		try{
 			$sql = "SELECT * FROM `employee_tb` WHERE `emp_email` ='$email'";
 			$stmt = $this->con->query($sql);
@@ -29,22 +29,49 @@ class Work{
 				$emp_role = $row['emp_power'];
 				$hash = $row['emp_password'];
 
-				if(!$this->check_user_exists_on_register($emp_id)) {
-					$this->add_to_register_enter_time($emp_id);
-				}
-
-				if(password_verify($password, $hash)) {
-				$this->set_user_status($emp_id, 1);
-				echo json_encode(array(
-					'success' => true,
-					'id' => $emp_id,
-					'role' => $emp_role
-					));
-				}else {
+                if($emp_role == 1) {
+                    if(!$this->check_user_exists_on_register($emp_id)) {
+                        $this->add_to_register_enter_time($emp_id);
+                    }
+    
+                    if(password_verify($password, $hash)) {
+                    $this->set_user_status($emp_id, 1);
                     echo json_encode(array(
-                        'success' => false,
-                        'message' => "Incorrect username or password"
-                    ));
+                        'success' => true,
+                        'id' => $emp_id,
+                        'role' => $emp_role
+                        ));
+                    }else {
+                        echo json_encode(array(
+                            'success' => false,
+                            'message' => "Incorrect username or password"
+                        ));
+                    }
+                }else if($emp_role == 0) {
+                    if($position == "inside") {
+                        if(!$this->check_user_exists_on_register($emp_id)) {
+                            $this->add_to_register_enter_time($emp_id);
+                        }
+        
+                        if(password_verify($password, $hash)) {
+                        $this->set_user_status($emp_id, 1);
+                        echo json_encode(array(
+                            'success' => true,
+                            'id' => $emp_id,
+                            'role' => $emp_role
+                            ));
+                        }else {
+                            echo json_encode(array(
+                                'success' => false,
+                                'message' => "Incorrect username or password"
+                            ));
+                        }
+                    }else {
+                        echo json_encode(array(
+                            'success' => false,
+                            'message' => "You need to be at Kunokhar to login"
+                        ));                     
+                    }
                 }
 
 			}

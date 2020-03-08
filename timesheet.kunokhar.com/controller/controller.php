@@ -145,8 +145,8 @@ if(isset($_POST['action']))
         case "login":
             $email = $_POST['email'];
             $password = $_POST['password'];
-
-            $work_object->login($email, $password);
+            $position = $_POST['position'];
+            $work_object->login($email, $password, $position);
 
             
         break;
