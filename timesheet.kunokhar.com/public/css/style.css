@@ -22,6 +22,10 @@ body
   height: 100vh;
 }
 
+nav .navbar-brand {
+    cursor: pointer;
+}
+
 .lds-ripple {
   position: fixed; 
   top:0;
@@ -770,7 +774,7 @@ ul .clients-employee-li:hover
 
 .active-date {
   color: tomato !important;
-  transform: translate(5px;);
+  transform: translate(5px);
 }
 
 #task_history .task {
@@ -843,7 +847,7 @@ ul .clients-employee-li:hover
   position: fixed;
   z-index: 1;
   left: 50%;
-  top: 30px;
+  bottom: 3em;
   font-size: 17px;
 }
 
@@ -854,21 +858,99 @@ ul .clients-employee-li:hover
 }
 
 @-webkit-keyframes fadein {
-  from {top: 0; opacity: 0;} 
-  to {top: 30px; opacity: 1;}
+  from {bottom: 0; opacity: 0;} 
+  to {bottom: 30px; opacity: 1;}
 }
 
 @keyframes fadein {
-  from {top: 0; opacity: 0;}
-  to {top: 30px; opacity: 1;}
+  from {bottom: 0; opacity: 0;}
+  to {bottom: 30px; opacity: 1;}
 }
 
 @-webkit-keyframes fadeout {
-  from {top: 30px; opacity: 1;} 
-  to {top: 0; opacity: 0;}
+  from {bottom: 30px; opacity: 1;} 
+  to {bottom: 0; opacity: 0;}
 }
 
 @keyframes fadeout {
-  from {top: 30px; opacity: 1;}
-  to {top: 0; opacity: 0;}
+  from {bottom: 30px; opacity: 1;}
+  to {bottom: 0; opacity: 0;}
 }
+
+.profile-container {
+    margin-top: 7%;
+    margin-left: 3%;
+    position: fixed;
+    background-color: #dfdede63;
+}
+
+.profile-inner h1 {
+    font-size: 3em;
+    color: #fff;
+    padding: 0.2em;
+}
+
+.profile-inner{
+    margin-left: 1em;
+    margin-right: 1em;
+}
+
+.profile-inner .email-view {
+    margin-left: 4%;
+    font-size: 1.2em;
+    color: #f2f2f2;
+}
+
+.profile-inner .password-view {
+    margin-left: 1.2em;
+    background-color: #709c6af8;
+}
+
+
+.profile-inner .password-view .password-caption{
+    font-size: 1.5em;
+}
+
+.profile-inner .password-view input{
+    font-size: .8em;
+    font-style: italic;
+    margin-left: .5em;
+    margin-right: .5em;
+    background-color: transparent;
+}
+
+.profile-inner .password-view input::placeholder{
+    font-size: .8em;
+    font-style: italic;
+    margin-left: .5em;
+    margin-right: .5em;
+    background-color: transparent;
+    color: #fff;
+}
+
+.profile-inner .password-view input:focus{
+    font-size: .8em;
+    font-style: italic;
+    margin-left: .5em;
+    margin-right: .5em;
+    background-color: transparent;
+    color: #fff;
+    box-shadow: none;
+}
+
+.profile-inner .password-view .d-flex .save-password {
+    color: #fff;
+    background-color: rgb(15, 97, 40);
+    border: none;
+    padding: .3em 2em;
+    border-radius: .2em;
+    right: 0;
+}
+
+
+.profile-inner .password-view label{
+    font-size: .8em;
+    font-style: italic;
+    margin-left: .5em;
+}
+

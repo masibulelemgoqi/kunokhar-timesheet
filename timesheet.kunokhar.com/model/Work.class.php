@@ -118,8 +118,7 @@ class Work{
     public function allocate_client($fname, $lname, $task_name, $emp_id){
         try {
             date_default_timezone_set("Africa/Johannesburg");
-            $date_created = date("Y-m-d H:i:s");
-            $employee = $this->get_employee($emp_id);            
+            $date_created = date("Y-m-d H:i:s");    
             $sql = "INSERT INTO `allocate_tb` (`allocate_client_fname`, `allocate_client_lname`, `allocate_emp_id`, `allocate_task_name`, `allocate_date_created`) VALUES (:fname, :lname, :emp_id, :task_name, :date_created)";
             $stmt = $this->con->prepare($sql);
             $stmt->bindParam(':fname', $fname);
@@ -127,18 +126,19 @@ class Work{
             $stmt->bindParam(':date_created', $date_created);
             $stmt->bindParam(':emp_id', $emp_id);
             $stmt->bindParam(':task_name', $task_name);
+            $employee = $this->get_emp_internal($emp_id); 
             $msg = "<div>
                         <h5>Hi, ".$employee['emp_fname']."</h5>
-                        <h5>You have task(s) allocated to you under the client ".$fname." ".$lname."</h5>
+                        <h5>You have a task (".$task_name.") allocated to you under the client ".$fname." ".$lname."</h5>
                         <h5>Please login to timesheet.kunokhar.co.za to start the task</h5><br>
                         <h5>Kunokhar Management</h5>
                     </div>";
             $subject = "Timesheet Task Allocation";
 
-            if($this->sendEmail($employee['emp_email'], $msg, $subject)) {
-                if($stmt->execute()){
-                    return true;
-                }
+
+            if($stmt->execute()){
+                $this->sendEmail($employee['emp_email'], $msg, $subject);
+                return true;
             }
 
         } catch (PDOException $e) {
@@ -186,9 +186,20 @@ class Work{
             $stmt = $this->con->query("SELECT * FROM `employee_tb` WHERE `emp_id`='$id'");
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             echo json_encode(array(
+                'success' => true,
                 'fname' => $row['emp_fname'],
-                'lname' => $row['emp_lname']
+                'lname' => $row['emp_lname'],
+                'email' => $row['emp_email']
             )); 
+          }catch (PDOException $e) {
+              echo "Error: ".$e->getMessage();
+          }       
+    }
+
+    private function get_emp_internal($id) {
+        try {
+            $stmt = $this->con->query("SELECT * FROM `employee_tb` WHERE `emp_id`='$id'");
+            return $stmt->fetch(PDO::FETCH_ASSOC);
           }catch (PDOException $e) {
               echo "Error: ".$e->getMessage();
           }       
@@ -561,7 +572,7 @@ class Work{
 	}
     //ANCHOR  SEND EMAIL FUNCTION
     public function sendEmail($email, $message, $subject) {
-		require 'phpmailer/PHPMailerAutoload.php';
+		require_once 'phpmailer/PHPMailerAutoload.php';
 
 		$to = $email; // this is your Email address
 		$from = 'info@kunokhar.com'; // this is the sender's Email address
@@ -574,7 +585,7 @@ class Work{
 		$mail->Username = $from;
 		$mail->Password = '!nf0@kuN0kh@r';
 
-		$mail->setFrom($from, 'Kunokhar CTP');
+		$mail->setFrom($from, 'Kunokhar timesheet');
 		$mail->addAddress($to);
 		$mail->addReplyTo($from);
 

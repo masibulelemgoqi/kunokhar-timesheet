@@ -85,10 +85,25 @@ window.onload = function()
         case "history.php":
             if(sessionStorage.getItem('user_session') != null) {
                 if(sessionStorage.getItem('role') == 1) {
-                    get_all_history();
+                    var id = sessionStorage.getItem('session_id');
+                    var empId = sessionStorage.getItem('allocted_emp');
+                    setTimeout(function(){
+                        if(id === empId) {
+                            this.get_your_history();
+                        }else {
+                            this.get_all_history();
+                        }
+                    },1000);
+
                 }else if(sessionStorage.getItem('role') == 0) {
                     this.get_your_history();
                 }
+            }
+        break;
+
+        case "profile.php":
+            if(sessionStorage.getItem('user_session') != null) {
+                this.get_profile();
             }
         break;
         
@@ -143,20 +158,20 @@ if(navigator.geolocation) {
 /*===================================================================
                         LOADER
 =====================================================================*/
-    function showLoader(){
-        var loaderHtml = '<div id="loader"><img src="../public/img/cc00b40751911eb1a4708af4ca90faea.gif"></div>';
-        if ($('body').find('#loader').length == 0) {
-            
-            $('body').append(loaderHtml);
-            document.getElementById("loader").style.backgroundColor = "#1b1b1b";
-        }
-        $("#loader").addClass("lds-ripple");
+function showLoader(){
+    var loaderHtml = '<div id="loader"><img src="../public/img/cc00b40751911eb1a4708af4ca90faea.gif"></div>';
+    if ($('body').find('#loader').length == 0) {
+        
+        $('body').append(loaderHtml);
+        document.getElementById("loader").style.backgroundColor = "#1b1b1b";
     }
+    $("#loader").addClass("lds-ripple");
+}
 
-    function hideLoader(){
-        $("#loader").removeClass("lds-ripple");
-        $('#loader').empty();
-    }
+function hideLoader(){
+    $("#loader").removeClass("lds-ripple");
+    $('#loader').empty();
+}
 
 /*===================================================================
                         ANCHOR    AUTHENTIFICATION
@@ -374,45 +389,59 @@ $('#allocate_client').on('click', function(e){
     e.preventDefault();
     var fname = $('#client_fname').val();
     var lname = $('#client_lname').val();
+    var error = null;
+
+    if(fname.length < 3 && lname.length < 3){
+        error = "<div class='text-danger'>Both first and last name should be at least 3 letters</div>";
+        $('#client-add-status').html(error);
+        return;
+    }
+
+    if(task_array.length == 0){
+        error = "<div class='text-danger'>Add at least one task</div>";
+        $('#client-add-status').html(error);
+        return;
+    }
 
     setTimeout(function(){
         var id = get_id;
-        if(fname.length >= 3 && lname.length >= 3){
-            if(id != null){
-                if(task_array.length > 0){
-                    for(var i = 0; i < task_array.length; i++){
-                        $.ajax({
-                            url: '../controller/controller.php',
-                            method: 'POST',
-                            data: {fname: fname, lname: lname, id: id, task_name: task_array[i], action: "allocate_client"}
-                        }).then(function(data){
-                            if(data == 1){
-                                if(i == task_array.length){
-                                    $('#client-add-status').html("<div class='text-success'>Client allocated successfully</div>");
-                                    $('#client_fname').val("");
-                                    $('#client_lname').val("");
-                                    task_array = [];
-                                    load_admin_home();
-                                }
-                            }else{
-                                $('#client-add-status').html("<div class='text-danger'>Oops, error occured while allocating client</div>");
-                                
-                            }
-                        }).catch(function(error){
-                            $('#client-add-status').html("<div class='text-danger'>Oops, error occured while allocating client</div>");
-                            
-                        });
+
+        if(id == null){
+            error = "<div class='text-danger'>Select an employee</div>";
+            $('#client-add-status').html(error);
+            return;
+        }
+
+        if(error == null) {
+            showLoader();
+        }
+        for(var i = 0; i < task_array.length; i++){
+            $.ajax({
+                url: '../controller/controller.php',
+                method: 'POST',
+                data: {fname: fname, lname: lname, id: id, task_name: task_array[i], action: "allocate_client"}
+            }).then(function(data){
+                if(data == 1){
+                    if(i == task_array.length){
+                        $('#client-add-status').html("<div class='text-success'>Client allocated successfully</div>");
+                        $('#client_fname').val("");
+                        $('#client_lname').val("");
+                        task_array = [];
+                        hideLoader();
+                        load_admin_home();
                     }
                 }else{
-                    $('#client-add-status').html("<div class='text-danger'>Add at least one task</div>");
+                    console.log(data);
+                    hideLoader();
+                    $('#client-add-status').html("<div class='text-danger'>Oops, error occured while allocating client</div>");
+                    
                 }
-            }else{
-                $('#client-add-status').html("<div class='text-danger'>Select an employee</div>");
-            }
-        }else{
-            $('#client-add-status').html("<div class='text-danger'>Both first and last name should be at least 3 letters</div>");
+            }).catch(function(error){
+                hideLoader();
+                console.error(error);
+                $('#client-add-status').html("<div class='text-danger'>Oops, error occured while allocating client</div>");   
+            });
         }
-    
 
     },2500);
 
@@ -655,7 +684,7 @@ $(()=>{
         sessionStorage.setItem('client_name', name);
         sessionStorage.setItem('allocted_emp', id);
         sessionStorage.setItem('emp_name', "Me");
-        window.location.href = "./clients.php";
+        window.location.href = "clients.php";
         
     });
 
@@ -735,10 +764,29 @@ $(()=>{
         get_all_history();
     });
 
-    $('.w3-dropdown-click').on('click', 'actual-task', function(e){
+    $('#viewHistory').on('click', '.w3-dropdown-click', function(e) {
         e.stopPropagation();
-        viewPausedComment();
-    })
+        var id = $(this).find('span').first().text();
+        var x = $(this).closest('#viewHistory').find("#pauseReason"+id).attr('class');
+        var y = $(this).closest('#viewHistory').find("#pauseReason"+id);
+        $('.w3-dropdown-content').removeClass("w3-show");
+        if (x.includes("w3-show")) {
+            y.removeClass("w3-show");
+        } else {
+            y.addClass("w3-show");
+        }
+        
+    });
+
+    //profile
+
+    $('#old-password').on('focusout', function(e){
+        e.preventDefault();
+        var password = $('#old-password').val();
+        var id = sessionStorage.getItem('session_id');
+        check_password(id, password);
+    });
+
 });
 
 
@@ -939,6 +987,8 @@ function loadTasks(){
     var fname = fullname.split(' ').slice(0, -1).join(' ');
     var lname = fullname.split(' ').slice(-1).join(' ');
     var id = sessionStorage.getItem('allocted_emp');
+    
+    
     setTimeout(function(){
         $('.client-name').find('h1').text(fullname);
         $('.client-name').find('b').text(sessionStorage.getItem('emp_name'));
@@ -1061,7 +1111,6 @@ function get_task(task_id){
     });
 }
 
-
 function get_all_history() {
     showLoader();
     $.ajax({
@@ -1070,13 +1119,14 @@ function get_all_history() {
         dataType: 'json',
         data: {range: range, action: 'get_all_history'}
     }).then(function(history) {
-        var count = 0;
+        var doneCount = 0;
+        var pauseCount = 0
         $('#task_history .content').empty();
-        // $('.paused-tasks .w3-dropdown-click').empty();
+        $('#viewHistory').empty();
         if(Object.entries(history).length !== 0 && history.constructor !== Object) {
             $.each(history, function(key, value) {
                 if(value.allocate_status == "Done") {
-                    count++;
+                    doneCount++;
                     get_employee_by_id(value.allocate_emp_id);
                     setTimeout(function(){
                         var start_tm = "";
@@ -1111,7 +1161,7 @@ function get_all_history() {
                 }
 
                 if(value.allocate_status == "Pause") {
-                    count++;
+                    pauseCount++;
                     get_employee_by_id(value.allocate_emp_id);
                     var comment = "No comment!!";
                     if(value.allocate_comment !== null) {
@@ -1119,52 +1169,81 @@ function get_all_history() {
                     }
                     setTimeout(function(){
                         var html = `
-                        <div class="actual-task shadow mb-3">
-                            <h4>Task Name</h4>
-                            <div class="client-attandee">
-                                <small>Client: <span>${value.allocate_client_fname} ${value.allocate_client_lname}</span></small><br>
-                                <small class="employee-name">Attendent by <span>${emp_fname} ${emp_lname}</span></small>
+                            <div class="w3-dropdown-click mb-2" style="width: 100%;">
+                                <span hidden>${value.allocate_id}</span>
+                                <div class="actual-task shadow">
+                                    <h4>${value.allocate_task_name}</h4>
+                                    <div class="client-attandee">
+                                        <small>Client: ${value.allocate_client_fname} ${value.allocate_client_lname}<span></span></small><br>
+                                        <small class="employee-name">Attendent by <span>${emp_fname} ${emp_lname}</span></small>
+                                    </div>
+                                </div>
+                                <div id="pauseReason${value.allocate_id}" class="w3-dropdown-content w3-bar-block w3-border" style="margin-top: 5px; padding: 0.3em">
+                                    <p>
+                                        ${comment}
+                                    </p>
+                                </div>
                             </div>
-                        </div>
-                        <div id="pauseReason" class="w3-dropdown-content w3-bar-block w3-border" style="margin-top: 5px; padding: 0.3em">
-                            <p>
-                            ${comment}
-                            </p>
-                        </div>
                         `;
-                        $('.paused-tasks .w3-dropdown-click').append(html);
+                        $('#viewHistory').append(html);
                     }, 1000);
 
                 }
             });
 
-            if(count == 0) {
+            if(doneCount == 0) {
                 $('#task_history .content').append(
                     `
                     <div class="task p-4 text-light">
-                        No Info for this day
+                        Done tasks for this range
                     </div>
                     `
                 );
-              setTimeout(function(){hideLoader();}, 1000);                
+                setTimeout(function(){hideLoader();}, 1000);                
             }else {
                 setTimeout(function(){hideLoader();}, 1000); 
             }
-        }else {
-            if(count == 0) {
-                $('#task_history .content').append(
-                    `
+    
+            if(pauseCount == 0) {
+                $('#viewHistory').append(`
                     <div class="task p-4 text-light">
-                        No Info for this day
+                        Done tasks for this range 
                     </div>
-                    `
-                );
-              setTimeout(function(){hideLoader();}, 1000);                
+                `);
+    
+                setTimeout(function(){hideLoader();}, 1000);                
             }else {
                 setTimeout(function(){hideLoader();}, 1000); 
             }
 
+        }else {
+            if(doneCount == 0) {
+                $('#task_history .content').append(
+                    `
+                    <div class="task p-4 text-light">
+                        Done tasks for this range 
+                    </div>
+                    `
+                );
+                setTimeout(function(){hideLoader();}, 1000);                
+            }else {
+                setTimeout(function(){hideLoader();}, 1000); 
+            }
+    
+            if(pauseCount == 0) {
+                $('#viewHistory').append(`
+                    <div class="actual-task shadow">
+                        <h6 class="text-white">No paused tasks</h6>
+                    </div>
+                `);
+    
+                setTimeout(function(){hideLoader();}, 1000);                
+            }else {
+                setTimeout(function(){hideLoader();}, 1000); 
+            }
         }
+
+
         
     }).catch(function(error) {
         console.error(error);
@@ -1184,7 +1263,161 @@ function get_employee_by_id(id) {
 }
 
 function get_your_history() {
+    showLoader();
+    
+    $.ajax({
+        url: '../controller/controller.php',
+        method: 'POST',
+        dataType: 'json',
+        data: {id: sessionStorage.getItem('session_id'), fullname: sessionStorage.getItem('client_name') ,range: range, action: 'get_employee_client_history'}
+    }).then(function(history) {
+        var doneCount = 0;
+        var pauseCount = 0
+        $('#task_history .content').empty();
+        $('#viewHistory').empty();
+        if(Object.entries(history).length !== 0 && history.constructor !== Object) {
+            $.each(history, function(key, value) {
+                if(value.allocate_status == "Done") {
+                    doneCount++;
+                    get_employee_by_id(value.allocate_emp_id);
+                    setTimeout(function(){
+                        var start_tm = "";
+                        var end_tm = "";
 
+                        if(value.allocate_start_time != null) {
+                            start_tm = moment(value.allocate_start_time).format("H:mm");
+                        }
+
+                        if(value.allocate_end_time != null) {
+                            end_tm = moment(value.allocate_end_time).format("H:mm");
+                        }
+                        var html = `
+                                <div class="task">
+                                    <div class="header">
+                                        <h1>${value.allocate_client_fname} ${value.allocate_client_lname}</h1>
+                                        <small>Attended by <span>${emp_fname} ${emp_lname}</span></small>
+                                    </div>
+                                    <div class="date-and-time">
+                                        <span>${moment(value.allocate_date_created).format("DD/MM/YYYY")}</span><br>
+                                        <span>${start_tm} - ${end_tm}</span><br>
+                                        <span>Took ${value.allocate_time_taken}</span>
+                                    </div>
+                                    <p>
+                                        ${value.allocate_comment}
+                                    </p>
+                                </div>
+                        
+                        `;
+                        $('#task_history .content').append(html);
+                    }, 1000);
+                }
+
+                if(value.allocate_status == "Pause") {
+                    pauseCount++;
+                    get_employee_by_id(value.allocate_emp_id);
+                    var comment = "No comment!!";
+                    if(value.allocate_comment !== null) {
+                        comment = value.allocate_comment;
+                    }
+                    setTimeout(function(){
+                        var html = `
+                            <div class="w3-dropdown-click mb-2" style="width: 100%;">
+                                <span hidden>${value.allocate_id}</span>
+                                <div class="actual-task shadow">
+                                    <h4>${value.allocate_task_name}</h4>
+                                    <div class="client-attandee">
+                                        <small>Client: ${value.allocate_client_fname} ${value.allocate_client_lname}<span></span></small><br>
+                                        <small class="employee-name">Attendent by <span>${emp_fname} ${emp_lname}</span></small>
+                                    </div>
+                                </div>
+                                <div id="pauseReason${value.allocate_id}" class="w3-dropdown-content w3-bar-block w3-border" style="margin-top: 5px; padding: 0.3em">
+                                    <p>
+                                        ${comment}
+                                    </p>
+                                </div>
+                            </div>
+                        `;
+                        $('#viewHistory').append(html);
+                    }, 1000);
+
+                }
+            });
+
+            if(doneCount == 0) {
+                $('#task_history .content').append(
+                    `
+                    <div class="task p-4 text-light">
+                        Done tasks for this range
+                    </div>
+                    `
+                );
+                setTimeout(function(){hideLoader();}, 1000);                
+            }else {
+                setTimeout(function(){hideLoader();}, 1000); 
+            }
+    
+            if(pauseCount == 0) {
+                $('#viewHistory').append(`
+                    <div class="task p-4 text-light">
+                        Done tasks for this range 
+                    </div>
+                `);
+    
+                setTimeout(function(){hideLoader();}, 1000);                
+            }else {
+                setTimeout(function(){hideLoader();}, 1000); 
+            }
+
+        }else {
+            if(doneCount == 0) {
+                $('#task_history .content').append(
+                    `
+                    <div class="task p-4 text-light">
+                        Done tasks for this range 
+                    </div>
+                    `
+                );
+                setTimeout(function(){hideLoader();}, 1000);                
+            }else {
+                setTimeout(function(){hideLoader();}, 1000); 
+            }
+    
+            if(pauseCount == 0) {
+                $('#viewHistory').append(`
+                    <div class="actual-task shadow">
+                        <h6 class="text-white">No paused tasks</h6>
+                    </div>
+                `);
+    
+                setTimeout(function(){hideLoader();}, 1000);                
+            }else {
+                setTimeout(function(){hideLoader();}, 1000); 
+            }
+        }
+
+
+        
+    }).catch(function(error) {
+        console.error(error);
+    });
+}
+
+function get_profile() {
+    showLoader();
+    $.ajax({
+        url: "../controller/controller.php",
+        method: "POST",
+        dataType: "json",
+        data: {id: sessionStorage.getItem('session_id'), action: 'get_employee_by_id'}
+    }).then(function(data){
+        if(data.success) {
+            $('.profile-fullname').html(data.fname+" "+data.lname);
+            $('.email-view span').html(data.email);
+            setTimeout(function(){hideLoader();},1000); 
+        }
+    }).catch(function(error){
+        console.error(error);
+    });
 }
 
 /*============================================================
@@ -1332,6 +1565,24 @@ function email_availability(email)
     });
 }
 
+function check_password(id, password) {
+    $.ajax({
+        url: "../controller/controller.php",
+        method: "POST",
+        data: {id: id, password: password, action: 'check_password'}
+    }).then(function(data){
+        if(data == 1) {
+            $('#snackbar').html("<i class='fa fa-thumbs-up fa-1x text-success'></i> <span>Correct password</span>");
+            snackBar();
+        }else {
+            $('#snackbar').html("<i class='fa fa-thumbs-down fa-1x text-danger'></i> <span>Incorrect password</span>");
+            snackBar();
+        }
+    }).catch(function(error){
+        console.error(error);
+    });
+}
+
 /*============================================================
                     ANCHOR     Other functions
 ==============================================================*/
@@ -1476,6 +1727,15 @@ function snackBar() {
     var x = document.getElementById("snackbar");
     x.className = "show";
     setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+}
+
+function viewPausedComment(id) {
+    var x = document.getElementById("pauseReason"+id);
+    if (x.className.indexOf("w3-show") == -1) { 
+      x.className += " w3-show";
+    } else {
+      x.className = x.className.replace(" w3-show", "");
+    }
 }
 
 

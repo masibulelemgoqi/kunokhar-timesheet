@@ -20,7 +20,13 @@
         <div class="collapse navbar-collapse d-flex justify-content-end" id="navbarNav">
             <ul class="navbar-nav">
                 <li class="nav-item text-center">
-                    <a class="nav-link" href="./profile">
+                    <a class="nav-link" href="./history.php">
+                        <i class="fa fa-history fa-2x" aria-hidden="true"></i>
+                        <div>History</div>
+                    </a>
+                </li>
+                <li class="nav-item text-center">
+                    <a class="nav-link" href="./profile.php">
                         <i class="far fa-user fa-2x"></i>
                         <div>Profile</div>
                     </a>

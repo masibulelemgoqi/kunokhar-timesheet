@@ -9,7 +9,7 @@
 </head>
 <body>
     <nav class="navbar navbar-expand-sm fixed-top navbar-light bg-light">
-        <a class="navbar-brand ml-3" style="cursor: pointer;">
+        <a class="navbar-brand ml-3" onclick="history.back(-1)">
             <img src="../public/img/kunokharK.png" class="logo" alt="Kunokhar logo">
             <span>Timesheet</span>
         </a>
@@ -27,7 +27,7 @@
                 </li>
                 
                 <li class="nav-item text-center">
-                    <a class="nav-link" href="./profile">
+                    <a class="nav-link" href="./profile.php">
                         <i class="far fa-user fa-2x"></i>
                         <div>Profile</div>
                     </a>

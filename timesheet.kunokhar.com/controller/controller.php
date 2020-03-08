@@ -140,10 +140,6 @@ if(isset($_POST['action']))
             echo json_encode($work_object->get_employee_client_history($fullname, $id, $range));    
         break;
 
-        case 'get_profile':
-            $id = $_POST['id'];
-            echo json_encode($work_object->get_profile($id));
-        break;
 
         //ANCHOR  AUTHENTIFICATION
         case "login":
@@ -160,6 +156,17 @@ if(isset($_POST['action']))
         case "check_email":
             $email = $_POST['email'];
             $work_object->check_email_exists($email);
+        break;
+
+        case "check_password":
+            $id = $_POST['id'];
+            $password = $_POST['password'];
+
+            if($work_object->check_password($id, $password)) {
+                print(1);
+            }else {
+                print($work_object->check_password($id, $password));
+            }
         break;
 
         //ANCHOR  EDIT 

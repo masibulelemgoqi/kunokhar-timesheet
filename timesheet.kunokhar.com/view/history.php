@@ -72,34 +72,9 @@
     		<div class="paused-tasks">
     			<div class="daily-history">
                     <h3 class="w3-center">Paused Tasks</h3>
-                	<div class="w3-dropdown-click" style="width: 100%;">
-                		<div class="actual-task shadow" onclick="viewPausedComment()">
-	                        <h4>Task Name</h4>
-	                        <div class="client-attandee">
-	                        	<small>Client: <span>Simamkele Ndabeni</span></small><br>
-	                        	<small class="employee-name">Attendent by <span>Silindile Ngwane</span></small>
-	                        </div>
-	                    </div>
-	                    <div id="pauseReason" class="w3-dropdown-content w3-bar-block w3-border" style="margin-top: 5px; padding: 0.3em">
-	                    	<p>
-	                    		1
-	                    	</p>
-					    </div>
+                    <div id="viewHistory">
+
                     </div>
-                	<div class="w3-dropdown-click" style="width: 100%;">
-                		<div class="actual-task shadow" onclick="viewPausedComment()">
-	                        <h4>Task Name</h4>
-	                        <div class="client-attandee">
-	                        	<small>Client: <span>Simamkele Ndabeni</span></small><br>
-	                        	<small class="employee-name">Attendent by <span>Silindile Ngwane</span></small>
-	                        </div>
-	                    </div>
-	                    <div id="pauseReason" class="w3-dropdown-content w3-bar-block w3-border" style="margin-top: 5px; padding: 0.3em">
-	                    	<p>
-	                    		2
-	                    	</p>
-					    </div>
-                	</div>
                 </div>
     		</div>
     	</div>
@@ -110,15 +85,5 @@
     <script src="../public/css/fontawesome-free-5.12.1-web/js/all.min.js"></script>
     <script src="../public/js/main.js"></script>
     <script src="../public/js/moment.js"></script>
-    <script type="text/javascript">
-		 function viewPausedComment() {
-	  		var x = document.getElementById("pauseReason");
-	  		if (x.className.indexOf("w3-show") == -1) { 
-	    		x.className += " w3-show";
-	  		} else {
-	    		x.className = x.className.replace(" w3-show", "");
-	  		}
-		}
-    </script>
 </body>
 </html>
