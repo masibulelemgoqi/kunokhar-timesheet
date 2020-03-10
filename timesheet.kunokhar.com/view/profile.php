@@ -43,12 +43,8 @@
                 <div class="password-caption">Change password</div>
                 <label for="old-password">Old password</label>
                 <input type="password" name="old-password" id="old-password" class="form-control" placeholder="Enter old password">
-                <label for="new-password">new password</label>
-                <input type="password" name="new-password" id="new-password" class="form-control" placeholder="Enter new password">
-                <label for="confirm-password">confirm password</label>
-                <input type="password" name="confirm-password" id="confirm-password" class="form-control" placeholder="Confirm password">
-                <div class="d-flex justify-content-end mt-2">
-                    <button class="save-password">Save</button>
+                <div class="d-flex justify-content-end mt-2 old-password-proceed">
+                    <button class="save-password">Change</button>
                 </div>
             </div>
 

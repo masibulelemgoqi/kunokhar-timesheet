@@ -141,15 +141,15 @@ var emp_lname = null;
                     ANCHOR  POSITION
 =====================================================================*/
 
-function onPositionReceived(position) {
+function onPositionReceived(pos) {
 
-    if(position.coords.latitude <= -31.5945941 && position.coords.latitude >= -31.5948278 && position.coords.longitude >= 28.7735795 && position.coords.longitude <= 28.7740795) {
+    if(pos.coords.latitude <= -31.5945941 && pos.coords.latitude >= -31.5948278 && pos.coords.longitude >= 28.7735795 && pos.coords.longitude <= 28.7740795) {
         position = "inside";
-        console.log("in ---> "+position.coords.latitude+" "+position.coords.longitude);
+        console.log("in ---> "+pos.coords.latitude+" "+pos.coords.longitude);
         
     }else{
         position = "outside";
-        console.log("out ---> "+position.coords.latitude+" "+position.coords.longitude);
+        console.log("out ---> "+pos.coords.latitude+" "+pos.coords.longitude);
     }
     
     
@@ -1350,7 +1350,7 @@ function get_your_history() {
                 $('#task_history .content').append(
                     `
                     <div class="task p-4 text-light">
-                        Done tasks for this range
+                        No done tasks for this range
                     </div>
                     `
                 );
@@ -1361,8 +1361,8 @@ function get_your_history() {
     
             if(pauseCount == 0) {
                 $('#viewHistory').append(`
-                    <div class="task p-4 text-light">
-                        Done tasks for this range 
+                    <div class="actual-task shadow">
+                        <h6 class="text-white">No paused tasks</h6>
                     </div>
                 `);
     
@@ -1376,7 +1376,7 @@ function get_your_history() {
                 $('#task_history .content').append(
                     `
                     <div class="task p-4 text-light">
-                        Done tasks for this range 
+                        No done tasks for this range 
                     </div>
                     `
                 );
@@ -1575,8 +1575,16 @@ function check_password(id, password) {
         data: {id: id, password: password, action: 'check_password'}
     }).then(function(data){
         if(data == 1) {
-            $('#snackbar').html("<i class='fa fa-thumbs-up fa-1x text-success'></i> <span>Correct password</span>");
-            snackBar();
+            $('.old-password-proceed').remove();
+            $('.profile-container .old-password').after(`
+                <label for="new-password">new password</label>
+                <input type="password" name="new-password" id="new-password" class="form-control" placeholder="Enter new password">
+                <label for="confirm-password">confirm password</label>
+                <input type="password" name="confirm-password" id="confirm-password" class="form-control" placeholder="Confirm password">
+                <div class="d-flex justify-content-end mt-2">
+                    <button class="save-password">Save</button>
+                </div>
+             `);
         }else {
             $('#snackbar').html("<i class='fa fa-thumbs-down fa-1x text-danger'></i> <span>Incorrect password</span>");
             snackBar();
